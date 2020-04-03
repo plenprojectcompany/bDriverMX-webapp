@@ -2,7 +2,7 @@ MIT License
 
 Copyright (c) 2020,
 
-- []()
+- [Isaki](https://github.com/IsakiMatsubara)
 - [PLEN Project Company Inc.](https://plen.jp)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

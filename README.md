@@ -6,7 +6,7 @@
 [bDriverMX for WebApp(仮)](https://plenprojectcompany.github.io/bDriverMX-webapp/index.html)
 
 ## Copyright (c) 2020,
-- []()
+- [Isaki](https://github.com/IsakiMatsubara)
 - [PLEN Project Company Inc.](https://plen.jp)
 
 ## License
