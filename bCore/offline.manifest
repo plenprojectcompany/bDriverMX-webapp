@@ -1,0 +1,27 @@
+CACHE MANIFEST
+# Version 1.002
+CACHE:
+index.html
+style.css
+data/bluejelly.js
+data/MainFont.ttf
+data/SubFont.ttf
+data/TitleFont.ttf
+image/Enter.png
+image/Error.png
+image/FullscreenOn.png
+image/FullscreenOff.png
+image/GyroOn.png
+image/GyroOff.png
+image/icon16.png
+image/icon32.png
+image/icon48.png
+image/icon64.png
+image/icon150.png
+image/LightOn.png
+image/LightOff.png
+image/Loading.png
+image/Question.png
+image/Setting.png
+image/StartButton.png
+image/TitleLogo.png

@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<!--<html manifest="offline.manifest" lang="ja">-->
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="robots" content="noindex">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<title>bCore Controller</title>
+	<meta name="description" content="bCoreをブラウザから操作できます" />
+	<link rel="icon" href="image/icon16.png" sizes="16x16" type="image/png" />
+	<link rel="icon" href="image/icon32.png" sizes="32x32" type="image/png" />
+	<link rel="icon" href="image/icon48.png" sizes="48x48" type="image/png" />
+	<link rel="icon" href="image/icon64.png" sizes="64x64" type="image/png" />
+	<link rel="apple-touch-icon-precomposed" href="image/icon150.png" />
+	<meta name="msapplication-TileImage" content="image/icon150.png" />
+	<meta name="msapplication-TileColor" content="#ff0000" />
+	<link rel="stylesheet" href="style.css" />
+	<script type="text/javascript" src="data/bluejelly.js"></script>
+	<!--</head>-->
+
+<body>
+	<div id='LoadingLayer'>
+		<div class='center'>
+			<div id='loadingimage'>
+				<img src="image/Loading.png" width="250px">
+			</div>
+			<div id='loadingText'>
+				Loading
+			</div>
+		</div>
+	</div>
+	<div id='NoSupportLayer'>
+		<div class="center" id='NoSupportContent'>
+			<div id='NoSupportImage'>
+				<img src="image/Error.png" width="250px">
+			</div>
+			<div id='NoSupportText'>
+				ご利用のブラウザには対応しておりません<br>以下のサポートリストをご確認ください
+			</div>
+			<div id='SupportList'>
+				<table align="center">
+					<tr>
+						<th colspan="3">サポートリスト</th>
+					</tr>
+					<tr class='top' class='underline'>
+						<td>OS</td>
+						<td>ブラウザ</td>
+						<td>バージョン(以降)</td>
+					</tr>
+					<tr class='underline'>
+						<td rowspan="4" class='OS'>Android</td>
+						<td>Android標準ブラウザ</td>
+						<td>43</td>
+					</tr>
+					<tr>
+						<td>Chrome</td>
+						<td>80</td>
+					</tr>
+					<tr>
+						<td>Opera</td>
+						<td>46</td>
+					</tr>
+					<tr>
+						<td>Samsung Internet</td>
+						<td>6.2</td>
+					</tr>
+					<tr class='underline'>
+						<td rowspan="3" class='OS'>Windows</td>
+						<td>Edge</td>
+						<td>79</td>
+					</tr>
+					<tr>
+						<td>Chrome</td>
+						<td>56</td>
+					</tr>
+					<tr>
+						<td>Opera</td>
+						<td>66</td>
+					</tr>
+					<tr class='underline'>
+						<td rowspan="2" class='OS'>Mac</td>
+						<td>Chrome</td>
+						<td>56</td>
+					</tr>
+					<tr>
+						<td>Opera</td>
+						<td>66</td>
+					</tr>
+					<tr class='underline'>
+						<td class='OS'>ios</td>
+						<td colspan="2">非対応･･･公式アプリをご利用ください<br><a href="https://apps.apple.com/jp/app/bdrivermx/id1193985458">「bDriverMX」をApp Storeで</a></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id='TitleLayer'>
+		<div class='center'>
+			<div id='TitleLogo'>
+				<image src='image/TitleLogo.png'>
+			</div>
+			<div id='TitleButton'>
+				<input type="image" id='StartButton' src='image/StartButton.png'>
+				<div id='status'></div>
+			</div>
+		</div>
+	</div>
+	<div id='FullscreenArea'>
+		<div id='ControllerLayer'>
+			<div id='ControllTop'>
+				<div class='Left'>
+					<input type="image" class='TopButton' id='Cbutton1' src='image/Setting.png'>
+				</div>
+				<div class='Center'>
+					<div id='Volt'>
+
+					</div>
+				</div>
+				<div class='Right'>
+					<input type="image" class='TopButton' id='Cbutton2' src='image/LightOn.png'>
+					<input type="image" class='TopButton' id='Cbutton3' src='image/GyroOn.png'>
+					<input type="image" class='TopButton' id='Cbutton4' src='image/FullscreenOn.png'>
+				</div>
+			</div>
+			<div id='Controller'>
+				<div id='Slider'>
+					<div id='VerticalSlider'>
+						<input type="range" id='Vslider' min='0' max='200' value='100'></imput>
+					</div>
+					<div id='HorizontalSlider'>
+						<input type="range" id='Hslider' min='0' max='200' value='100'></imput>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id='SettingLayer'>
+			<div id='SettingTop'>
+				<div class="Right">
+					<!--<input type='image' src='image/Question.png' id='Sbutton2'>-->
+				</div>
+			</div>
+			<div id='SettingList'>
+				<table align="center">
+					<tr class='row1'>
+						<td colspan="4">設定</td>
+					</tr>
+					<tr class='row4'>
+						<td colspan="4">前後レバー</td>
+					</tr>
+					<tr>
+						<td class='col1'>感度</td>
+						<td class='col2' id='Svalue1'>50%</td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider1' class='SettingSlider' min='0' max='100' value='50'></td>
+					</tr>
+					<tr class='row2'>
+						<td colspan="4">左右レバー</td>
+					</tr>
+					<tr>
+						<td>感度</td>
+						<td id='Svalue2' class='Svalue'>100%</td>
+						<td colspan="2"><input type="range" id='Sslider2' class='SettingSlider' min='0' max='100' value='100'></td>
+					</tr>
+					<tr>
+						<td>初期位置調整</td>
+						<td id='Svalue3' class='Svalue'>0</td>
+						<td colspan="2"><input type="range" id='Sslider3' class='SettingSlider' min='-30' max='30' value='0'></td>
+					</tr>
+					<tr class='row2'>
+						<td colspan="4">全体設定</td>
+					</tr>
+					<tr id='GyroSetting'>
+						<td>ジャイロ感度</td>
+						<td id='Svalue5' class='Svalue'>50%</td>
+						<td colspan="2"><input type="range" id='Sslider5' class='SettingSlider' min='0' max='100' value='50'></td>
+					</tr>
+					<tr id='KeySetting'>
+						<td>キー割り当て</td>
+						<td colspan="3">
+							<div class='keySet' id='keySet1'>前 / ↑</div>
+							<div class='keySet' id='keySet2'>後 / ↓</div>
+							<div class='keySet' id='keySet3'>左 / ←</div>
+							<div class='keySet' id='keySet4'>右 / →</div>
+						</td>
+					</tr>
+					<tr>
+						<td>レバーサイズ</td>
+						<td id='Svalue6' class='Svalue'>100%</td>
+						<td colspan="2"><input type="range" id='Sslider6' class='SettingSlider' min='0' max='200' value='100'></td>
+					</tr>
+					<tr>
+						<td>レバー位置</td>
+						<td id='Svalue7' class='Svalue'>0</td>
+						<td colspan="2"><input type="range" id='Sslider7' class='SettingSlider' min='-20' max='20' value='0'></td>
+					</tr>
+					<tr>
+						<td>左右反転</td>
+						<td id='Svalue8' class='Svalue'>OFF</td>
+						<td class='col4'><input type="range" id='Sslider8' class='SettingSlider' min='0' max='1' value='0'></td>
+						<td></td>
+					</tr>
+					<tr class='row3'>
+						<td colspan="4" class='col5'><input type='image' src='image/Enter.png' id='Sbutton1'></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+
+<script>
+	//変数の定義
+	const Lloading = document.getElementById('LoadingLayer');
+	const LNoSupport = document.getElementById('NoSupportLayer');
+	const LNoSupportContent = document.getElementById('NoSupportContent');
+	const LTitle = document.getElementById('TitleLayer');
+	const Lcontroller = document.getElementById('ControllerLayer');
+	const LoadingStatus = document.getElementById('loadingText');
+	const Lsetting = document.getElementById('SettingLayer');
+	const ble = new BlueJelly();
+	const StartButton = document.getElementById('StartButton');
+	const Status = document.getElementById('status');
+	const Slider = document.getElementById('Slider');
+	const HSliderBox = document.getElementById('HorizontalSlider');
+	const VSliderBox = document.getElementById('VerticalSlider');
+	const HSlider = document.getElementById('Hslider');
+	const VSlider = document.getElementById('Vslider');
+	const CButton1 = document.getElementById('Cbutton1');
+	const CButton2 = document.getElementById('Cbutton2');
+	const CButton3 = document.getElementById('Cbutton3');
+	const CButton4 = document.getElementById('Cbutton4');
+	const SSlider1 = document.getElementById('Sslider1');
+	const SSlider2 = document.getElementById('Sslider2');
+	const SSlider3 = document.getElementById('Sslider3');
+	const SSlider5 = document.getElementById('Sslider5');
+	const SSlider6 = document.getElementById('Sslider6');
+	const SSlider7 = document.getElementById('Sslider7');
+	const SSlider8 = document.getElementById('Sslider8');
+	const SButton1 = document.getElementById('Sbutton1');
+	const SButton2 = document.getElementById('Sbutton2');
+	const SValue1 = document.getElementById('Svalue1');
+	const SValue2 = document.getElementById('Svalue2');
+	const SValue3 = document.getElementById('Svalue3');
+	const SValue4 = document.getElementById('Svalue4');
+	const SValue5 = document.getElementById('Svalue5');
+	const SValue6 = document.getElementById('Svalue6');
+	const SValue7 = document.getElementById('Svalue7');
+	const SValue8 = document.getElementById('Svalue8');
+	const SkeySet1 = document.getElementById('keySet1');
+	const SkeySet2 = document.getElementById('keySet2');
+	const SkeySet3 = document.getElementById('keySet3');
+	const SkeySet4 = document.getElementById('keySet4');
+
+	var userAgent = window.navigator.userAgent.toLowerCase();
+	var Support = false;
+	var Device;
+	var Browser;
+	var stage = 0;
+	var ReconnectCount = 0;
+	var LoadingOpacity = -1;
+	var Fullscreen = false;
+
+	var PWMRange = 80;
+	var PWMMin = 20;
+	var ServoMaxBase = 255;
+	var ServoMax = 255;
+	var ServoRange = 80;
+	var ServoAdj = 0;
+
+	var SendTime = 100;
+
+	var PWMValue = 127;
+	var ServoValue = 127;
+	var PortValue = 0;
+
+	var RotateMaxBase = 40;
+	var RotateMax = 40;
+	var RotateMin = 0;
+	var Rotate = true;
+	var RotateSet = 0;
+	var RotateBefore = false;
+
+	var LightActive = false;
+	var GyroActive = false;
+
+	var KeyBoard = false;
+	var Key = [];
+	var KeyValue = [];
+
+
+	//個人設定
+	var Setting = [];
+	var SettingString = [];
+	var SettingNow = false;
+
+
+	//画像ドラッグ対策
+	document.ondragstart = function() {
+		return false;
+	};
+
+	//画面外はみ出し確認
+	function DisplayOut() {
+		Rotate = true;
+		if (window.innerHeight >= LNoSupportContent.clientHeight) {
+			LNoSupport.style.height = '100vh';
+		} else {
+			LNoSupport.style.height = '';
+		}
+	}
+
+	//画面回転時の動作
+	window.addEventListener("orientationchange", function() {
+		setTimeout(function() {
+			DisplayOut();
+		}, 100);
+	});
+
+	//初期動作
+	window.onload = function() {
+
+		stage = 0;
+
+		if (userAgent.indexOf('iphone') != -1) {
+			//iphone
+			Support = false;
+			Device = 'ios';
+		} else if (userAgent.indexOf('ipad') != -1) {
+			//ipad
+			Support = false;
+			Device = 'ios';
+		} else if (userAgent.indexOf('android') != -1) {
+			if (userAgent.indexOf('mobile') != -1) {
+				//Android
+				Support = true;
+				Device = 'Android';
+			} else {
+				//AndroidTablet
+				Support = true;
+				Device = 'Android';
+			}
+		} else {
+			//PC
+			Support = true;
+			Device = 'PC';
+		}
+
+		if (Support) {
+			if (userAgent.indexOf('msie') != -1 ||
+				userAgent.indexOf('trident') != -1) {
+				//IE
+				Support = false;
+				Browser = 'IE';
+			} else if (userAgent.indexOf('edge') != -1) {
+				//edge
+				Support = true;
+				Browser = 'Edge';
+			} else if (userAgent.indexOf('chrome') != -1) {
+				//chrome
+				Support = true;
+				Browser = 'Chrome';
+			} else if (userAgent.indexOf('safari') != -1) {
+				//Safari
+				Support = false;
+				Browser = 'Safari';
+			} else if (userAgent.indexOf('firefox') != -1) {
+				//FireFox
+				Support = false;
+				Browser = 'FireFox';
+			} else if (userAgent.indexOf('opera') != -1) {
+				//Opera
+				Support = true;
+				Browser = 'Opera';
+			} else if (userAgent.indexOf('samsungbrowser') != -1) {
+				//Samsung Internet Browser
+				Support = true;
+				Browser = 'Samsung Internet Browser';
+			} else {
+				//Others
+				Support = false;
+				Browser = 'Unknown';
+			}
+		}
+
+		if (Support) {
+			//UUIDの登録
+			ble.setUUID("UUID1", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaf1-843f-4d3b-959d-c954cce14655");
+			ble.setUUID("UUID2", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaf2-843f-4d3b-959d-c954cce14655");
+			ble.setUUID("UUID3", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaf3-843f-4d3b-959d-c954cce14655");
+			ble.setUUID("UUID4", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaf4-843f-4d3b-959d-c954cce14655");
+			ble.setUUID("UUID5", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaf5-843f-4d3b-959d-c954cce14655");
+			ble.setUUID("UUID6", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaff-843f-4d3b-959d-c954cce14655");
+
+			//セーブデータの存在確認
+			if (localStorage.getItem('SaveData') == null) {
+				//プリセットを登録する
+				localStorage.setItem('SaveData', '50,50,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,Arrowright');
+			}
+			Setting = localStorage.getItem('SaveData').split(',');
+
+			if (Setting.length != 12) {
+				//プリセットを登録する
+				localStorage.setItem('SaveData', '50,50,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,Arrowright');
+				Setting = localStorage.getItem('SaveData').split(',');
+			}
+
+			//設定画面の値変更
+			SSlider1.value = Setting[0];
+			SValue1.innerHTML = SSlider1.value + '%';
+			SSlider2.value = Setting[1];
+			SValue2.innerHTML = SSlider2.value + '%';
+			SSlider3.value = Setting[2];
+			if (SSlider3.value > 0) {
+				SValue3.innerHTML = '+' + SSlider3.value;
+			} else {
+				SValue3.innerHTML = SSlider3.value;
+			}
+			SSlider5.value = Setting[4];
+			SValue5.innerHTML = SSlider5.value + '%';
+			SSlider6.value = Setting[5];
+			SValue6.innerHTML = SSlider6.value + '%';
+			SSlider7.value = Setting[6];
+			if (SSlider7.value > 0) {
+				SValue7.innerHTML = '+' + SSlider7.value;
+			} else {
+				SValue7.innerHTML = SSlider7.value;
+			}
+			SSlider8.value = Setting[7];
+			if (SSlider8.value == 0) {
+				SValue8.innerHTML = 'OFF';
+			} else {
+				SValue8.innerHTML = 'ON';
+			}
+
+			for (var i = 0; i < 4; i++) {
+				Key[i] = Setting[8 + i];
+
+				if (Key[i] == 'ArrowUp') {
+					KeyValue[i] = '↑';
+				} else if (Key[i] == 'ArrowDown') {
+					KeyValue[i] = '↓';
+				} else if (Key[i] == 'ArrowLeft') {
+					KeyValue[i] = '←';
+				} else if (Key[i] == 'ArrowRight') {
+					KeyValue[i] = '→';
+				} else {
+					KeyValue[i] = Key[i].toUpperCase();
+				}
+			}
+
+
+			//設定を反映
+			SettingSet();
+
+			//データ送信開始
+			SendData();
+
+			//サーボ初期位置へ
+			Servo(100);
+
+			if (Device == 'Android') {
+				//hoverを無効にする
+				StartButton.style.opacity = '1';
+				CButton1.style.opacity = '1';
+				CButton2.style.opacity = '1';
+				CButton3.style.opacity = '1';
+				CButton4.style.opacity = '1';
+
+				//キーボードを無効にする
+				document.getElementById('KeySetting').style.display = "none";
+			} else {
+				//ジャイロを無効にする
+				CButton3.style.display = "none";
+				document.getElementById('GyroSetting').style.display = "none";
+			}
+
+			//ローディング画面の削除
+			LNoSupport.style.display = 'none';
+			Lcontroller.style.display = 'none';
+			Lsetting.style.display = 'none';
+			Lloading.style.display = 'none';
+			LTitle.style.datalist = '';
+		} else {
+			//非対応ブラウザ
+			DisplayOut();
+			//ローディング画面の削除
+			Lloading.style.display = 'none';
+			LTitle.style.datalist = 'none';
+			Lcontroller.style.display = 'none';
+			Lsetting.style.display = 'none';
+			LNoSupport.style.display = '';
+		}
+	}
+
+	//ローディング画面の表示
+	function DisplayLoading(FinishFunction) {
+		Lloading.style.display = '';
+		if (LoadingOpacity == -1) {
+			Lloading.style.opacity = 0;
+			LoadingOpacity = 0;
+			setTimeout(function() {
+				DisplayLoading(FinishFunction)
+			}, 10);
+		} else if (LoadingOpacity == 100) {
+			Lloading.style.opacity = 1;
+			LoadingOpacity = -1;
+			if (FinishFunction != null) {
+				FinishFunction();
+			}
+		} else {
+			Lloading.style.opacity = LoadingOpacity / 100;
+			LoadingOpacity++;
+			setTimeout(function() {
+				DisplayLoading(FinishFunction)
+			}, 10);
+		}
+	}
+
+	//ローディング画面の削除
+	function DestroyLoading(FinishFunction) {
+		Lloading.style.display = '';
+		if (LoadingOpacity == -1) {
+			Lloading.style.opacity = 1;
+			LoadingOpacity = 100;
+			setTimeout(function() {
+				DestroyLoading(FinishFunction)
+			}, 10);
+		} else if (LoadingOpacity == 0) {
+			Lloading.style.display = 'none';
+			LoadingOpacity = -1;
+			if (FinishFunction != null) {
+				FinishFunction();
+			}
+		} else {
+			Lloading.style.opacity = LoadingOpacity / 100;
+			LoadingOpacity--;
+			setTimeout(function() {
+				DestroyLoading(FinishFunction)
+			}, 10);
+		}
+	}
+
+	//スタートボタン
+	StartButton.addEventListener('click', function() {
+		StartButton.disabled = true;
+		//ローディング画面
+		DisplayLoading(ScanStart);
+	});
+
+	//スキャン開始
+	function ScanStart() {
+		stage = 1;
+		ble.scan('UUID6');
+	}
+
+
+	//スキャン成功
+	ble.onScan = function(deviceName) {
+		//接続する
+		stage = 2;
+		ble.connectGATT('UUID6');
+	}
+
+	//接続完了
+	ble.onConnectGATT = function(uuid) {
+		stage = 3;
+		setTimeout(function() {
+			OnConnectFinish();
+		}, 1000);
+	}
+
+	function OnConnectFinish() {
+		if (stage == 3) {
+			//コントロール画面の表示
+			Lcontroller.style.display = '';
+			//タイトル画面の削除
+			LTitle.style.display = 'none';
+			//ローディング画面の削除
+			DestroyLoading(null);
+			stage = 4;
+		}
+	};
+
+	//コントローラー
+
+	//設定ボタン
+	CButton1.addEventListener('click', function() {
+		SettingNow = true;
+		KeyBoard = false;
+		GyroActive = false;
+		HSlider.disabled = false;
+		HSlider.value = 100;
+		VSlider.disabled = false;
+		VSlider.value = 100;
+		PWM(100);
+		Servo(100);
+		CButton3.setAttribute('src', 'image/GyroOn.png');
+		Lsetting.style.display = '';
+	});
+
+	//ライトボタン
+	CButton2.addEventListener('click', function() {
+		if (LightActive) {
+			LightActive = false;
+			PortValue = 0;
+			CButton2.setAttribute('src', 'image/LightOn.png');
+		} else {
+			LightActive = true;
+			PortValue = 3;
+			CButton2.setAttribute('src', 'image/LightOff.png');
+		}
+	});
+
+	//ジャイロボタン
+	CButton3.addEventListener('click', function() {
+		if (GyroActive) {
+			RotateBefore = false;
+			GyroActive = false;
+			HSlider.disabled = false;
+			HSlider.value = 100;
+			Servo(100);
+			CButton3.setAttribute('src', 'image/GyroOn.png');
+		} else {
+			RotateBefore = true;
+			GyroActive = true;
+			HSlider.disabled = true;
+			CButton3.setAttribute('src', 'image/GyroOff.png');
+		}
+	});
+
+	//フルスクリーン
+	CButton4.addEventListener('click', function() {
+		var target = FullscreenArea;
+
+		if (Fullscreen) {
+			if (document.webkitCancelFullScreen) {
+				document.webkitCancelFullScreen(); //Chrome15+, Safari5.1+, Opera15+
+			} else if (document.mozCancelFullScreen) {
+				document.mozCancelFullScreen(); //FF10+
+			} else if (document.msExitFullscreen) {
+				document.msExitFullscreen(); //IE11+
+			} else if (document.cancelFullScreen) {
+				document.cancelFullScreen(); //Gecko:FullScreenAPI仕様
+			} else if (document.exitFullscreen) {
+				document.exitFullscreen(); // HTML5 Fullscreen API仕様
+			}
+		} else {
+			if (target.webkitRequestFullscreen) {
+				target.webkitRequestFullscreen(); //Chrome15+, Safari5.1+, Opera15+
+			} else if (target.mozRequestFullScreen) {
+				target.mozRequestFullScreen(); //FF10+
+			} else if (target.msRequestFullscreen) {
+				target.msRequestFullscreen(); //IE11+
+			} else if (target.requestFullscreen) {
+				target.requestFullscreen(); // HTML5 Fullscreen API仕様
+			} else {
+				alert('ご利用のブラウザはフルスクリーン操作に対応していません');
+				return;
+			}
+		}
+	});
+
+	document.onfullscreenchange = document.onmozfullscreenchange = document.onwebkitfullscreenchange = document.onmsfullscreenchange = function(event) {
+		if (Fullscreen) {
+			Fullscreen = false;
+			CButton4.setAttribute('src', 'image/FullscreenOn.png');
+		} else {
+			Fullscreen = true;
+			CButton4.setAttribute('src', 'image/FullscreenOff.png');
+		}
+	};
+
+	//垂直スライダー(PWM)
+	VSlider.addEventListener('input', function() {
+		// スライダーの値が変わったとき
+		PWM(VSlider.value);
+	});
+
+	VSlider.addEventListener('change', function() {
+		// スライダーから手を離したとき
+		if (KeyBoard == false) {
+			VSlider.value = 100;
+			PWM(100);
+		}
+	});
+
+	//垂平スライダー(Servo)
+	HSlider.addEventListener('input', function() {
+		// スライダーの値が変わったとき
+		Servo(HSlider.value);
+	});
+
+	HSlider.addEventListener('change', function() {
+		// スライダーから手を離したとき
+		if (KeyBoard == false) {
+			HSlider.value = 100;
+			Servo(100);
+		}
+	});
+
+	//キーボード操作
+
+	var StopFlag = false;
+
+	document.addEventListener('keydown', function(event) {
+		if (SettingNow == false) {
+			if (event.key === Key[0]) {
+				//アクセル
+				if (VSlider.value >= 100) {
+					if (StopFlag) {
+						KeyBoard = false;
+						HSlider.disabled = false;
+						VSlider.disabled = false;
+						VSlider.value = 100;
+						PWM(100);
+					}else{
+						StopFlag = false;
+						KeyBoard = true;
+						HSlider.disabled = true;
+						VSlider.disabled = true;
+						VSlider.value++;
+						PWM(VSlider.value);
+					}
+				} else {
+					StopFlag = true;
+					KeyBoard = true;
+					HSlider.disabled = true;
+					VSlider.disabled = true;
+					if(Number(VSlider.value) + 10 > 100){
+						VSlider.value = 100;
+					}else{
+						VSlider.value = Number(VSlider.value) + 10;
+					}
+					PWM(VSlider.value);
+				}
+			} else if (event.key === Key[1]) {
+				//ブレーキ
+				if (VSlider.value <= 100) {
+					if (StopFlag) {
+						KeyBoard = false;
+						HSlider.disabled = false;
+						VSlider.disabled = false;
+						VSlider.value = 100;
+						PWM(100);
+					}else{
+						StopFlag = false;
+						KeyBoard = true;
+						HSlider.disabled = true;
+						VSlider.disabled = true;
+						VSlider.value--;
+						PWM(VSlider.value);
+					}
+				} else {
+					StopFlag = true;
+					KeyBoard = true;
+					HSlider.disabled = true;
+					VSlider.disabled = true;
+					if(Number(VSlider.value) - 10 < 100){
+						VSlider.value = 100;
+					}else{
+						VSlider.value = Number(VSlider.value) - 10;
+					}
+					PWM(VSlider.value);
+				}
+			} else if (event.key === Key[3]) {
+				//右
+				KeyBoard = true;
+				HSlider.disabled = true;
+				VSlider.disabled = true;
+				HSlider.value = 200;
+				Servo(200);
+			} else if (event.key === Key[2]) {
+				//左
+				KeyBoard = true;
+				HSlider.disabled = true;
+				VSlider.disabled = true;
+				HSlider.value = 0;
+				Servo(0);
+			}
+		}
+	});
+
+	document.addEventListener('keyup', function(event) {
+		if (SettingNow == false) {
+			if (event.key === ' ' || event.key === '　' || event.key === 'Enter') {
+				KeyBoard = false;
+				HSlider.disabled = false;
+				VSlider.disabled = false;
+				VSlider.value = 100;
+				PWM(100);
+			} else if (event.key === Key[3]) {
+				//右
+				KeyBoard = false;
+				HSlider.disabled = false;
+				VSlider.disabled = false;
+				HSlider.value = 100;
+				Servo(100);
+			} else if (event.key === Key[2]) {
+				//左
+				KeyBoard = false;
+				HSlider.disabled = false;
+				VSlider.disabled = false;
+				HSlider.value = 100;
+				Servo(100);
+			} else if (event.key === Key[0] || event.key === Key[1]){
+				StopFlag = false;
+			}
+		}
+	});
+
+	//画面の傾き
+	window.addEventListener("deviceorientation", function(event) {
+		var X = event.beta;
+		var Y = event.gamma;
+
+		var check1;
+		var check2;
+		var check3;
+
+		var n = 0;
+		var m = 0;
+
+		if (X > 10 && -90 < Y && Y < 90) {
+			n++;
+			m = 1;
+		}
+
+		if (X < -10 && -90 < Y && Y < 90) {
+			n++;
+			m = 2;
+		}
+
+		if (Y > 10 && -90 < X && X < 90) {
+			n++;
+			m = 3;
+		}
+
+		if (Y < -10 && -90 < X && X < 90) {
+			n++;
+			m = 4;
+		}
+
+		if (Rotate && n == 1) {
+			Rotate = false;
+			RotateSet = m;
+		}
+
+		if (RotateSet == 1) {
+			check3 = Math.abs(Y);
+
+			if (check3 > RotateMax) {
+				check1 = RotateMax - RotateMin;
+			} else {
+				check1 = check3 - RotateMin;
+			}
+
+			if (Y >= 0) {
+				//右旋回
+				check2 = 100 + 100 * check1 / (RotateMax - RotateMin);
+			} else {
+				//左旋回
+				check2 = 100 - 100 * check1 / (RotateMax - RotateMin);
+			}
+		} else if (RotateSet == 2) {
+			check3 = Math.abs(Y);
+
+			if (check3 > RotateMax) {
+				check1 = RotateMax - RotateMin;
+			} else {
+				check1 = check3 - RotateMin;
+			}
+
+			if (Y >= 0) {
+				//左旋回
+				check2 = 100 - 100 * check1 / (RotateMax - RotateMin);
+			} else {
+				//右旋回
+				check2 = 100 + 100 * check1 / (RotateMax - RotateMin);
+			}
+		} else if (RotateSet == 3) {
+			check3 = Math.abs(X);
+
+			if (check3 > RotateMax) {
+				check1 = RotateMax - RotateMin;
+			} else {
+				check1 = check3 - RotateMin;
+			}
+
+			if (X >= 0) {
+				//左旋回
+				check2 = 100 - 100 * check1 / (RotateMax - RotateMin);
+			} else {
+				//右旋回
+				check2 = 100 + 100 * check1 / (RotateMax - RotateMin);
+			}
+		} else if (RotateSet == 4) {
+			check3 = Math.abs(X);
+
+			if (check3 > RotateMax) {
+				check1 = RotateMax - RotateMin;
+			} else {
+				check1 = check3 - RotateMin;
+			}
+
+			if (X >= 0) {
+				//右旋回
+				check2 = 100 + 100 * check1 / (RotateMax - RotateMin);
+			} else {
+				//左旋回
+				check2 = 100 - 100 * check1 / (RotateMax - RotateMin);
+			}
+		}
+
+		if (RotateSet > 0 && Rotate == false && GyroActive) {
+			if (check3 < RotateMin) {
+				HSlider.value = 100;
+				Servo(100);
+			} else {
+				HSlider.value = check2;
+				Servo(check2);
+			}
+		}
+
+	}, false);
+
+	//PWM
+	function PWM(value) {
+
+		var check1;
+		var check2;
+		var check3;
+
+		if (value == 100) {
+			check2 = 127;
+		} else if (value > 100) {
+			check1 = PWMRange - PWMMin;
+			value -= 100;
+			check2 = value / 100 * check1 + 127 + PWMMin;
+		} else {
+			check1 = PWMRange - PWMMin;
+			check3 = 100 - value;
+			check2 = 127 - check1 / 100 * check3 - PWMMin;
+		}
+
+		PWMValue = check2;
+	};
+
+	//Servo
+	function Servo(value) {
+		var check1;
+		var check2;
+		var check3;
+
+		if (value >= 100) {
+			check1 = ServoRange;
+			value -= 100;
+			check2 = value / 100 * check1 + (127 + ServoAdj);
+		} else {
+			check1 = ServoRange;
+			check3 = 100 - value;
+			check2 = (127 + ServoAdj) - check1 / 100 * check3;
+		}
+
+		ServoValue = check2;
+	};
+
+	//データ送信
+	var TimeCount = 0;
+
+	function SendData() {
+		if (stage >= 3) {
+			//bCoreのバグ？対策
+			if (ServoValue < 5) {
+				ServoValue = 5;
+			}
+			WriteArray = [PWMValue, PWMValue, PortValue, ServoValue, ServoValue, ServoValue, ServoValue];
+			ble.write('UUID5', WriteArray);
+		}
+
+		//console.log(ServoValue);
+		//console.log(PWMValue);
+		//console.log('============');
+
+		//ローディングテキストの変更
+		var text1;
+
+		if (TimeCount >= 4000) {
+			text1 = '';
+			TimeCount = SendTime;
+		} else if (TimeCount >= 3000) {
+			text1 = '...';
+			TimeCount += SendTime;
+		} else if (TimeCount >= 2000) {
+			text1 = '..';
+			TimeCount += SendTime;
+		} else if (TimeCount >= 1000) {
+			text1 = '.';
+			TimeCount += SendTime;
+		} else {
+			text1 = '';
+			TimeCount += SendTime;
+		}
+
+		var text2;
+		if (stage == 0) {
+			text2 = 'Loading';
+		} else if (stage == 1) {
+			text2 = 'Pairing';
+		} else if (stage == 2) {
+			text2 = 'Certifying';
+		} else if (stage == 3 || stage == 4) {
+			text1 = '';
+			text2 = 'Complete!';
+		} else {
+			text2 = 'Loading';
+		}
+		LoadingStatus.innerHTML = text2 + text1;
+
+		setTimeout(function() {
+			SendData()
+		}, SendTime);
+	}
+
+	//設定画面
+	SSlider1.addEventListener('input', function() {
+		SValue1.innerHTML = SSlider1.value + '%';
+		PWMValue = 127 + 127 * SSlider1.value / 100;
+	});
+	SSlider1.addEventListener('change', function() {
+		Save();
+		PWMValue = 127;
+	});
+	SSlider2.addEventListener('input', function() {
+		SValue2.innerHTML = SSlider2.value + '%';
+		var check1 = ServoMaxBase - (127 + Number(SSlider3.value));
+		if (check1 < 0) {
+			check1 = 0;
+		}
+		ServoValue = 127 + Number(SSlider3.value) + check1 * Number(SSlider2.value) / 100;
+	});
+	SSlider2.addEventListener('change', function() {
+		Save();
+		ServoValue = 127 + Number(SSlider3.value);
+	});
+	SSlider3.addEventListener('input', function() {
+		if (SSlider3.value > 0) {
+			SValue3.innerHTML = '+' + SSlider3.value;
+		} else {
+			SValue3.innerHTML = SSlider3.value;
+		}
+		ServoValue = 127 + Number(SSlider3.value);
+	});
+	SSlider3.addEventListener('change', function() {
+		Save();
+		ServoValue = 127 + Number(SSlider3.value);
+	});
+	SSlider5.addEventListener('input', function() {
+		Lsetting.style.opacity = '0.8';
+		SValue5.innerHTML = SSlider5.value + '%';
+		GyroActive = true;
+
+		var max = RotateMaxBase * (101 - Number(SSlider5.value)) / 100;
+		var min = 10 * (101 - Number(SSlider5.value)) / 100;
+
+		RotateMax = max;
+		RotateMin = min;
+	});
+	SSlider5.addEventListener('change', function() {
+		Lsetting.style.opacity = '1';
+		Save();
+		ServoValue = 127 + Number(SSlider3.value);
+		GyroActive = false;
+		HSlider.disabled = false;
+		HSlider.value = 100;
+		CButton3.setAttribute('src', 'image/GyroOn.png');
+	});
+	SSlider6.addEventListener('input', function() {
+		Lsetting.style.opacity = '0.8';
+
+		var check1 = 30 + 15 * (Number(SSlider6.value) - 100) / 100;
+		Slider.style.height = check1 + 'vw';
+		HSliderBox.style.height = check1 + 'vw';
+		VSliderBox.style.height = check1 + 'vw';
+		HSliderBox.style.width = check1 + 'vw';
+		VSliderBox.style.width = check1 + 'vw';
+		SValue6.innerHTML = SSlider6.value + '%';
+	});
+	SSlider6.addEventListener('change', function() {
+		Lsetting.style.opacity = '1';
+		Save();
+	});
+	SSlider7.addEventListener('input', function() {
+		Lsetting.style.opacity = '0.8';
+
+		Slider.style.top = 10 + Number(SSlider7.value) + 'vh';
+
+		if (SSlider7.value > 0) {
+			SValue7.innerHTML = '+' + SSlider7.value;
+		} else {
+			SValue7.innerHTML = SSlider7.value;
+		}
+	});
+	SSlider7.addEventListener('change', function() {
+		Lsetting.style.opacity = '1';
+		Save();
+	});
+	SSlider8.addEventListener('input', function() {
+		Lsetting.style.opacity = '0.8';
+		if (SSlider8.value == 0) {
+			SValue8.innerHTML = 'OFF';
+
+			document.getElementById('HorizontalSlider').style.right = '';
+			document.getElementById('HorizontalSlider').style.left = '0';
+			document.getElementById('VerticalSlider').style.right = '0';
+			document.getElementById('VerticalSlider').style.left = '';
+		} else {
+			SValue8.innerHTML = 'ON';
+
+			document.getElementById('HorizontalSlider').style.right = '0';
+			document.getElementById('HorizontalSlider').style.left = '';
+			document.getElementById('VerticalSlider').style.right = '';
+			document.getElementById('VerticalSlider').style.left = '0';
+		}
+	});
+	SSlider8.addEventListener('change', function() {
+		Lsetting.style.opacity = '1';
+		Save();
+	});
+
+	var HoverColor = '#868686';
+	var HoverFontColor = '#ffffff';
+	var SelectColor = '#d92222';
+	var SelectFontColor = '#ffffff';
+
+	var NowSelect = 0;
+
+	SkeySet1.addEventListener('mouseover', function() {
+		if (NowSelect == 0) {
+			SkeySet1.style.background = HoverColor;
+			SkeySet1.style.color = HoverFontColor;
+		}
+	});
+	SkeySet1.addEventListener('click', function() {
+		if (NowSelect == 0) {
+			SkeySet1.style.background = SelectColor;
+			SkeySet1.style.color = SelectFontColor;
+			NowSelect = 1;
+		}
+	});
+	SkeySet1.addEventListener('mouseout', function() {
+		if (NowSelect == 0) {
+			SkeySet1.style.background = '';
+			SkeySet1.style.color = '';
+		}
+	});
+
+	SkeySet2.addEventListener('mouseover', function() {
+		if (NowSelect == 0) {
+			SkeySet2.style.background = HoverColor;
+			SkeySet2.style.color = HoverFontColor;
+		}
+	});
+	SkeySet2.addEventListener('click', function() {
+		if (NowSelect == 0) {
+			SkeySet2.style.background = SelectColor;
+			SkeySet2.style.color = SelectFontColor;
+			NowSelect = 2;
+		}
+	});
+	SkeySet2.addEventListener('mouseout', function() {
+		if (NowSelect == 0) {
+			SkeySet2.style.background = '';
+			SkeySet2.style.color = '';
+		}
+	});
+
+	SkeySet3.addEventListener('mouseover', function() {
+		if (NowSelect == 0) {
+			SkeySet3.style.background = HoverColor;
+			SkeySet3.style.color = HoverFontColor;
+		}
+	});
+	SkeySet3.addEventListener('click', function() {
+		if (NowSelect == 0) {
+			SkeySet3.style.background = SelectColor;
+			SkeySet3.style.color = SelectFontColor;
+			NowSelect = 3;
+		}
+	});
+	SkeySet3.addEventListener('mouseout', function() {
+		if (NowSelect == 0) {
+			SkeySet3.style.background = '';
+			SkeySet3.style.color = '';
+		}
+	});
+
+	SkeySet4.addEventListener('mouseover', function() {
+		if (NowSelect == 0) {
+			SkeySet4.style.background = HoverColor;
+			SkeySet4.style.color = HoverFontColor;
+		}
+	});
+	SkeySet4.addEventListener('click', function() {
+		if (NowSelect == 0) {
+			SkeySet4.style.background = SelectColor;
+			SkeySet4.style.color = SelectFontColor;
+			NowSelect = 4;
+		}
+	});
+	SkeySet4.addEventListener('mouseout', function() {
+		if (NowSelect == 0) {
+			SkeySet4.style.background = '';
+			SkeySet4.style.color = '';
+		}
+	});
+
+	document.addEventListener('keydown', function(event) {
+		if (NowSelect != 0) {
+
+			var check1 = event.key;
+			var check2 = check1;
+			var check3 = ['前', '後', '左', '右'];
+			var KeySetDisplay = [keySet1, keySet2, keySet3, keySet4];
+
+			if (check1 == 'ArrowUp') {
+				check2 = '↑';
+			} else if (check1 == 'ArrowDown') {
+				check2 = '↓';
+			} else if (check1 == 'ArrowLeft') {
+				check2 = '←';
+			} else if (check1 == 'ArrowRight') {
+				check2 = '→';
+			} else if (check1.match(/^[a-z]$/)) {
+				check2 = check1.toUpperCase();
+			} else {
+				check2 = null;
+			}
+
+			if (check2 != null) {
+				if (NowSelect == 1) {
+					for (var i = 0; i < 4; i++) {
+						if (Key[i] == check1) {
+							KeySetDisplay[i].innerHTML = check3[i] + ' / ' + KeyValue[0];
+							Key[i] = Key[0];
+							KeyValue[i] = KeyValue[0];
+						}
+					}
+					KeySetDisplay[0].innerHTML = check3[0] + ' / ' + check2;
+					Key[0] = check1;
+					KeyValue[0] = check2;
+				} else if (NowSelect == 2) {
+					for (var i = 0; i < 4; i++) {
+						if (Key[i] == check1) {
+							KeySetDisplay[i].innerHTML = check3[i] + ' / ' + KeyValue[1];
+							Key[i] = Key[1];
+							KeyValue[i] = KeyValue[1];
+						}
+					}
+					KeySetDisplay[1].innerHTML = check3[1] + ' / ' + check2;
+					Key[1] = check1;
+					KeyValue[1] = check2;
+				} else if (NowSelect == 3) {
+					for (var i = 0; i < 4; i++) {
+						if (Key[i] == check1) {
+							KeySetDisplay[i].innerHTML = check3[i] + ' / ' + KeyValue[2];
+							Key[i] = Key[2];
+							KeyValue[i] = KeyValue[2];
+						}
+					}
+					KeySetDisplay[2].innerHTML = check3[2] + ' / ' + check2;
+					Key[2] = check1;
+					KeyValue[2] = check2;
+				} else if (NowSelect == 4) {
+					for (var i = 0; i < 4; i++) {
+						if (Key[i] == check1) {
+							KeySetDisplay[i].innerHTML = check3[i] + ' / ' + KeyValue[3];
+							Key[i] = Key[3];
+							KeyValue[i] = KeyValue[3];
+						}
+					}
+					KeySetDisplay[3].innerHTML = check3[3] + ' / ' + check2;
+					Key[3] = check1;
+					KeyValue[3] = check2;
+				}
+				Save();
+			}
+
+			SkeySet1.style.background = '';
+			SkeySet1.style.color = '';
+			SkeySet2.style.background = '';
+			SkeySet2.style.color = '';
+			SkeySet3.style.background = '';
+			SkeySet3.style.color = '';
+			SkeySet4.style.background = '';
+			SkeySet4.style.color = '';
+
+			NowSelect = 0;
+		}
+	});
+
+	//Enterボタン
+	SButton1.addEventListener('click', function() {
+		SettingNow = false;
+		SettingSet();
+
+		if(RotateBefore){
+			GyroActive = true;
+			HSlider.disabled = true;
+			CButton3.setAttribute('src', 'image/GyroOff.png');
+		}
+
+		Lsetting.style.display = 'none';
+	});
+
+	function Save() {
+		localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + SSlider5.value + ',' + SSlider6.value + ',' + SSlider7.value + ',' + SSlider8.value + ',' + Key[0] + ',' + Key[1] + ',' + Key[2] +
+			',' +
+			Key[3]);
+	};
+
+	//設定データを反映させる
+	function SettingSet() {
+		Setting = localStorage.getItem('SaveData').split(',').map(Number);
+		SettingString = localStorage.getItem('SaveData').split(',');
+		PWMMin = 30 * Setting[0] / 100
+		PWMRange = 127 * Setting[0] / 100;
+		ServoAdj = Setting[2];
+		//ServoMax = ServoMaxBase + Setting[3];
+		var check1 = ServoMaxBase - (127 + ServoAdj);
+		if (check1 < 0) {
+			check1 = 0;
+		}
+		ServoRange = check1 * Setting[1] / 100;
+
+		if ((127 + ServoAdj - ServoRange) < 0) {
+			ServoRange = 127 + ServoAdj;
+		}
+
+		var max = RotateMaxBase * (100 - Setting[4]) / 100;
+		var min = 10 * (100 - Setting[4]) / 100;
+		RotateMax = max;
+		RotateMin = min;
+
+		//レバーサイズ
+		var check1 = 30 + 15 * (Setting[5] - 100) / 100;
+		Slider.style.height = check1 + 'vw';
+		HSliderBox.style.height = check1 + 'vw';
+		VSliderBox.style.height = check1 + 'vw';
+		HSliderBox.style.width = check1 + 'vw';
+		VSliderBox.style.width = check1 + 'vw';
+		SValue6.innerHTML = SSlider6.value + '%';
+
+		//レバー位置
+		Slider.style.top = 10 + Setting[6] + 'vh';
+
+		//左右反転
+		if (Setting[7] == 0) {
+			document.getElementById('HorizontalSlider').style.right = '';
+			document.getElementById('HorizontalSlider').style.left = '0';
+			document.getElementById('VerticalSlider').style.right = '0';
+			document.getElementById('VerticalSlider').style.left = '';
+		} else {
+			document.getElementById('HorizontalSlider').style.right = '0';
+			document.getElementById('HorizontalSlider').style.left = '';
+			document.getElementById('VerticalSlider').style.right = '';
+			document.getElementById('VerticalSlider').style.left = '0';
+		}
+
+		//キー設定の登録
+		for (var i = 8; i < 12; i++) {
+			var check1 = SettingString[i];
+			if (check1 == 'ArrowUp') {
+				check1 = '↑';
+			} else if (check1 == 'ArrowDown') {
+				check1 = '↓';
+			} else if (check1 == 'ArrowLeft') {
+				check1 = '←';
+			} else if (check1 == 'ArrowRight') {
+				check1 = '→';
+			} else {
+				check1 = check1.toUpperCase();
+			}
+
+			if (i == 8) {
+				keySet1.innerHTML = '前 / ' + check1;
+			} else if (i == 9) {
+				keySet2.innerHTML = '後 / ' + check1;
+			} else if (i == 10) {
+				keySet3.innerHTML = '左 / ' + check1;
+			} else if (i == 11) {
+				keySet4.innerHTML = '右 / ' + check1;
+			}
+		}
+	};
+
+	//エラー時
+	ble.onError = function(error) {
+		if (stage == 1) {
+			//スキャン失敗 → タイトル
+			Lcontroller.style.display = 'none';
+			LTitle.style.display = '';
+			DestroyLoading();
+			stage = 0;
+			StartButton.disabled = false;
+			Status.innerHTML = '<font color="red">ペアリングに失敗しました</font><br>"bCore"を選択し、ペア設定を行ってください';
+		} else if (stage == 2) {
+			//接続失敗 → 再接続
+			if (ReconnectCount < 5) {
+				ReconnectCount++;
+				ble.connectGATT('UUID6');
+			} else {
+				Lcontroller.style.display = 'none';
+				LTitle.style.display = '';
+				DestroyLoading();
+				ble.reset();
+				stage = 0;
+				StartButton.disabled = false;
+				Status.innerHTML = '<font color="red">認証に失敗しました</font><br>正しく"bCore"を選択できているか確認してください';
+			}
+		}
+	}
+</script>
+
+</html>
