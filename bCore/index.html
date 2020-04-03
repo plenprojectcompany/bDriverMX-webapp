@@ -394,13 +394,13 @@
 			//セーブデータの存在確認
 			if (localStorage.getItem('SaveData') == null) {
 				//プリセットを登録する
-				localStorage.setItem('SaveData', '50,50,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,Arrowright');
+				localStorage.setItem('SaveData', '50,50,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight');
 			}
 			Setting = localStorage.getItem('SaveData').split(',');
 
 			if (Setting.length != 12) {
 				//プリセットを登録する
-				localStorage.setItem('SaveData', '50,50,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,Arrowright');
+				localStorage.setItem('SaveData', '50,50,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight');
 				Setting = localStorage.getItem('SaveData').split(',');
 			}
 
@@ -468,6 +468,8 @@
 
 				//キーボードを無効にする
 				document.getElementById('KeySetting').style.display = "none";
+
+				Status.innerHTML = '設定からブラウザに<br>位置情報の権限を与える必要があります';
 			} else {
 				//ジャイロを無効にする
 				CButton3.style.display = "none";
