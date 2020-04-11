@@ -6,8 +6,8 @@
 	<meta charset="utf-8" />
 	<meta name="robots" content="noindex">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-	<title>bCore Controller</title>
-	<meta name="description" content="bCoreをブラウザから操作できます" />
+	<title>bDriverMX</title>
+	<meta name="description" content="bDriverMXのWebApp版 Android,Windows,Macに対応" />
 	<link rel="icon" href="image/icon16.png" sizes="16x16" type="image/png" />
 	<link rel="icon" href="image/icon32.png" sizes="32x32" type="image/png" />
 	<link rel="icon" href="image/icon48.png" sizes="48x48" type="image/png" />
@@ -32,14 +32,14 @@
 	</div>
 	<div id='NoSupportLayer'>
 		<div class="center" id='NoSupportContent'>
-			<div id='NoSupportImage'>
-				<img src="image/Error.png" width="250px">
-			</div>
-			<div id='NoSupportText'>
-				ご利用のブラウザには対応しておりません<br>以下のサポートリストをご確認ください
-			</div>
 			<div id='SupportList'>
 				<table align="center">
+					<tr>
+						<td colspan="3" class='errorTop'><img src="image/Error.png" width="250px"></td>
+					</tr>
+					<tr>
+						<td colspan="3" class='errorTop'>ご利用のブラウザには対応しておりません<br>以下のサポートリストをご確認ください</td>
+					</tr>
 					<tr>
 						<th colspan="3">サポートリスト</th>
 					</tr>
@@ -49,11 +49,7 @@
 						<td>バージョン(以降)</td>
 					</tr>
 					<tr class='underline'>
-						<td rowspan="4" class='OS'>Android</td>
-						<td>Android標準ブラウザ</td>
-						<td>43</td>
-					</tr>
-					<tr>
+						<td rowspan="3" class='OS'>Android</td>
 						<td>Chrome</td>
 						<td>80</td>
 					</tr>
@@ -66,26 +62,14 @@
 						<td>6.2</td>
 					</tr>
 					<tr class='underline'>
-						<td rowspan="3" class='OS'>Windows</td>
-						<td>Edge</td>
-						<td>79</td>
-					</tr>
-					<tr>
+						<td rowspan="1" class='OS'>Windows</td>
 						<td>Chrome</td>
 						<td>56</td>
-					</tr>
-					<tr>
-						<td>Opera</td>
-						<td>66</td>
 					</tr>
 					<tr class='underline'>
-						<td rowspan="2" class='OS'>Mac</td>
+						<td rowspan="1" class='OS'>Mac</td>
 						<td>Chrome</td>
 						<td>56</td>
-					</tr>
-					<tr>
-						<td>Opera</td>
-						<td>66</td>
 					</tr>
 					<tr class='underline'>
 						<td class='OS'>ios</td>
@@ -96,10 +80,14 @@
 		</div>
 	</div>
 	<div id='TitleLayer'>
+		<div class="Guide">
+			<a href="Guide.pdf" target="_blank"><img src="image/Question.png" alt="説明書"></a>
+		</div>
 		<div class='center'>
 			<div id='TitleLogo'>
-				<image src='image/TitleLogo.png'>
+				<img src='image/TitleLogo.png'>
 			</div>
+			<div id='Varsion'>v.1.0</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -135,10 +123,8 @@
 			</div>
 		</div>
 		<div id='SettingLayer'>
-			<div id='SettingTop'>
-				<div class="Right">
-					<!--<input type='image' src='image/Question.png' id='Sbutton2'>-->
-				</div>
+			<div class="Guide">
+				<a href="Setting.pdf" target="_blank"><img src="image/Question.png" alt="設定ガイド"></a>
 			</div>
 			<div id='SettingList'>
 				<table align="center">
@@ -151,7 +137,7 @@
 					<tr>
 						<td class='col1'>感度</td>
 						<td class='col2' id='Svalue1'>50%</td>
-						<td class='col3' colspan="2"><input type="range" id='Sslider1' class='SettingSlider' min='0' max='100' value='50'></td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider1' class='SettingSlider' min='20' max='100' value='60'></td>
 					</tr>
 					<tr class='row2'>
 						<td colspan="4">左右レバー</td>
@@ -159,7 +145,7 @@
 					<tr>
 						<td>感度</td>
 						<td id='Svalue2' class='Svalue'>100%</td>
-						<td colspan="2"><input type="range" id='Sslider2' class='SettingSlider' min='0' max='100' value='100'></td>
+						<td colspan="2"><input type="range" id='Sslider2' class='SettingSlider' min='20' max='100' value='100'></td>
 					</tr>
 					<tr>
 						<td>初期位置調整</td>
@@ -189,9 +175,14 @@
 						<td colspan="2"><input type="range" id='Sslider6' class='SettingSlider' min='0' max='200' value='100'></td>
 					</tr>
 					<tr>
-						<td>レバー位置</td>
+						<td>レバー位置(上下)</td>
 						<td id='Svalue7' class='Svalue'>0</td>
 						<td colspan="2"><input type="range" id='Sslider7' class='SettingSlider' min='-20' max='20' value='0'></td>
+					</tr>
+					<tr>
+						<td>レバー位置(左右)</td>
+						<td id='Svalue9' class='Svalue'>0</td>
+						<td colspan="2"><input type="range" id='Sslider9' class='SettingSlider' min='-20' max='20' value='0'></td>
 					</tr>
 					<tr>
 						<td>左右反転</td>
@@ -208,7 +199,7 @@
 	</div>
 </body>
 
-<script>
+<script defer>
 	//変数の定義
 	const Lloading = document.getElementById('LoadingLayer');
 	const LNoSupport = document.getElementById('NoSupportLayer');
@@ -236,8 +227,8 @@
 	const SSlider6 = document.getElementById('Sslider6');
 	const SSlider7 = document.getElementById('Sslider7');
 	const SSlider8 = document.getElementById('Sslider8');
+	const SSlider9 = document.getElementById('Sslider9');
 	const SButton1 = document.getElementById('Sbutton1');
-	const SButton2 = document.getElementById('Sbutton2');
 	const SValue1 = document.getElementById('Svalue1');
 	const SValue2 = document.getElementById('Svalue2');
 	const SValue3 = document.getElementById('Svalue3');
@@ -246,6 +237,7 @@
 	const SValue6 = document.getElementById('Svalue6');
 	const SValue7 = document.getElementById('Svalue7');
 	const SValue8 = document.getElementById('Svalue8');
+	const SValue9 = document.getElementById('Svalue9');
 	const SkeySet1 = document.getElementById('keySet1');
 	const SkeySet2 = document.getElementById('keySet2');
 	const SkeySet3 = document.getElementById('keySet3');
@@ -273,8 +265,8 @@
 	var ServoValue = 127;
 	var PortValue = 0;
 
-	var RotateMaxBase = 40;
-	var RotateMax = 40;
+	var RotateMaxBase = 35;
+	var RotateMax = 35;
 	var RotateMin = 0;
 	var Rotate = true;
 	var RotateSet = 0;
@@ -292,6 +284,7 @@
 	var Setting = [];
 	var SettingString = [];
 	var SettingNow = false;
+	var FirstTime = 'false';
 
 
 	//画像ドラッグ対策
@@ -353,8 +346,16 @@
 				Browser = 'IE';
 			} else if (userAgent.indexOf('edge') != -1) {
 				//edge
-				Support = true;
+				Support = false;
 				Browser = 'Edge';
+			} else if (userAgent.indexOf('opr') != -1) {
+				//Opera
+				if (Device == 'PC') {
+					Support = false;
+				} else {
+					Support = true;
+				}
+				Browser = 'Opera';
 			} else if (userAgent.indexOf('chrome') != -1) {
 				//chrome
 				Support = true;
@@ -369,19 +370,25 @@
 				Browser = 'FireFox';
 			} else if (userAgent.indexOf('opera') != -1) {
 				//Opera
-				Support = true;
+				if (Device == 'PC') {
+					Support = false;
+				} else {
+					Support = true;
+				}
 				Browser = 'Opera';
 			} else if (userAgent.indexOf('samsungbrowser') != -1) {
 				//Samsung Internet Browser
 				Support = true;
-				Browser = 'Samsung Internet Browser';
+				Browser = 'SamsungInternetBrowser';
 			} else {
 				//Others
 				Support = false;
 				Browser = 'Unknown';
 			}
 		}
-
+console.log(userAgent);
+console.log(Device);
+console.log(Browser);
 		if (Support) {
 			//UUIDの登録
 			ble.setUUID("UUID1", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaf1-843f-4d3b-959d-c954cce14655");
@@ -394,14 +401,16 @@
 			//セーブデータの存在確認
 			if (localStorage.getItem('SaveData') == null) {
 				//プリセットを登録する
-				localStorage.setItem('SaveData', '50,50,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight');
+				localStorage.setItem('SaveData', '60,60,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true');
+				FirstTime = 'true';
 			}
 			Setting = localStorage.getItem('SaveData').split(',');
 
-			if (Setting.length != 12) {
+			if (Setting.length != 13) {
 				//プリセットを登録する
-				localStorage.setItem('SaveData', '50,50,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight');
+				localStorage.setItem('SaveData', '60,60,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true');
 				Setting = localStorage.getItem('SaveData').split(',');
+				FirstTime = 'true';
 			}
 
 			//設定画面の値変更
@@ -448,6 +457,19 @@
 				}
 			}
 
+			SSlider9.value = Setting[12];
+			if (SSlider9.value == 0) {
+				SValue9.innerHTML = 'OFF';
+			} else {
+				SValue9.innerHTML = 'ON';
+			}
+
+			if (Setting[13] == 'true') {
+				FirstTime = 'true';
+			} else {
+				FirstTime = 'false';
+			}
+
 
 			//設定を反映
 			SettingSet();
@@ -468,14 +490,15 @@
 
 				//キーボードを無効にする
 				document.getElementById('KeySetting').style.display = "none";
-
-				Status.innerHTML = '設定からブラウザに<br>位置情報の権限を与える必要があります';
 			} else {
 				//ジャイロを無効にする
 				CButton3.style.display = "none";
 				document.getElementById('GyroSetting').style.display = "none";
 			}
 
+			if (FirstTime == 'true') {
+				Status.innerHTML = '<font color="red">初回利用時は位置情報の権限設定が必要です</font><br><a href="Permission' + Browser + Device + '.pdf" target="_blank">ブラウザ権限の設定手順</a>';
+			}
 			//ローディング画面の削除
 			LNoSupport.style.display = 'none';
 			Lcontroller.style.display = 'none';
@@ -573,6 +596,12 @@
 
 	function OnConnectFinish() {
 		if (stage == 3) {
+
+			if (FirstTime == 'true') {
+				FirstTime == 'false';
+				Save();
+			}
+
 			//コントロール画面の表示
 			Lcontroller.style.display = '';
 			//タイトル画面の削除
@@ -715,7 +744,7 @@
 						VSlider.disabled = false;
 						VSlider.value = 100;
 						PWM(100);
-					}else{
+					} else {
 						StopFlag = false;
 						KeyBoard = true;
 						HSlider.disabled = true;
@@ -728,9 +757,9 @@
 					KeyBoard = true;
 					HSlider.disabled = true;
 					VSlider.disabled = true;
-					if(Number(VSlider.value) + 10 > 100){
+					if (Number(VSlider.value) + 10 > 100) {
 						VSlider.value = 100;
-					}else{
+					} else {
 						VSlider.value = Number(VSlider.value) + 10;
 					}
 					PWM(VSlider.value);
@@ -744,7 +773,7 @@
 						VSlider.disabled = false;
 						VSlider.value = 100;
 						PWM(100);
-					}else{
+					} else {
 						StopFlag = false;
 						KeyBoard = true;
 						HSlider.disabled = true;
@@ -757,9 +786,9 @@
 					KeyBoard = true;
 					HSlider.disabled = true;
 					VSlider.disabled = true;
-					if(Number(VSlider.value) - 10 < 100){
+					if (Number(VSlider.value) - 10 < 100) {
 						VSlider.value = 100;
-					}else{
+					} else {
 						VSlider.value = Number(VSlider.value) - 10;
 					}
 					PWM(VSlider.value);
@@ -804,7 +833,7 @@
 				VSlider.disabled = false;
 				HSlider.value = 100;
 				Servo(100);
-			} else if (event.key === Key[0] || event.key === Key[1]){
+			} else if (event.key === Key[0] || event.key === Key[1]) {
 				StopFlag = false;
 			}
 		}
@@ -1106,6 +1135,21 @@
 		Lsetting.style.opacity = '1';
 		Save();
 	});
+	SSlider9.addEventListener('input', function() {
+		Lsetting.style.opacity = '0.8';
+
+		Slider.style.width = 80 + Number(SSlider9.value) + 'vw';
+
+		if (SSlider9.value > 0) {
+			SValue9.innerHTML = '+' + SSlider9.value;
+		} else {
+			SValue9.innerHTML = SSlider9.value;
+		}
+	});
+	SSlider9.addEventListener('change', function() {
+		Lsetting.style.opacity = '1';
+		Save();
+	});
 	SSlider8.addEventListener('input', function() {
 		Lsetting.style.opacity = '0.8';
 		if (SSlider8.value == 0) {
@@ -1305,7 +1349,7 @@
 		SettingNow = false;
 		SettingSet();
 
-		if(RotateBefore){
+		if (RotateBefore) {
 			GyroActive = true;
 			HSlider.disabled = true;
 			CButton3.setAttribute('src', 'image/GyroOff.png');
@@ -1317,7 +1361,7 @@
 	function Save() {
 		localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + SSlider5.value + ',' + SSlider6.value + ',' + SSlider7.value + ',' + SSlider8.value + ',' + Key[0] + ',' + Key[1] + ',' + Key[2] +
 			',' +
-			Key[3]);
+			Key[3] + ',' + SSlider9.value + ',' + FirstTime);
 	};
 
 	//設定データを反映させる
@@ -1354,6 +1398,8 @@
 
 		//レバー位置
 		Slider.style.top = 10 + Setting[6] + 'vh';
+		Slider.style.width = 80 + Setting[12] + 'vw';
+
 
 		//左右反転
 		if (Setting[7] == 0) {

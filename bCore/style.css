@@ -5,13 +5,13 @@
 }
 
 @font-face {
-    font-family: 'SubFont';
-    src: url(data/SubFont.ttf);
+    font-family: 'TitleFont';
+    src: url(data/TitleFont.ttf);
 }
 
 @font-face {
-    font-family: 'TitleFont';
-    src: url(data/TitleFont.ttf);
+    font-family: 'VarsionFont';
+    src: url(data/VarsionFont.ttf);
 }
 
 body {
@@ -83,22 +83,7 @@ body {
     color: #ffffff;
 }
 
-#NoSupportImage img {
-    width: 30vw;
-    position: relative;
-}
-
-#NoSupportText {
-    height: 50px;
-    font-size: 3vw;
-    color: #ffffff;
-    text-align: center;
-    position: relative;
-    bottom: 5vw;
-}
-
 #SupportList {
-    font-size: 10pt;
     color: #ffffff;
     text-align: center;
     position: relative;
@@ -106,31 +91,39 @@ body {
 
 #SupportList table {
     border-collapse: collapse;
-    border: 3px #ffffff solid;
 }
 
 #SupportList table th {
-    font-size: 14pt;
+    height: 5vh;
+    font-size: 3vh;
     font-weight: 900;
-    border: 2px #ffffff solid;
+    vertical-align: bottom;
 }
 
 #SupportList table tr.top td {
     padding: 5px 5px;
-    font-size: 11pt;
+    font-size: 2.5vh;
     font-weight: 900;
 }
 
+.errorTop {
+	border-top: 0 !important;
+	border-style: none !important;
+	height:7vh !important;
+	vertical-align: top !important;
+}
+
 #SupportList table tr.underline td {
-    border-top: 2px #ffffff solid;
 }
 
 #SupportList table td.OS {
-    font-size: 11pt;
+    font-size: 2.2vh;
     font-weight: 900;
 }
 
 #SupportList table td {
+    font-size: 2vh;
+    height: 3vh;
     width: 20vw;
     border: 1px #ffffff solid;
 }
@@ -148,9 +141,30 @@ body {
     background: #f0f0f0;
 }
 
+.Guide {
+    position: absolute;
+    width: 100vw;
+    height: 5vw;
+    top: 0;
+    z-index: 19;
+}
+
+.Guide img {
+    height: 100%;
+    right: 1vw;
+    top: 1vw;
+    position: absolute;
+}
+
 #TitleLogo img {
-    width: 90vw;
-    margin-bottom: 20px;
+    width: 80vw;
+}
+
+#Varsion {
+    font-size: 5vw;
+    font-family: VarsionFont;
+    font-weight: 900;
+    margin: 1vw 0;
 }
 
 #TitleButton {
@@ -159,9 +173,9 @@ body {
 }
 
 #StartButton {
-    width: 50%;
-    margin-top: 20px;
+    width: 30vw;
     outline: none;
+    margin-bottom: 1vw;
 }
 
 #StartButton:hover {
@@ -170,9 +184,11 @@ body {
 
 #status {
     font-family: MainFont;
-    font-size: 30px;
-    margin-top: 20px;
-    height: 50px;
+    font-size: 2vw;
+}
+
+#status a {
+    color: #000000;
 }
 
 /*コントローラー*/
@@ -234,14 +250,25 @@ body {
     padding-left: 2vw;
 }
 
+#Cbutton2 {
+    padding-left: 1vw;
+    padding-right: 1vw;
+}
+
+#Cbutton3 {
+    padding-left: 1vw;
+    padding-right: 1vw;
+}
+
 #Cbutton4 {
+    padding-left: 1vw;
     padding-right: 2vw;
 }
 
 #Volt {
     font-size: 6vw;
     font-weight: 900;
-    font-family: SubFont;
+    font-family: MainFont;
     padding-top: 5px;
     display: table-cell;
     vertical-align: middle;
@@ -257,7 +284,6 @@ body {
 }
 
 #Slider {
-    width: 90vw;
     position: relative;
 }
 
@@ -308,7 +334,7 @@ body {
 /* コントローラースライダーのつまみ */
 #Slider input::-webkit-slider-thumb {
     -webkit-appearance: none;
-    background: #ff5353;
+    background: #C2181F;
     width: 10vw;
     height: 10vw;
     border-radius: 50%;
@@ -317,7 +343,7 @@ body {
 }
 
 #Slider input::-moz-range-thumb {
-    background: #ff5353;
+    background: #C2181F;
     width: 10vw;
     height: 10vw;
     border-radius: 50%;
@@ -402,12 +428,24 @@ body {
     vertical-align: bottom;
 }
 
+.row3 {
+    vertical-align: middle;
+    height: 15vh;
+}
+
 .row4 {
     height: 1vh;
     font-size: 3vh;
     font-family: TitleFont;
     text-align: left;
     vertical-align: bottom;
+}
+
+.keySet {
+    float: left;
+    width: 25%;
+    font-weight: 900;
+    text-align: center;
 }
 
 #Sbutton1 {
@@ -419,12 +457,6 @@ body {
 
 #Sbutton1:hover {
     opacity: 0.8 !important;
-}
-
-#SettingTop input {
-    height: 10vh;
-    padding-top: 1vh;
-    padding-right: 1vh;
 }
 
 /* 設定スライダーのバー */
@@ -444,7 +476,7 @@ body {
 /* 設定スライダーのつまみ */
 #SettingList input::-webkit-slider-thumb {
     -webkit-appearance: none;
-    background: #ff5353;
+    background: #C2181F;
     width: 6vh;
     height: 6vh;
     border-radius: 50%;
@@ -453,7 +485,7 @@ body {
 }
 
 #SettingList input::-moz-range-thumb {
-    background: #ff5353;
+    background: #C2181F;
     width: 6vh;
     height: 6vh;
     border-radius: 50%;
@@ -468,17 +500,4 @@ body {
 
 #SettingList input:active::-webkit-slider-thumb {
     box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.3);
-}
-
-/*追加分*/
-.keySet {
-    float: left;
-    width: 25%;
-    font-weight: 900;
-	text-align: center;
-}
-
-.row3 {
-	vertical-align: middle;
-    height: 20vh;
 }
