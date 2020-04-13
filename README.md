@@ -3,7 +3,7 @@
 
 ## bDriverMX for WebApp
 
-[bDriverMX for WebApp](https://plenprojectcompany.github.io/bDriverMX-webapp/bCore/index.html)
+[bDriverMX for WebApp](https://plenprojectcompany.github.io/bDriverMX-webapp/index.html)
 
 ## Copyright (c) 2020,
 - [Isaki](https://github.com/IsakiMatsubara)
