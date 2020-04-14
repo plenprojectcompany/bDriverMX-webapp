@@ -475,8 +475,8 @@
 			//サーボ初期位置へ
 			Servo(100);
 
-			GuideButton.innerHTML = '<a href="pdf/" + Device + "Guide.pdf" target="_blank"><img src="image/Question.png" alt="説明書"></a>';
-			SettingGuideButton.innerHTML = '<a href="pdf/" + Device + "Setting.pdf" target="_blank"><img src="image/Question.png" alt="設定ガイド"></a>';
+			GuideButton.innerHTML = '<a href="pdf/' + Device + 'Guide.pdf" target="_blank"><img src="image/Question.png" alt="説明書"></a>';
+			SettingGuideButton.innerHTML = '<a href="pdf/' + Device + 'Setting.pdf" target="_blank"><img src="image/Question.png" alt="設定ガイド"></a>';
 
 			if (Device == 'Android') {
 				//hoverを無効にする
