@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<!--<html manifest="offline.manifest" lang="ja">-->
-<html lang="ja">
+<html manifest="offline.manifest" lang="ja">
 
 <head>
 	<meta charset="utf-8" />
@@ -17,7 +16,15 @@
 	<meta name="msapplication-TileColor" content="#ff0000" />
 	<link rel="stylesheet" href="style.css" />
 	<script type="text/javascript" src="data/bluejelly.js"></script>
-	<!--</head>-->
+
+	<script type="text/javascript">
+		Lloading.style.display = '';
+		LTitle.style.datalist = 'none';
+		Lcontroller.style.display = 'none';
+		Lsetting.style.display = 'none';
+		LNoSupport.style.display = 'none';
+	</script>
+</head>
 
 <body>
 	<div id='LoadingLayer'>
@@ -81,7 +88,7 @@
 	</div>
 	<div id='TitleLayer'>
 		<div class="Guide">
-			<a href="pdf/Guide.pdf" target="_blank"><img src="image/Question.png" alt="説明書"></a>
+			<a href="pdf/" + Device + "Guide.pdf" target="_blank"><img src="image/Question.png" alt="説明書"></a>
 		</div>
 		<div class='center'>
 			<div id='TitleLogo'>
@@ -124,7 +131,7 @@
 		</div>
 		<div id='SettingLayer'>
 			<div class="Guide">
-				<a href="pdf/Setting.pdf" target="_blank"><img src="image/Question.png" alt="設定ガイド"></a>
+				<a href="pdf/" + Device + "Setting.pdf" target="_blank"><img src="image/Question.png" alt="設定ガイド"></a>
 			</div>
 			<div id='SettingList'>
 				<table align="center">
@@ -399,14 +406,14 @@
 			//セーブデータの存在確認
 			if (localStorage.getItem('SaveData') == null) {
 				//プリセットを登録する
-				localStorage.setItem('SaveData', '60,60,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true');
+				localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true');
 				FirstTime = 'true';
 			}
 			Setting = localStorage.getItem('SaveData').split(',');
 
 			if (Setting.length != 14) {
 				//プリセットを登録する
-				localStorage.setItem('SaveData', '60,60,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true');
+				localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true');
 				Setting = localStorage.getItem('SaveData').split(',');
 				FirstTime = 'true';
 			}
@@ -498,9 +505,6 @@
 				Status.innerHTML = '<font color="red">初回利用時は位置情報の権限設定が必要です</font><br><a href="pdf/Permission' + Device + Browser + '.pdf" target="_blank">ブラウザ権限の設定手順</a>';
 			}
 			//ローディング画面の削除
-			LNoSupport.style.display = 'none';
-			Lcontroller.style.display = 'none';
-			Lsetting.style.display = 'none';
 			Lloading.style.display = 'none';
 			LTitle.style.datalist = '';
 		} else {
@@ -508,9 +512,6 @@
 			DisplayOut();
 			//ローディング画面の削除
 			Lloading.style.display = 'none';
-			LTitle.style.datalist = 'none';
-			Lcontroller.style.display = 'none';
-			Lsetting.style.display = 'none';
 			LNoSupport.style.display = '';
 		}
 	}
