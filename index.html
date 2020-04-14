@@ -265,8 +265,8 @@
 	var ServoValue = 127;
 	var PortValue = 0;
 
-	var RotateMaxBase = 35;
-	var RotateMax = 35;
+	var RotateMaxBase = 40;
+	var RotateMax = 40;
 	var RotateMin = 0;
 	var Rotate = true;
 	var RotateSet = 0;
@@ -386,9 +386,7 @@
 				Browser = 'Unknown';
 			}
 		}
-console.log(userAgent);
-console.log(Device);
-console.log(Browser);
+
 		if (Support) {
 			//UUIDの登録
 			ble.setUUID("UUID1", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaf1-843f-4d3b-959d-c954cce14655");
@@ -406,7 +404,7 @@ console.log(Browser);
 			}
 			Setting = localStorage.getItem('SaveData').split(',');
 
-			if (Setting.length != 13) {
+			if (Setting.length != 14) {
 				//プリセットを登録する
 				localStorage.setItem('SaveData', '60,60,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true');
 				Setting = localStorage.getItem('SaveData').split(',');
@@ -1090,8 +1088,8 @@ console.log(Browser);
 		SValue5.innerHTML = SSlider5.value + '%';
 		GyroActive = true;
 
-		var max = RotateMaxBase * (101 - Number(SSlider5.value)) / 100;
-		var min = 10 * (101 - Number(SSlider5.value)) / 100;
+		var max = RotateMaxBase * (120 - Number(SSlider5.value)) / 100;
+		var min = 10 * (120 - Number(SSlider5.value)) / 100;
 
 		RotateMax = max;
 		RotateMin = min;
@@ -1138,7 +1136,7 @@ console.log(Browser);
 	SSlider9.addEventListener('input', function() {
 		Lsetting.style.opacity = '0.8';
 
-		Slider.style.width = 80 + Number(SSlider9.value) + 'vw';
+		Slider.style.width = 79 + Number(SSlider9.value) + 'vw';
 
 		if (SSlider9.value > 0) {
 			SValue9.innerHTML = '+' + SSlider9.value;
@@ -1348,7 +1346,7 @@ console.log(Browser);
 	SButton1.addEventListener('click', function() {
 		SettingNow = false;
 		SettingSet();
-
+		Lsetting.style.opacity = '1';
 		if (RotateBefore) {
 			GyroActive = true;
 			HSlider.disabled = true;
@@ -1382,8 +1380,8 @@ console.log(Browser);
 			ServoRange = 127 + ServoAdj;
 		}
 
-		var max = RotateMaxBase * (100 - Setting[4]) / 100;
-		var min = 10 * (100 - Setting[4]) / 100;
+		var max = RotateMaxBase * (120 - Setting[4]) / 100;
+		var min = 10 * (120 - Setting[4]) / 100;
 		RotateMax = max;
 		RotateMin = min;
 
@@ -1398,7 +1396,7 @@ console.log(Browser);
 
 		//レバー位置
 		Slider.style.top = 10 + Setting[6] + 'vh';
-		Slider.style.width = 80 + Setting[12] + 'vw';
+		Slider.style.width = 79 + Setting[12] + 'vw';
 
 
 		//左右反転
