@@ -79,9 +79,7 @@
 		</div>
 	</div>
 	<div id='TitleLayer'>
-		<div class="Guide">
-			<a href="pdf/" + Device + "Guide.pdf" target="_blank"><img src="image/Question.png" alt="説明書"></a>
-		</div>
+		<div class="Guide" id='Guide1'></div>
 		<div class='center'>
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
@@ -122,9 +120,7 @@
 			</div>
 		</div>
 		<div id='SettingLayer'>
-			<div class="Guide">
-				<a href="pdf/" + Device + "Setting.pdf" target="_blank"><img src="image/Question.png" alt="設定ガイド"></a>
-			</div>
+			<div class="Guide" id='Guide2'></div>
 			<div id='SettingList'>
 				<table align="center">
 					<tr class='row1'>
@@ -241,6 +237,8 @@
 	const SkeySet2 = document.getElementById('keySet2');
 	const SkeySet3 = document.getElementById('keySet3');
 	const SkeySet4 = document.getElementById('keySet4');
+	const GuideButton = document.getElementById('Guide1');
+	const SettingGuideButton = document.getElementById('Guide2');
 
 	var userAgent = window.navigator.userAgent.toLowerCase();
 	var Support = false;
@@ -476,6 +474,9 @@
 
 			//サーボ初期位置へ
 			Servo(100);
+
+			GuideButton.innerHTML = '<a href="pdf/" + Device + "Guide.pdf" target="_blank"><img src="image/Question.png" alt="説明書"></a>';
+			SettingGuideButton.innerHTML = '<a href="pdf/" + Device + "Setting.pdf" target="_blank"><img src="image/Question.png" alt="設定ガイド"></a>';
 
 			if (Device == 'Android') {
 				//hoverを無効にする
