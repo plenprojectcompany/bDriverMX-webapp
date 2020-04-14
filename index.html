@@ -16,14 +16,6 @@
 	<meta name="msapplication-TileColor" content="#ff0000" />
 	<link rel="stylesheet" href="style.css" />
 	<script type="text/javascript" src="data/bluejelly.js"></script>
-
-	<script type="text/javascript">
-		Lloading.style.display = '';
-		LTitle.style.datalist = 'none';
-		Lcontroller.style.display = 'none';
-		Lsetting.style.display = 'none';
-		LNoSupport.style.display = 'none';
-	</script>
 </head>
 
 <body>
@@ -505,14 +497,20 @@
 				Status.innerHTML = '<font color="red">初回利用時は位置情報の権限設定が必要です</font><br><a href="pdf/Permission' + Device + Browser + '.pdf" target="_blank">ブラウザ権限の設定手順</a>';
 			}
 			//ローディング画面の削除
-			Lloading.style.display = 'none';
+			Lcontroller.style.display = 'none';
+			Lsetting.style.display = 'none';
+			LNoSupport.style.display = 'none';
 			LTitle.style.datalist = '';
+			Lloading.style.display = 'none';
 		} else {
 			//非対応ブラウザ
 			DisplayOut();
 			//ローディング画面の削除
-			Lloading.style.display = 'none';
+			Lcontroller.style.display = 'none';
+			Lsetting.style.display = 'none';
+			LTitle.style.datalist = 'none';
 			LNoSupport.style.display = '';
+			Lloading.style.display = 'none';
 		}
 	}
 
