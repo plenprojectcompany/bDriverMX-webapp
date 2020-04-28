@@ -558,15 +558,7 @@
 				//hoverを無効にする
 				StartButton.style.opacity = '1';
 				CButton1.style.opacity = '1';
-				CButton2.style.opacity = '1';
-				CButton3.style.opacity = '1';
 				CButton4.style.opacity = '1';
-
-				//コマンドを無効にする
-				CButton5.style.display = "none";
-
-				//キーボードを無効にする
-				document.getElementById('KeySetting').style.display = "none";
 			} else {
 
 			}
@@ -698,7 +690,7 @@
 		ServoControll(100);
 		if (CButton3) {
 			CButton3.setAttribute('src', 'image/GyroOn.png');
-		}else{
+		} else {
 			CommandFinish();
 		}
 
@@ -895,13 +887,16 @@
 	});
 
 	function Save() {
-		if(SSlider5){
-			localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + SSlider5.value + ',' + SSlider6.value + ',' + SSlider7.value + ',' + SSlider8.value + ',' + Key[0] + ',' + Key[1] + ',' + Key[2] +
+		if (SSlider5) {
+			localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + SSlider5.value + ',' + SSlider6.value + ',' + SSlider7.value + ',' + SSlider8.value + ',' + Key[0] + ',' + Key[1] + ',' + Key[
+					2] +
 				',' +
 				Key[3] + ',' + SSlider9.value + ',' + FirstTime);
-		}else{
+		} else {
 			Setting = localStorage.getItem('SaveData').split(',');
-			localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + Setting[4] + Setting[5] + ',' + Setting[6] + ',' + Setting[7] + ',' + Setting[8] + ',' + Setting[9] + ',' + Setting[10] + ',' + Setting[11] +
+
+			localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + Setting[4] + ',' + Setting[5] + ',' + Setting[6] + ',' + Setting[7] + ',' + Setting[8] + ',' + Setting[9] + ',' + Setting[10] +
+				',' + Setting[11] +
 				',' +
 				Setting[12] + ',' + 'false');
 		}
@@ -1014,7 +1009,7 @@
 
 	//コマンド開始ボタン
 	CommandStart.addEventListener('click', function() {
-		if (click1) {
+		if (click1 && FinishFlag == 0) {
 			click1 = false;
 			OnClickStart();
 			setTimeout(click1 = true, 1000);
@@ -1038,13 +1033,14 @@
 
 		//ループを中断させる
 		clearTimeout(WaitId);
+		FinishFlag = 0;
 
 		if (CommandAction) {
 			var now = new Date();
 			var min = now.getMinutes();
 			var Sec = now.getSeconds();
 			var Time = '[' + min + '分' + Sec + '秒]';
-			Log(Time + ' - 処理中断');
+			Log(Time + ' - 処理中断<br><br>');
 
 			CommandAction = false;
 		}
@@ -1170,7 +1166,7 @@
 
 				if (StringScript == '') {
 					if (FinishFlag == 0) {
-						Log(Time + ' - 処理終了');
+						Log(Time + ' - 処理終了<br><br>');
 
 						CommandAction = false;
 						CommandFinish();
@@ -1179,7 +1175,7 @@
 					eval(StringScript);
 					StringScript = '';
 					if (FinishFlag == 0) {
-						Log(Time + ' - 処理終了');
+						Log(Time + ' - 処理終了<br><br>');
 
 						CommandAction = false;
 						CommandFinish();
@@ -1230,12 +1226,13 @@
 			var Time = '[' + min + '分' + Sec + '秒]';
 
 			Log('<red>' + Time + ' - エラー発生</red>');
-			Log('<red> ' + ErrorType + '</red><br>' + ErrorMessage);
 
 			CommandAction = false;
 			CommandFinish();
 
 			if (position >= 0) {
+				Log('<red> ' + ErrorType + '</red><br>' + ErrorMessage);
+
 				var ProblemScript = '';
 				if (CheckWait) {
 					ProblemScript = CheckWait[0];
@@ -1254,7 +1251,9 @@
 				if (PartArray[0])
 					var Part3 = Part2.substr(Number(String(PartArray[0]).length), Part2.length);
 
-				Log('エラー発生箇所<br>' + Part1 + '<red>' + PartArray[0] + '</red>' + Part3);
+				Log('エラー発生箇所<br>' + Part1 + '<red>' + PartArray[0] + '</red>' + Part3 + '<br><br>');
+			} else {
+				Log('<red> ' + ErrorType + '</red><br>' + ErrorMessage + '<br><br>');
 			}
 		}
 	};
@@ -1288,10 +1287,20 @@
 		}
 	};
 
+	function ErrorOccurd() {
+		var now = new Date();
+		var min = now.getMinutes();
+		var Sec = now.getSeconds();
+		var Time = '[' + min + '分' + Sec + '秒]';
+
+		Log('<red>' + Time + ' - エラー発生</red>');
+	}
+
 	//Motor関数
 	function Motor(Power) {
 		if (Math.abs(Power) > 100) {
-			Log('<red>実行エラー : Motor関数には-100~100の整数を渡してください</red><br>現在 : Motor(<red>' + Power + '</red>);');
+			ErrorOccurd();
+			Log('<red>実行エラー</red><br>　Motor関数には-100~100の整数を渡してください<br>現在 : Motor(<red>' + Power + '</red>);');
 		} else {
 			PWM(Math.floor(Power) + 100);
 		}
@@ -1300,7 +1309,8 @@
 	//Servo関数
 	function Servo(Power) {
 		if (Math.abs(Power) > 100) {
-			Log('<red>実行エラー : Servo関数には-100~100の整数を渡してください</red><br>現在 : Servo(<red>' + Power + '</red>);');
+			ErrorOccurd();
+			Log('<red>実行エラー</red><br>　Servo関数には-100~100の整数を渡してください</red><br>現在 : Servo(<red>' + Power + '</red>);');
 		} else {
 			ServoControll(Math.floor(Power) + 100);
 		}
@@ -1314,7 +1324,8 @@
 			} else if (number == 1) {
 				PortValue = 3;
 			} else {
-				Log('<red>実行エラー : Port関数の第2引数は0か1の整数を渡してください</red><br>現在 : Port(' + port + ',<red>' + number + '</red>);');
+				ErrorOccurd();
+				Log('<red>実行エラー</red><br>　Port関数の第2引数は0か1の整数を渡してください</red><br>現在 : Port(' + port + ',<red>' + number + '</red>);');
 			}
 		} else if (port == 2) {
 			if (number == 0) {
@@ -1332,7 +1343,8 @@
 					PortValue = 3;
 				}
 			} else {
-				Log('<red>実行エラー : Port関数の第2引数は0か1の整数を渡してください</red><br>現在 : Port(' + port + ',<red>' + number + '</red>);');
+				ErrorOccurd();
+				Log('<red>実行エラー</red><br>　Port関数の第2引数は0か1の整数を渡してください</red><br>現在 : Port(' + port + ',<red>' + number + '</red>);');
 			}
 		} else if (port == 1) {
 			if (number == 0) {
@@ -1350,10 +1362,12 @@
 					PortValue = 3;
 				}
 			} else {
-				Log('<red>実行エラー : Port関数の第2引数は0か1の整数を渡してください</red><br>現在 : Port(' + port + ',<red>' + number + '</red>);');
+				ErrorOccurd();
+				Log('<red>実行エラー</red><br>　Port関数の第2引数は0か1の整数を渡してください</red><br>現在 : Port(' + port + ',<red>' + number + '</red>);');
 			}
 		} else {
-			Log('<red>実行エラー : Port関数の第1引数は0~2の整数を渡してください</red><br>現在 : Port(<red>' + port + '</red>,' + number + ');');
+			ErrorOccurd();
+			Log('<red>実行エラー</red><br>　Port関数の第1引数は0~2の整数を渡してください</red><br>現在 : Port(<red>' + port + '</red>,' + number + ');');
 		}
 	}
 
