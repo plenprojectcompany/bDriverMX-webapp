@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<!--<html manifest="offline.manifest" lang="ja">-->
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="robots" content="noindex">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<title>bDriverMX</title>
+	<meta name="description" content="bDriverMXのWebApp版 Android,Windows,Macに対応" />
+	<link rel="icon" href="image/icon16.png" sizes="16x16" type="image/png" />
+	<link rel="icon" href="image/icon32.png" sizes="32x32" type="image/png" />
+	<link rel="icon" href="image/icon48.png" sizes="48x48" type="image/png" />
+	<link rel="icon" href="image/icon64.png" sizes="64x64" type="image/png" />
+	<link rel="apple-touch-icon-precomposed" href="image/icon150.png" />
+	<meta name="msapplication-TileImage" content="image/icon150.png" />
+	<meta name="msapplication-TileColor" content="#ff0000" />
+	<link rel="stylesheet" href="style.css" />
+	<script type="text/javascript" src="data/bluejelly.js"></script>
+</head>
+
+<body>
+	<div id='LoadingLayer'>
+		<div class='center'>
+			<div id='loadingimage'>
+				<img src="image/Loading.png" width="250px">
+			</div>
+			<div id='loadingText'>
+				Loading
+			</div>
+		</div>
+	</div>
+	<div id='NoSupportLayer'>
+		<div class="center" id='NoSupportContent'>
+			<div id='SupportList'>
+				<table align="center">
+					<tr>
+						<td colspan="3" class='errorTop'><img src="image/Error.png" width="250px"></td>
+					</tr>
+					<tr>
+						<td colspan="3" class='errorTop'>ご利用のブラウザには対応しておりません<br>以下のサポートリストをご確認ください</td>
+					</tr>
+					<tr>
+						<th colspan="3">サポートリスト</th>
+					</tr>
+					<tr class='top' class='underline'>
+						<td>OS</td>
+						<td>ブラウザ</td>
+						<td>バージョン(以降)</td>
+					</tr>
+					<tr class='underline'>
+						<td rowspan="3" class='OS'>Android</td>
+						<td>Chrome</td>
+						<td>80</td>
+					</tr>
+					<tr>
+						<td>Opera</td>
+						<td>46</td>
+					</tr>
+					<tr>
+						<td>Samsung Internet Browser</td>
+						<td>6.2</td>
+					</tr>
+					<tr class='underline'>
+						<td rowspan="1" class='OS'>Windows</td>
+						<td>Chrome</td>
+						<td>56</td>
+					</tr>
+					<tr class='underline'>
+						<td rowspan="1" class='OS'>Mac</td>
+						<td>Chrome</td>
+						<td>56</td>
+					</tr>
+					<tr class='underline'>
+						<td class='OS'>ios</td>
+						<td colspan="2">非対応･･･公式アプリをご利用ください<br><a href="https://apps.apple.com/jp/app/bdrivermx/id1193985458">「bDriverMX」をApp Storeで</a></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id='TitleLayer'>
+		<div id='Cbutton5'><a href="index.html"><img src="image/Controle.png" alt="コマンド操作"></a></div>
+		<div class="Guide" id='Guide1'></div>
+		<div class='center'>
+			<div id='TitleLogo'>
+				<img src='image/TitleLogo.png'>
+			</div>
+			<div id='Varsion'>v.2.0 - Command Controle</div>
+			<div id='TitleButton'>
+				<input type="image" id='StartButton' src='image/StartButton.png'>
+				<div id='status'></div>
+			</div>
+		</div>
+	</div>
+	<div id='FullscreenArea'>
+		<div id='CommandLayer'>
+			<div id='Command'>
+				<div id='LeftGroup'>
+					<div id='Border1'></div>
+					<div id='CommandTop'>
+						<div id='TopButtonGroup'>
+							<div id='TopButtonL'>
+								<input type="image" class='TopButton' id='Cbutton1' src='image/Setting.png'>
+							</div>
+							<div id='TopButtonR'>
+								<input type="image" class='TopButton' id='Cbutton4' src='image/FullscreenOn.png'>
+							</div>
+						</div>
+					</div>
+					<div id='Reference'>
+						<div class='Chapter'>オリジナル関数</div>
+						<div class='RefrenceCode'>Motor(<value>％</value>);</div>
+						<div class='RefrenceGuide'>DCモーターのパワーを変更します。</div>
+						<div class='RefrenceExample'>
+							<table>
+								<tr>
+									<td>Motor(100);<br>Motor(0);<br>Motor(-100);</td>
+									<td> → <br> → <br> → </td>
+									<td>最大速度(100%)で前進<br>停止<br>最大速度(100%)で後進</td>
+								</tr>
+							</table>
+						</div>
+						<div class='RefrenceCode'>Servo(<value>％</value>);</div>
+						<div class='RefrenceGuide'>ステアリングサーボの角度を変更します。</div>
+						<div class='RefrenceExample'>
+							<table>
+								<tr>
+									<td>Servo(100);<br>Servo(0);<br>Servo(-100);</td>
+									<td> → <br> → <br> → </td>
+									<td>最大角度(100%)で右折<br>直進<br>最大角度(100%)で左折</td>
+								</tr>
+							</table>
+						</div>
+						<div class='RefrenceCode'>Port(<value>整数</value>,<value>整数</value>);</div>
+						<div class='RefrenceGuide'>LEDポートのON/OFFを切り替えます。<br>第一引数 - ポート番号<br>第二引数 - ON/OFF</div>
+						<div class='RefrenceExample'>
+							<table>
+								<tr>
+									<td>Port(0,0);<br>Port(0,1);<br>Port(1,0);<br>Port(1,1);<br>Port(2,0);<br>Port(2,1);</td>
+									<td> → <br> → <br> → <br> → <br> → <br> → </td>
+									<td>両LED消灯<br>両LED点灯<br>左LED消灯<br>右LED点灯<br>左LED消灯<br>右LED点灯</td>
+								</tr>
+							</table>
+						</div>
+						<div class='RefrenceCode'>Wait(<value>秒</value>);</div>
+						<div class='RefrenceGuide'>処理を一時停止します。</div>
+						<div class='RefrenceExample'>
+							<table>
+								<tr>
+									<td>Wait(0.1);<br>Wait(0);<br>Wait(10);</td>
+									<td> → <br> → <br> → </td>
+									<td>0.1秒待つ<br>0秒待つ(意味なし)<br>10秒待つ</td>
+								</tr>
+							</table>
+						</div>
+						<div class='RefrenceCode'>Log(<value>文字列</value>);</div>
+						<div class='RefrenceGuide'>文字列をコンソールに表示します。</div>
+						<div class='RefrenceExample'>
+							<table>
+								<tr>
+									<td>console.log("Hi!");</td>
+									<td> → </td>
+									<td>「Hi!」コンソール表示</td>
+								</tr>
+							</table>
+						</div>
+						<div class='Chapter'>JavaScript</div>
+						<div class='RefrenceCode'>//<value>コメント文</value>
+						</div>
+						<div class='RefrenceGuide'>処理には影響しないコメント文を入力します。</div>
+						<div class='RefrenceExample'>
+							//前進する<br>Motor(50);<br>//3秒後に左旋回<br>Wait(3);<br>Servo(-100);
+						</div>
+						<div class='RefrenceCode'>alert(<value>文字列</value>);</div>
+						<div class='RefrenceGuide'>文字列をホップアップ表示します。</div>
+						<div class='RefrenceExample'>
+							<table>
+								<tr>
+									<td>alert("Hi!");</td>
+									<td> → </td>
+									<td>「Hi!」ホップアップ表示</td>
+								</tr>
+							</table>
+						</div>
+						<div class='RefrenceCode'>var <value>変数名</value>;</div>
+						<div class='RefrenceGuide'>変数を定義します。</div>
+						<div class='RefrenceExample'>
+							<table>
+								<tr>
+									<td>var N1 = 1;<br>var N2 = 2;<br><br>alert(N1 + N2);</td>
+									<td><br><br><br> → </td>
+									<td><br><br><br>3がホップアップ表示</td>
+								</tr>
+							</table>
+						</div>
+						<div class='RefrenceCode'>if (<value>条件式</value>){<value>実行処理</value>}</div>
+						<div class='RefrenceGuide'>if文を使用します。</div>
+						<div class='RefrenceExample'>
+							<table>
+								<tr>
+									<td>if(Flag){<br>　//変数Flagはtrue<br>} else {<br>　//変数Flagはfalse<br>}</td>
+								</tr>
+							</table>
+						</div>
+						<div class='RefrenceCode'>for (<value>変数</value>; <value>条件式</value>; <value>計算式</value>){<value>実行処理</value>}</div>
+						<div class='RefrenceGuide'>for文を使用します。</div>
+						<div class='RefrenceExample'>
+							<table>
+								<tr>
+									<td>for(var i = 0; i < 10; i++){<br>　//10回繰り返し<br>}</td>
+								</tr>
+							</table>
+						</div>
+						<div class='RefrenceCode'>while (<value>条件式</value>){<value>実行処理</value>}</div>
+						<div class='RefrenceGuide'>while文を使用します。</div>
+						<div class='RefrenceExample'>
+							<table>
+								<tr>
+									<td>var N = 0;<br>while(N < 10){<br>　//10回繰り返し<br>N++<br>}</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div id="CenterGroup">
+					<div id='Border1Line'></div>
+					<div id='Border2Line'></div>
+					<div id='CommandArea'>
+						<div id='CommandButton'>
+							<div id='CommandButtonMiddle'>
+								<input type='image' id='CommandStopButton' src='image/CommandStop.png'>
+								<input type='image' id='CommandStartButton' src='image/CommandStart.png'>
+							</div>
+						</div>
+						<div id='Editer'>
+							<textarea id='EditerTextArea' spellcheck="false" wrap="off" autofocus placeholder="スクリプトをここに入力"></textarea>
+							<div id>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id='RightGroup'>
+					<div id='ConsoleArea'>
+						<div id='Border2'></div>
+						<div id='ConsoleTitle'>
+							<div class='TextBottom'>コンソール</div>
+						</div>
+						<div id='Console'>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id='SettingLayer'>
+			<div class="Guide" id='Guide2'></div>
+			<div id='SettingList'>
+				<table align="center">
+					<tr class='row1'>
+						<td colspan="4">設定</td>
+					</tr>
+					<tr class='row4'>
+						<td colspan="4">前後</td>
+					</tr>
+					<tr>
+						<td class='col1'>最大速度</td>
+						<td class='col2' id='Svalue1'>50%</td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider1' class='SettingSlider' min='20' max='100' value='60'></td>
+					</tr>
+					<tr class='row2'>
+						<td colspan="4">ステアリング</td>
+					</tr>
+					<tr>
+						<td>最大角度</td>
+						<td id='Svalue2' class='Svalue'>100%</td>
+						<td colspan="2"><input type="range" id='Sslider2' class='SettingSlider' min='20' max='100' value='100'></td>
+					</tr>
+					<tr>
+						<td>初期位置調整</td>
+						<td id='Svalue3' class='Svalue'>0</td>
+						<td colspan="2"><input type="range" id='Sslider3' class='SettingSlider' min='-30' max='30' value='0'></td>
+					</tr>
+					<tr class='row3'>
+						<td colspan="4" class='col5'><input type='image' src='image/Enter.png' id='Sbutton1'></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+</body>
+
+<script defer>
+	//変数の定義
+	const Lloading = document.getElementById('LoadingLayer');
+	const LNoSupport = document.getElementById('NoSupportLayer');
+	const LNoSupportContent = document.getElementById('NoSupportContent');
+	const LTitle = document.getElementById('TitleLayer');
+	const Lcontroller = document.getElementById('ControllerLayer');
+	const Lcommand = document.getElementById('CommandLayer');
+	const LoadingStatus = document.getElementById('loadingText');
+	const Lsetting = document.getElementById('SettingLayer');
+	const ble = new BlueJelly();
+	const StartButton = document.getElementById('StartButton');
+	const Status = document.getElementById('status');
+	const CButton1 = document.getElementById('Cbutton1');
+	const CButton2 = document.getElementById('Cbutton2');
+	const CButton3 = document.getElementById('Cbutton3');
+	const CButton4 = document.getElementById('Cbutton4');
+	const CButton5 = document.getElementById('Cbutton5');
+	const SSlider1 = document.getElementById('Sslider1');
+	const SSlider2 = document.getElementById('Sslider2');
+	const SSlider3 = document.getElementById('Sslider3');
+	const SSlider5 = document.getElementById('Sslider5');
+	const SSlider6 = document.getElementById('Sslider6');
+	const SSlider7 = document.getElementById('Sslider7');
+	const SSlider8 = document.getElementById('Sslider8');
+	const SSlider9 = document.getElementById('Sslider9');
+	const SButton1 = document.getElementById('Sbutton1');
+	const SValue1 = document.getElementById('Svalue1');
+	const SValue2 = document.getElementById('Svalue2');
+	const SValue3 = document.getElementById('Svalue3');
+	const SValue4 = document.getElementById('Svalue4');
+	const SValue5 = document.getElementById('Svalue5');
+	const SValue6 = document.getElementById('Svalue6');
+	const SValue7 = document.getElementById('Svalue7');
+	const SValue8 = document.getElementById('Svalue8');
+	const SValue9 = document.getElementById('Svalue9');
+	const GuideButton = document.getElementById('Guide1');
+	const SettingGuideButton = document.getElementById('Guide2');
+
+	var userAgent = window.navigator.userAgent.toLowerCase();
+	var Support = false;
+	var Device;
+	var Browser;
+	var stage = 0;
+	var ReconnectCount = 0;
+	var LoadingOpacity = -1;
+	var Fullscreen = false;
+
+	var PWMRange = 80;
+	var PWMMin = 20;
+	var ServoMaxBase = 255;
+	var ServoMax = 255;
+	var ServoRange = 80;
+	var ServoAdj = 0;
+
+	var SendTime = 50;
+
+	var PWMValue = 127;
+	var ServoValue = 127;
+	var PortValue = 0;
+
+	var RotateMaxBase = 40;
+	var RotateMax = 40;
+	var RotateMin = 0;
+	var Rotate = true;
+	var RotateSet = 0;
+	var RotateBefore = false;
+
+	var LightActive = false;
+	var GyroActive = false;
+
+	var KeyBoard = false;
+	var Key = [];
+	var KeyValue = [];
+
+
+	//個人設定
+	var Setting = [];
+	var SettingString = [];
+	var SettingNow = false;
+	var FirstTime = 'false';
+
+
+	//画像ドラッグ対策
+	document.ondragstart = function() {
+		return false;
+	};
+
+	//画面外はみ出し確認
+	function DisplayOut() {
+		Rotate = true;
+		if (window.innerHeight >= LNoSupportContent.clientHeight) {
+			LNoSupport.style.height = '100vh';
+		} else {
+			LNoSupport.style.height = '';
+		}
+	}
+
+	//画面回転時の動作
+	window.addEventListener("orientationchange", function() {
+		setTimeout(function() {
+			DisplayOut();
+		}, 100);
+	});
+
+	//初期動作
+	window.onload = function() {
+
+		stage = 0;
+
+		if (userAgent.indexOf('iphone') != -1) {
+			//iphone
+			Support = false;
+			Device = 'ios';
+		} else if (userAgent.indexOf('ipad') != -1) {
+			//ipad
+			Support = false;
+			Device = 'ios';
+		} else if (userAgent.indexOf('android') != -1) {
+			if (userAgent.indexOf('mobile') != -1) {
+				//Android
+				Support = true;
+				Device = 'Android';
+			} else {
+				//AndroidTablet
+				Support = true;
+				Device = 'Android';
+			}
+		} else {
+			//PC
+			Support = true;
+			Device = 'PC';
+		}
+
+		if (Support) {
+			if (userAgent.indexOf('msie') != -1 ||
+				userAgent.indexOf('trident') != -1) {
+				//IE
+				Support = false;
+				Browser = 'IE';
+			} else if (userAgent.indexOf('edge') != -1) {
+				//edge
+				Support = false;
+				Browser = 'Edge';
+			} else if (userAgent.indexOf('opr') != -1) {
+				//Opera
+				if (Device == 'PC') {
+					Support = false;
+				} else {
+					Support = true;
+				}
+				Browser = 'Opera';
+			} else if (userAgent.indexOf('chrome') != -1) {
+				//chrome
+				Support = true;
+				Browser = 'Chrome';
+			} else if (userAgent.indexOf('safari') != -1) {
+				//Safari
+				Support = false;
+				Browser = 'Safari';
+			} else if (userAgent.indexOf('firefox') != -1) {
+				//FireFox
+				Support = false;
+				Browser = 'FireFox';
+			} else if (userAgent.indexOf('opera') != -1) {
+				//Opera
+				if (Device == 'PC') {
+					Support = false;
+				} else {
+					Support = true;
+				}
+				Browser = 'Opera';
+			} else if (userAgent.indexOf('samsungbrowser') != -1) {
+				//Samsung Internet Browser
+				Support = true;
+				Browser = 'SamsungInternetBrowser';
+			} else {
+				//Others
+				Support = false;
+				Browser = 'Unknown';
+			}
+		}
+
+		if (Support) {
+			//UUIDの登録
+			ble.setUUID("UUID1", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaf1-843f-4d3b-959d-c954cce14655");
+			ble.setUUID("UUID2", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaf2-843f-4d3b-959d-c954cce14655");
+			ble.setUUID("UUID3", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaf3-843f-4d3b-959d-c954cce14655");
+			ble.setUUID("UUID4", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaf4-843f-4d3b-959d-c954cce14655");
+			ble.setUUID("UUID5", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaf5-843f-4d3b-959d-c954cce14655");
+			ble.setUUID("UUID6", "389caaf0-843f-4d3b-959d-c954cce14655", "389caaff-843f-4d3b-959d-c954cce14655");
+
+			//セーブデータの存在確認
+			if (localStorage.getItem('SaveData') == null) {
+				//プリセットを登録する
+				localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true');
+				FirstTime = 'true';
+			}
+			Setting = localStorage.getItem('SaveData').split(',');
+
+			if (Setting.length != 14) {
+				//プリセットを登録する
+				localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true');
+				Setting = localStorage.getItem('SaveData').split(',');
+				FirstTime = 'true';
+			}
+
+
+			//コマンド用セーブデータの存在確認
+			if (localStorage.getItem('SaveData2') == null) {
+				//プリセットを登録する
+				localStorage.setItem('SaveData2', '20,20');
+			}
+			Setting2 = localStorage.getItem('SaveData2').split(',');
+
+			if (Setting2.length != 2) {
+				//プリセットを登録する
+				localStorage.setItem('SaveData2', '20,20');
+				Setting2 = localStorage.getItem('SaveData2').split(',');
+			}
+
+			NowBorder1 = Setting2[0];
+			NowBorder3 = Setting2[1];
+			NowBorder2 = 100 - NowBorder1 - NowBorder3;
+
+			if (NowBorder1 < 15 || NowBorder2 < 15 || NowBorder3 < 15) {
+				NowBorder1 = 20;
+				NowBorder3 = 60;
+				NowBorder2 = 20;
+			}
+
+			if (localStorage.getItem('SaveData3') != null) {
+				var getOriginalCode = JSON.parse(localStorage.getItem('SaveData3'));
+				Editer.value = getOriginalCode['savecode'];
+			}
+
+			//設定画面の値変更
+			SSlider1.value = Setting[0];
+			SValue1.innerHTML = SSlider1.value + '%';
+			SSlider2.value = Setting[1];
+			SValue2.innerHTML = SSlider2.value + '%';
+			SSlider3.value = Setting[2];
+			if (SSlider3.value > 0) {
+				SValue3.innerHTML = '+' + SSlider3.value;
+			} else {
+				SValue3.innerHTML = SSlider3.value;
+			}
+
+			if (Setting[13] == 'true') {
+				FirstTime = 'true';
+			} else {
+				FirstTime = 'false';
+			}
+
+			//設定を反映
+			SettingSet();
+
+			//データ送信開始
+			SendData();
+
+			//サーボ初期位置へ
+			ServoControll(100);
+
+			GuideButton.innerHTML = '<a href="pdf/' + Device + 'Guide.pdf" target="_blank"><img src="image/Question.png" alt="説明書"></a>';
+			SettingGuideButton.innerHTML = '<a href="pdf/' + Device + 'Setting.pdf" target="_blank"><img src="image/Question.png" alt="設定ガイド"></a>';
+
+			if (Device == 'Android') {
+				//hoverを無効にする
+				StartButton.style.opacity = '1';
+				CButton1.style.opacity = '1';
+				CButton2.style.opacity = '1';
+				CButton3.style.opacity = '1';
+				CButton4.style.opacity = '1';
+
+				//コマンドを無効にする
+				CButton5.style.display = "none";
+
+				//キーボードを無効にする
+				document.getElementById('KeySetting').style.display = "none";
+			} else {
+
+			}
+
+			if (FirstTime == 'true') {
+				Status.innerHTML = '<font color="red">初回利用時は位置情報の権限設定が必要です</font><br><a href="pdf/Permission' + Device + Browser + '.pdf" target="_blank">ブラウザ権限の設定手順</a>';
+			}
+
+			//ローディング画面の削除
+			Lcommand.style.display = '';
+			Lsetting.style.display = 'none';
+			LNoSupport.style.display = 'none';
+			LTitle.style.datalist = '';
+			Lloading.style.display = 'none';
+		} else {
+			//非対応ブラウザ
+			DisplayOut();
+			//ローディング画面の削除
+			Lcommand.style.display = 'none';
+			Lsetting.style.display = 'none';
+			LTitle.style.datalist = 'none';
+			LNoSupport.style.display = '';
+			Lloading.style.display = 'none';
+		}
+	}
+
+	//ローディング画面の表示
+	function DisplayLoading(FinishFunction) {
+		Lloading.style.display = '';
+		if (LoadingOpacity == -1) {
+			Lloading.style.opacity = 0;
+			LoadingOpacity = 0;
+			setTimeout(function() {
+				DisplayLoading(FinishFunction)
+			}, 10);
+		} else if (LoadingOpacity == 100) {
+			Lloading.style.opacity = 1;
+			LoadingOpacity = -1;
+			if (FinishFunction != null) {
+				FinishFunction();
+			}
+		} else {
+			Lloading.style.opacity = LoadingOpacity / 100;
+			LoadingOpacity++;
+			setTimeout(function() {
+				DisplayLoading(FinishFunction)
+			}, 10);
+		}
+	}
+
+	//ローディング画面の削除
+	function DestroyLoading(FinishFunction) {
+		Lloading.style.display = '';
+		if (LoadingOpacity == -1) {
+			Lloading.style.opacity = 1;
+			LoadingOpacity = 100;
+			setTimeout(function() {
+				DestroyLoading(FinishFunction)
+			}, 10);
+		} else if (LoadingOpacity == 0) {
+			Lloading.style.display = 'none';
+			LoadingOpacity = -1;
+			if (FinishFunction != null) {
+				FinishFunction();
+			}
+		} else {
+			Lloading.style.opacity = LoadingOpacity / 100;
+			LoadingOpacity--;
+			setTimeout(function() {
+				DestroyLoading(FinishFunction)
+			}, 10);
+		}
+	}
+
+	//スタートボタン
+	StartButton.addEventListener('click', function() {
+		StartButton.disabled = true;
+		//ローディング画面
+		DisplayLoading(ScanStart);
+	});
+
+	//スキャン開始
+	function ScanStart() {
+		stage = 1;
+		ble.scan('UUID6');
+	}
+
+
+	//スキャン成功
+	ble.onScan = function(deviceName) {
+		//接続する
+		stage = 2;
+		ble.connectGATT('UUID6');
+	}
+
+	//接続完了
+	ble.onConnectGATT = function(uuid) {
+		stage = 3;
+		setTimeout(function() {
+			OnConnectFinish();
+		}, 1000);
+	}
+
+	function OnConnectFinish() {
+		if (stage == 3) {
+			if (FirstTime == 'true') {
+				FirstTime = 'false';
+				Save();
+			}
+
+			//コントロール画面の表示
+			Lcommand.style.display = '';
+			//タイトル画面の削除
+			LTitle.style.display = 'none';
+			//ローディング画面の削除
+			DestroyLoading(null);
+			stage = 4;
+		}
+	};
+
+	//コントローラー
+
+	//設定ボタン
+	CButton1.addEventListener('click', function() {
+		SettingNow = true;
+		KeyBoard = false;
+		GyroActive = false;
+		PWM(100);
+		ServoControll(100);
+		if (CButton3) {
+			CButton3.setAttribute('src', 'image/GyroOn.png');
+		}else{
+			CommandFinish();
+		}
+
+		Lsetting.style.display = '';
+		Lcommand.style.display = 'none';
+	});
+
+	//フルスクリーン
+	CButton4.addEventListener('click', function() {
+		var target = FullscreenArea;
+
+		if (Fullscreen) {
+			if (document.webkitCancelFullScreen) {
+				document.webkitCancelFullScreen(); //Chrome15+, Safari5.1+, Opera15+
+			} else if (document.mozCancelFullScreen) {
+				document.mozCancelFullScreen(); //FF10+
+			} else if (document.msExitFullscreen) {
+				document.msExitFullscreen(); //IE11+
+			} else if (document.cancelFullScreen) {
+				document.cancelFullScreen(); //Gecko:FullScreenAPI仕様
+			} else if (document.exitFullscreen) {
+				document.exitFullscreen(); // HTML5 Fullscreen API仕様
+			}
+		} else {
+			if (target.webkitRequestFullscreen) {
+				target.webkitRequestFullscreen(); //Chrome15+, Safari5.1+, Opera15+
+			} else if (target.mozRequestFullScreen) {
+				target.mozRequestFullScreen(); //FF10+
+			} else if (target.msRequestFullscreen) {
+				target.msRequestFullscreen(); //IE11+
+			} else if (target.requestFullscreen) {
+				target.requestFullscreen(); // HTML5 Fullscreen API仕様
+			} else {
+				alert('ご利用のブラウザはフルスクリーン操作に対応していません');
+				return;
+			}
+		}
+	});
+
+	document.onfullscreenchange = document.onmozfullscreenchange = document.onwebkitfullscreenchange = document.onmsfullscreenchange = function(event) {
+		if (Fullscreen) {
+			Fullscreen = false;
+			CButton4.setAttribute('src', 'image/FullscreenOn.png');
+		} else {
+			Fullscreen = true;
+			CButton4.setAttribute('src', 'image/FullscreenOff.png');
+		}
+	};
+
+	//PWM
+	function PWM(value) {
+
+		var check1;
+		var check2;
+		var check3;
+
+		if (value == 100) {
+			check2 = 127;
+		} else if (value > 100) {
+			check1 = PWMRange - PWMMin;
+			value -= 100;
+			check2 = value / 100 * check1 + 127 + PWMMin;
+		} else {
+			check1 = PWMRange - PWMMin;
+			check3 = 100 - value;
+			check2 = 127 - check1 / 100 * check3 - PWMMin;
+		}
+
+		PWMValue = check2;
+	};
+
+	//Servo
+	function ServoControll(value) {
+		var check1;
+		var check2;
+		var check3;
+
+		if (value >= 100) {
+			check1 = ServoRange;
+			value -= 100;
+			check2 = value / 100 * check1 + (127 + ServoAdj);
+		} else {
+			check1 = ServoRange;
+			check3 = 100 - value;
+			check2 = (127 + ServoAdj) - check1 / 100 * check3;
+		}
+
+		ServoValue = check2;
+	};
+
+	//データ送信
+	var TimeCount = 0;
+
+	function SendData() {
+		if (stage >= 3) {
+			//bCoreのバグ？対策
+			if (ServoValue < 5) {
+				ServoValue = 5;
+			}
+			WriteArray = [PWMValue, PWMValue, PortValue, ServoValue, ServoValue, ServoValue, ServoValue];
+			ble.write('UUID5', WriteArray);
+		}
+
+		//Log(ServoValue);
+		//Log(PWMValue);
+		//Log('============');
+
+		//ローディングテキストの変更
+		var text1;
+
+		if (TimeCount >= 4000) {
+			text1 = '';
+			TimeCount = SendTime;
+		} else if (TimeCount >= 3000) {
+			text1 = '...';
+			TimeCount += SendTime;
+		} else if (TimeCount >= 2000) {
+			text1 = '..';
+			TimeCount += SendTime;
+		} else if (TimeCount >= 1000) {
+			text1 = '.';
+			TimeCount += SendTime;
+		} else {
+			text1 = '';
+			TimeCount += SendTime;
+		}
+
+		var text2;
+		if (stage == 0) {
+			text2 = 'Loading';
+		} else if (stage == 1) {
+			text2 = 'Pairing';
+		} else if (stage == 2) {
+			text2 = 'Certifying';
+		} else if (stage == 3 || stage == 4) {
+			text1 = '';
+			text2 = 'Complete!';
+		} else {
+			text2 = 'Loading';
+		}
+		LoadingStatus.innerHTML = text2 + text1;
+
+		setTimeout(function() {
+			SendData()
+		}, SendTime);
+	}
+
+	//設定画面
+	SSlider1.addEventListener('input', function() {
+		SValue1.innerHTML = SSlider1.value + '%';
+		PWMValue = 127 + 127 * SSlider1.value / 100;
+	});
+	SSlider1.addEventListener('change', function() {
+		Save();
+		PWMValue = 127;
+	});
+	SSlider2.addEventListener('input', function() {
+		SValue2.innerHTML = SSlider2.value + '%';
+		var check1 = ServoMaxBase - (127 + Number(SSlider3.value));
+		if (check1 < 0) {
+			check1 = 0;
+		}
+		ServoValue = 127 + Number(SSlider3.value) + check1 * Number(SSlider2.value) / 100;
+	});
+	SSlider2.addEventListener('change', function() {
+		Save();
+		ServoValue = 127 + Number(SSlider3.value);
+	});
+	SSlider3.addEventListener('input', function() {
+		if (SSlider3.value > 0) {
+			SValue3.innerHTML = '+' + SSlider3.value;
+		} else {
+			SValue3.innerHTML = SSlider3.value;
+		}
+		ServoValue = 127 + Number(SSlider3.value);
+	});
+	SSlider3.addEventListener('change', function() {
+		Save();
+		ServoValue = 127 + Number(SSlider3.value);
+	});
+
+	//Enterボタン
+	SButton1.addEventListener('click', function() {
+		SettingNow = false;
+		SettingSet();
+		Lsetting.style.opacity = '1';
+		if (RotateBefore) {
+			GyroActive = true;
+			HSlider.disabled = true;
+			CButton3.setAttribute('src', 'image/GyroOff.png');
+		}
+		Lcommand.style.display = '';
+		Lsetting.style.display = 'none';
+	});
+
+	function Save() {
+		if(SSlider5){
+			localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + SSlider5.value + ',' + SSlider6.value + ',' + SSlider7.value + ',' + SSlider8.value + ',' + Key[0] + ',' + Key[1] + ',' + Key[2] +
+				',' +
+				Key[3] + ',' + SSlider9.value + ',' + FirstTime);
+		}else{
+			Setting = localStorage.getItem('SaveData').split(',');
+			localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + Setting[4] + Setting[5] + ',' + Setting[6] + ',' + Setting[7] + ',' + Setting[8] + ',' + Setting[9] + ',' + Setting[10] + ',' + Setting[11] +
+				',' +
+				Setting[12] + ',' + 'false');
+		}
+	};
+
+	//設定データを反映させる
+	function SettingSet() {
+		Setting = localStorage.getItem('SaveData').split(',').map(Number);
+		SettingString = localStorage.getItem('SaveData').split(',');
+		PWMMin = 30 * Setting[0] / 100
+		PWMRange = 127 * Setting[0] / 100;
+		ServoAdj = Setting[2];
+		//ServoMax = ServoMaxBase + Setting[3];
+		var check1 = ServoMaxBase - (127 + ServoAdj);
+		if (check1 < 0) {
+			check1 = 0;
+		}
+		ServoRange = check1 * Setting[1] / 100;
+
+		if ((127 + ServoAdj - ServoRange) < 0) {
+			ServoRange = 127 + ServoAdj;
+		}
+
+		var max = RotateMaxBase * (110 - Setting[4]) / 100;
+		var min = 10 * (110 - Setting[4]) / 100;
+		RotateMax = max;
+		RotateMin = min;
+
+		Area1FontSizeSet();
+	};
+
+	//エラー時
+	ble.onError = function(error) {
+		if (stage == 1) {
+			//スキャン失敗  →  タイトル
+			Lcommand.style.display = 'none';
+			LTitle.style.display = '';
+			DestroyLoading();
+			stage = 0;
+			StartButton.disabled = false;
+			Status.innerHTML = '<font color="red">ペアリングに失敗しました</font><br>"bCore"を選択し、ペア設定を行ってください';
+		} else if (stage == 2) {
+			//接続失敗  →  再接続
+			if (ReconnectCount < 5) {
+				ReconnectCount++;
+				ble.connectGATT('UUID6');
+			} else {
+				Lcommand.style.display = 'none';
+				LTitle.style.display = '';
+				DestroyLoading();
+				ble.reset();
+				stage = 0;
+				StartButton.disabled = false;
+				Status.innerHTML = '<font color="red">認証に失敗しました</font><br>正しく"bCore"を選択できているか確認してください';
+			}
+		}
+	}
+
+
+
+
+
+
+	//エディター機能
+	//変数の定義
+	const CommandStart = document.getElementById('CommandStartButton');
+	const CommandStop = document.getElementById('CommandStopButton');
+	const Editer = document.getElementById('EditerTextArea');
+	const Console = document.getElementById('Console');
+	const Border1 = document.getElementById('Border1');
+	const Border2 = document.getElementById('Border2');
+	const Area1 = document.getElementById('LeftGroup');
+	const Area2 = document.getElementById('CenterGroup');
+	const Area3 = document.getElementById('RightGroup');
+	const RefrenceCode = document.getElementsByClassName('RefrenceCode');
+	const RefrenceGuide = document.getElementsByClassName('RefrenceGuide');
+	const RefrenceExample = document.getElementsByClassName('RefrenceExample');
+
+	//セキュリティ
+	const ExistFunctionList = ['Motor', 'Servo', 'Port', 'Wait', 'Log', 'alert'];
+	const ExistVariableList = ['userAgent', 'Support', 'Device', 'Browser', 'stage', 'ReconnectCount', 'LoadingOpacity', 'Fullscreen', 'PWMRange', 'PWMMin', 'ServoMaxBase', 'ServoMax', 'ServoRange', 'ServoAdj', 'SSendTime', 'PWMValue', 'PortValue',
+		'RotateMaxBase', 'RotateMin', 'Rotate', 'RotateSet', 'RoRotateBefore', 'LightActive', 'GyroActive', 'KeyBoard', 'Key', 'KeyValue', 'Setting', 'SettiSettingString', 'SettingNow', 'FirstTime', 'ScriptList', 'VariableList', 'ValueList',
+		'StringList', 'FinishFlag', 'click1', 'click2', 'Traces', 'ConsoleLog', 'MoveFlag', 'NowBorder1', 'NowBorder2', 'NowBorder3', 'StartX1', 'StartX2', 'BeforeX', 'WaitId', 'CommandAction'
+	];
+
+	var Traces = [];
+	var ScriptList = [];
+	var VariableList = [];
+	var ValueList = [];
+	var StringScript;
+	var FinishFlag = 0;
+	var click1 = true;
+	var click2 = true;
+	var ConsoleLog = '';
+
+	var raw_stacktrace;
+	var stacktrace;
+
+	var MoveFlag = 0;
+	var NowBorder1 = 20;
+	var NowBorder2 = 60;
+	var NowBorder3 = 20;
+	var StartX1 = 0;
+	var StartX2 = 0;
+	var BeforeX = 0;
+
+	var CommandAction = false;
+	var WaitId;
+
+
+	//コマンド開始ボタン
+	CommandStart.addEventListener('click', function() {
+		if (click1) {
+			click1 = false;
+			OnClickStart();
+			setTimeout(click1 = true, 1000);
+		}
+	});
+
+	//コマンド停止ボタン
+	CommandStop.addEventListener('click', function() {
+		if (click2) {
+			click2 = false;
+			CommandFinish();
+			setTimeout(click2 = true, 1000);
+		}
+	});
+
+	function CommandFinish() {
+		//初期位置に戻す
+		PortValue = 0;
+		ServoControll(100);
+		PWM(100);
+
+		//ループを中断させる
+		clearTimeout(WaitId);
+
+		if (CommandAction) {
+			var now = new Date();
+			var min = now.getMinutes();
+			var Sec = now.getSeconds();
+			var Time = '[' + min + '分' + Sec + '秒]';
+			Log(Time + ' - 処理中断');
+
+			CommandAction = false;
+		}
+	}
+
+	function OnClickStart() {
+
+		var OriginalCode = {
+			savecode: Editer.value
+		};
+		localStorage.setItem('SaveData3', JSON.stringify(OriginalCode));
+
+		VariableList = [];
+		ValueList = [];
+
+		//シングルクォーテーションはダブルクォーテーションに変換
+		var check = Editer.value.replace(new RegExp("'", 'g'), '"');
+
+		//セミコロンを改行コードに変換
+		check = check.replace(/;/g, ';\n');
+
+		//内容確認
+		ScriptList = check.split('\n');
+
+		//空配列削除
+		for (var i = 0; i < ScriptList.length; i++) {
+			if (ScriptList[i] == "") {
+				ScriptList.splice(i, 1);
+			}
+		}
+
+		//コマンドの抽出
+		var CommnadOK = true;
+		var CommandOK2 = true;
+		var ErrorFunction = '';
+		var ErrorVariable = '';
+
+		for (var i = 0; i < ScriptList.length; i++) {
+			//ScriptList[i] = ScriptList[i].replace(/['　','	']/g, '');
+			ScriptList[i] = ScriptList[i].replace(/[/][/].*$/g, '');
+			ScriptList[i] = ScriptList[i].replace(/\s\s+/g, ' ');
+
+			//関数チェックを行う
+			CommnadOK = true;
+			if (ScriptList[i].match(/^\s*[A-Z,a-z,0-9]+[(].*[)][;]/g)) {
+				ScriptList[i] = ScriptList[i].replace(/\s/g, '');
+
+				var AfterCheck = ScriptList[i].match(/\S+[(]/g);
+				var StringCheck = ScriptList[i].substring(0, AfterCheck[0].length - 1);
+
+				if (ExistFunctionList.indexOf(StringCheck) == -1) {
+					ErrorFunction = StringCheck;
+					CommnadOK = false;
+				}
+			}
+
+			//変数チェックを行う
+			if (ScriptList[i].match(/^\s*var\s.*=/g)) {
+				var BeforeCheck = ScriptList[i].match(/^.*var\s/g);
+				var AfterCheck = ScriptList[i].match(/var\s.*=/g);
+				var StringCheck = ScriptList[i].substring(BeforeCheck[0].length, AfterCheck[0].length);
+				StringCheck = StringCheck.replace(/=/g, '');
+				StringCheck = StringCheck.replace(/\s/g, '');
+
+				if (VariableList.indexOf(StringCheck) == -1) {
+					VariableList.push(StringCheck);
+				}
+
+				if (ExistVariableList.indexOf(StringCheck) != -1) {
+					ErrorVariable = StringCheck;
+					CommandOK2 = false;
+				}
+			}
+		}
+
+		if (CommnadOK) {
+			if (CommandOK2) {
+				var now = new Date();
+				var min = now.getMinutes();
+				var Sec = now.getSeconds();
+				var Time = '[' + min + '分' + Sec + '秒]';
+
+				Log(Time + ' - 処理開始');
+
+				CommandAction = true;
+
+				//配列を文字列に変換
+				StringScript = ScriptList.join('');
+
+				StartCommand();
+			} else {
+				//使用できない変数あり
+				alert(ErrorVariable + 'は使用できない変数です！\n変数名を変更してください。');
+			}
+		} else {
+			//使用できない関数あり
+			alert(ErrorFunction + '();は使用できない関数です！\n現時点で使用可能な関数は以下となります。\n' + ExistFunctionList.join('();　') + '();\n関数の追加を希望される方はお問い合わせください。');
+		}
+	};
+
+	function StartCommand() {
+		try {
+			//Waitコマンドまでを切り出す
+			var CheckWait = StringScript.match(/^.*?Wait[(].*?[)][;]/g);
+
+			if (CheckWait) {
+
+				StringScript = StringScript.substring(CheckWait[0].length, StringScript.length);
+				eval(CheckWait[0]);
+
+				//現時点での変数値を記録する
+				var VariableString = '';
+				for (var i = 0; i < VariableList.length; i++) {
+					VariableString += 'var ' + VariableList[i] + '=' + eval(VariableList[i]) + ';'
+				}
+				StringScript = VariableString + StringScript;
+			} else {
+
+				var now = new Date();
+				var min = now.getMinutes();
+				var Sec = now.getSeconds();
+				var Time = '[' + min + '分' + Sec + '秒]';
+
+				if (StringScript == '') {
+					if (FinishFlag == 0) {
+						Log(Time + ' - 処理終了');
+
+						CommandAction = false;
+						CommandFinish();
+					}
+				} else {
+					eval(StringScript);
+					StringScript = '';
+					if (FinishFlag == 0) {
+						Log(Time + ' - 処理終了');
+
+						CommandAction = false;
+						CommandFinish();
+					}
+				}
+			}
+		} catch (e) {
+			var ErrorType = '';
+			var ErrorMessage = '';
+
+			console.log(e);
+
+			if (e instanceof TypeError) {
+				ErrorType = '変数型エラー';
+				ErrorMessage = '　変数の代入先が不正です。<br>　変数を確認してください。';
+			} else if (e instanceof RangeError) {
+				ErrorType = '範囲エラー';
+				ErrorMessage = '　定義域を越しています。<br>　計算式を確認してください。';
+			} else if (e instanceof ReferenceError) {
+				ErrorType = '参照エラー';
+				ErrorMessage = '　変数の参照に失敗しました。<br>　変数を確認してください。';
+			} else if (e instanceof SyntaxError) {
+				ErrorType = '構文エラー';
+				ErrorMessage = '　構文に間違いがあります。<br>　スクリプトの構文を確認してください。';
+			} else {
+				ErrorType = 'エラー';
+				ErrorMessage = '　エラーが発生しました。<br>　スクリプトを確認してください。';
+			}
+
+			stacktrace = e.stack.split(/\r\n?|\n/).slice(1);
+
+			var StacktraseCheck = [];
+			var line = -1;
+			var position = -1;
+
+			for (var i = 0; i < stacktrace.length; i++) {
+				if (stacktrace[i].indexOf('eval') != -1) {
+					StacktraseCheck = stacktrace[i].split('<anonymous>');
+					StacktraseCheck = StacktraseCheck[1].split(':');
+					line = StacktraseCheck[1];
+					position = StacktraseCheck[2].replace(')', '');
+				}
+			}
+
+			var now = new Date();
+			var min = now.getMinutes();
+			var Sec = now.getSeconds();
+			var Time = '[' + min + '分' + Sec + '秒]';
+
+			Log('<red>' + Time + ' - エラー発生</red>');
+			Log('<red> ' + ErrorType + '</red><br>' + ErrorMessage);
+
+			CommandAction = false;
+			CommandFinish();
+
+			if (position >= 0) {
+				var ProblemScript = '';
+				if (CheckWait) {
+					ProblemScript = CheckWait[0];
+				} else {
+					ProblemScript = StringScript;
+				}
+
+				var Part1 = ProblemScript.substr(0, position - 1);
+				var Part2 = ProblemScript.substr(position - 1, ProblemScript.length);
+				var PartArray = [];
+				if (Part2.match(/^[^A-X,^a-x,^0-9]/g)) {
+					PartArray[0] = Part2.match(/^[^A-X,^a-x,^0-9]*[A-X,a-x,0-9]*/g);
+				} else {
+					PartArray = Part2.split(/[^A-X,^a-x,^0-9]/g);
+				}
+				if (PartArray[0])
+					var Part3 = Part2.substr(Number(String(PartArray[0]).length), Part2.length);
+
+				Log('エラー発生箇所<br>' + Part1 + '<red>' + PartArray[0] + '</red>' + Part3);
+			}
+		}
+	};
+
+	//ループ処理
+	function Loop() {
+
+	};
+
+	//ログ
+	function Log(value) {
+		ConsoleLog += "<p class='Consolevalue'>" + value + '</p>';
+		Console.innerHTML = ConsoleLog;
+		Console.scrollTop = Console.scrollHeight;
+	}
+
+	//一時停止処理
+	function Wait(Secound) {
+		if (Secound <= 0) {
+			FinishFlag++;
+			WaitId = setTimeout(function() {
+				FinishFlag--;
+				StartCommand();
+			}, 1);
+		} else {
+			FinishFlag++;
+			WaitId = setTimeout(function() {
+				FinishFlag--;
+				StartCommand();
+			}, Secound * 1000);
+		}
+	};
+
+	//Motor関数
+	function Motor(Power) {
+		if (Math.abs(Power) > 100) {
+			Log('<red>実行エラー : Motor関数には-100~100の整数を渡してください</red><br>現在 : Motor(<red>' + Power + '</red>);');
+		} else {
+			PWM(Math.floor(Power) + 100);
+		}
+	}
+
+	//Servo関数
+	function Servo(Power) {
+		if (Math.abs(Power) > 100) {
+			Log('<red>実行エラー : Servo関数には-100~100の整数を渡してください</red><br>現在 : Servo(<red>' + Power + '</red>);');
+		} else {
+			ServoControll(Math.floor(Power) + 100);
+		}
+	}
+
+	//Port関数
+	function Port(port, number) {
+		if (port == 0) {
+			if (number == 0) {
+				PortValue = 0;
+			} else if (number == 1) {
+				PortValue = 3;
+			} else {
+				Log('<red>実行エラー : Port関数の第2引数は0か1の整数を渡してください</red><br>現在 : Port(' + port + ',<red>' + number + '</red>);');
+			}
+		} else if (port == 2) {
+			if (number == 0) {
+				//左消灯
+				if (PortValue == 3) {
+					PortValue = 2;
+				} else if (PortValue == 1) {
+					PortValue = 0;
+				}
+			} else if (number == 1) {
+				//左点灯
+				if (PortValue == 0) {
+					PortValue = 1;
+				} else if (PortValue == 2) {
+					PortValue = 3;
+				}
+			} else {
+				Log('<red>実行エラー : Port関数の第2引数は0か1の整数を渡してください</red><br>現在 : Port(' + port + ',<red>' + number + '</red>);');
+			}
+		} else if (port == 1) {
+			if (number == 0) {
+				//右消灯
+				if (PortValue == 3) {
+					PortValue = 1;
+				} else if (PortValue == 2) {
+					PortValue = 0;
+				}
+			} else if (number == 1) {
+				//左点灯
+				if (PortValue == 0) {
+					PortValue = 2;
+				} else if (PortValue == 1) {
+					PortValue = 3;
+				}
+			} else {
+				Log('<red>実行エラー : Port関数の第2引数は0か1の整数を渡してください</red><br>現在 : Port(' + port + ',<red>' + number + '</red>);');
+			}
+		} else {
+			Log('<red>実行エラー : Port関数の第1引数は0~2の整数を渡してください</red><br>現在 : Port(<red>' + port + '</red>,' + number + ');');
+		}
+	}
+
+	//タブキーを押した際の挙動
+	Editer.addEventListener('keydown',
+		event => {
+			if (event.key == 'Tab') {
+				event.preventDefault();
+
+				var Select = Editer.selectionStart;
+				var Before = Editer.value.substr(0, Select);
+				var After = Editer.value.substr(Select, Editer.value.length);
+				Editer.value = Before + '	' + After;
+				Editer.setSelectionRange(Select + 1, Select + 1);
+			}
+		});
+
+	//左側境界線の処理
+
+	Border1.onmousedown = function(e) {
+		MoveFlag = 1;
+		StartX1 = e.clientX - document.body.clientWidth * NowBorder1 / 100;
+		StartX2 = e.clientX - document.body.clientWidth * NowBorder2 / 100;
+	}
+	document.onmouseup = function(e) {
+		if (MoveFlag > 0) {
+			MoveFlag = 0;
+			localStorage.setItem('SaveData2', NowBorder1 + ',' + NowBorder3);
+		}
+	}
+	document.onmousemove = function(e) {
+
+		if (MoveFlag == 1) {
+			var flag = true;
+
+			NowBorder1 = (e.clientX - StartX1) / window.innerWidth * 100;
+			NowBorder2 = 100 - NowBorder1 - NowBorder3;
+
+			if (NowBorder1 < 15) {
+				NowBorder1 = 15;
+				NowBorder2 = 100 - NowBorder1 - NowBorder3;
+				MoveFlag = 3;
+				BeforeX = e.clientX;
+			}
+
+			if (NowBorder2 < 15) {
+				NowBorder2 = 15;
+				NowBorder1 = 100 - NowBorder2 - NowBorder3;
+				MoveFlag = 4;
+				BeforeX = e.clientX;
+			}
+
+			Area1.style.width = NowBorder1 + "%";
+			Area2.style.width = NowBorder2 + "%";
+		} else if (MoveFlag == 2) {
+
+			NowBorder2 = (e.clientX - StartX2) / window.innerWidth * 100;
+			NowBorder3 = 100 - NowBorder1 - NowBorder2;
+
+			if (NowBorder2 < 15) {
+				NowBorder2 = 15;
+				NowBorder3 = 100 - NowBorder1 - NowBorder2;
+				MoveFlag = 5;
+				BeforeX = e.clientX;
+			}
+
+			if (NowBorder3 < 15) {
+				NowBorder3 = 15;
+				NowBorder2 = 100 - NowBorder1 - NowBorder3;
+				MoveFlag = 6;
+				BeforeX = e.clientX;
+			}
+
+			Area2.style.width = NowBorder2 + "%";
+			Area3.style.width = NowBorder3 + "%";
+		} else if (MoveFlag == 3) {
+			if (e.clientX > BeforeX + 10) {
+				MoveFlag = 1;
+			}
+		} else if (MoveFlag == 4) {
+			if (e.clientX < BeforeX + 10) {
+				MoveFlag = 1;
+			}
+		} else if (MoveFlag == 5) {
+			if (e.clientX > BeforeX + 10) {
+				MoveFlag = 2;
+			}
+		} else if (MoveFlag == 6) {
+			if (e.clientX < BeforeX + 10) {
+				MoveFlag = 2;
+			}
+		}
+
+		Area1FontSizeSet();
+	}
+
+	function Area1FontSizeSet() {
+
+		var CodeFontSize = 0.6;
+		var GuideFontSize = 0.4;
+		var ExampleFontSize = 0.35;
+
+		for (i = 0; i < RefrenceCode.length; i++) {
+			RefrenceCode[i].style.fontSize = NowBorder1 * CodeFontSize + 'pt';
+		}
+		for (i = 0; i < RefrenceGuide.length; i++) {
+			RefrenceGuide[i].style.fontSize = NowBorder1 * GuideFontSize + 'pt';
+		}
+		for (i = 0; i < RefrenceExample.length; i++) {
+			RefrenceExample[i].style.fontSize = NowBorder1 * ExampleFontSize + 'pt';
+		}
+
+		Area1.style.width = NowBorder1 + "%";
+		Area2.style.width = NowBorder2 + "%";
+		Area3.style.width = NowBorder3 + "%";
+
+	};
+	Border2.onmousedown = function(e) {
+		MoveFlag = 2;
+		StartX1 = e.clientX - document.body.clientWidth * NowBorder2 / 100;
+		StartX2 = e.clientX - document.body.clientWidth * NowBorder2 / 100;
+	}
+</script>
+
+</html>

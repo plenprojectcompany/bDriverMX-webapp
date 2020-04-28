@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html manifest="offline.manifest" lang="ja">
+<!--<html manifest="offline.manifest" lang="ja">-->
+<html lang="ja">
 
 <head>
 	<meta charset="utf-8" />
@@ -79,12 +80,13 @@
 		</div>
 	</div>
 	<div id='TitleLayer'>
+		<div id='Cbutton5'><a href="command-standalone.html"><img src="image/Command.png" alt="コマンド操作"></a></div>
 		<div class="Guide" id='Guide1'></div>
 		<div class='center'>
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.1.0</div>
+			<div id='Varsion'>v.2.0</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -215,6 +217,7 @@
 	const CButton2 = document.getElementById('Cbutton2');
 	const CButton3 = document.getElementById('Cbutton3');
 	const CButton4 = document.getElementById('Cbutton4');
+	const CButton5 = document.getElementById('Cbutton5');
 	const SSlider1 = document.getElementById('Sslider1');
 	const SSlider2 = document.getElementById('Sslider2');
 	const SSlider3 = document.getElementById('Sslider3');
@@ -486,6 +489,9 @@
 				CButton3.style.opacity = '1';
 				CButton4.style.opacity = '1';
 
+				//コマンドを無効にする
+				CButton5.style.display = "none";
+
 				//キーボードを無効にする
 				document.getElementById('KeySetting').style.display = "none";
 			} else {
@@ -624,6 +630,7 @@
 		Servo(100);
 		CButton3.setAttribute('src', 'image/GyroOn.png');
 		Lsetting.style.display = '';
+		Lcontroller.style.display = 'none';
 	});
 
 	//ライトボタン
@@ -1352,6 +1359,7 @@
 			CButton3.setAttribute('src', 'image/GyroOff.png');
 		}
 
+		Lcontroller.style.display = '';
 		Lsetting.style.display = 'none';
 	});
 

@@ -14,6 +14,16 @@
     src: url(data/VarsionFont.ttf);
 }
 
+@font-face {
+    font-family: 'CodeFont';
+    src: url(data/CodeFont.otf);
+}
+
+@font-face {
+    font-family: 'CodeFontLight';
+    src: url(data/CodeFontLight.otf);
+}
+
 body {
     background: #ffffff;
     font-family: MainFont;
@@ -25,22 +35,36 @@ body {
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+    /* スクロールバー非表示 */
+    -ms-overflow-style: none;
+    /* IE, Edge 対応 */
+    scrollbar-width: none;
+    /* Firefox 対応 */
+}
+
+body::-webkit-scrollbar {
+    /* Chrome, Safari 対応 */
+    display: none;
 }
 
 .center {
     text-align: center;
 }
 
+:focus {
+    outline: none;
+}
+
 /*ローディング*/
 #LoadingLayer {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     font-family: MainFont;
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
-    z-index: 10;
+    z-index: 60;
     background: #323232;
 }
 
@@ -68,13 +92,13 @@ body {
 
 /*サポート外通知*/
 #NoSupportLayer {
-    width: 100vw;
+    width: 100%;
     font-family: MainFont;
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
-    z-index: 9;
+    z-index: 50;
     background: #323232;
     overflow: auto;
 }
@@ -107,14 +131,13 @@ body {
 }
 
 .errorTop {
-	border-top: 0 !important;
-	border-style: none !important;
-	height:7vh !important;
-	vertical-align: top !important;
+    border-top: 0 !important;
+    border-style: none !important;
+    height: 7vh !important;
+    vertical-align: top !important;
 }
 
-#SupportList table tr.underline td {
-}
+#SupportList table tr.underline td {}
 
 #SupportList table td.OS {
     font-size: 2.2vh;
@@ -130,23 +153,23 @@ body {
 
 /*タイトル画面*/
 #TitleLayer {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     font-family: MainFont;
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
-    z-index: 4;
+    z-index: 40;
     background: #f0f0f0;
 }
 
 .Guide {
     position: absolute;
-    width: 100vw;
+    right: 0;
     height: 5vw;
     top: 0;
-    z-index: 19;
+    z-index: 51;
 }
 
 .Guide img {
@@ -193,22 +216,37 @@ body {
 
 /*コントローラー*/
 #ControllerLayer {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     font-family: MainFont;
     display: flex;
     position: absolute;
-    z-index: 1;
+    z-index: 30;
     background: #f0f0f0;
 }
 
 #ControllTop {
-    position: absolute;
-    width: 100vw;
+    position: fixed;
+    width: 100%;
     height: 10vw;
     top: 0;
-    z-index: 2;
+    z-index: 31;
     background: #ffffff;
+}
+
+#Cbutton5 {
+    position: absolute;
+    width: 100%;
+    height: 5vw;
+    top: 0;
+    z-index: 41;
+}
+
+#Cbutton5 img {
+    margin-top: 1vw;
+    margin-left: 1vw;
+    height: 100%;
+    width: auto;
 }
 
 .Left {
@@ -246,10 +284,6 @@ body {
     opacity: 0.6;
 }
 
-#Cbutton1 {
-    padding-left: 2vw;
-}
-
 #Cbutton2 {
     padding-left: 1vw;
     padding-right: 1vw;
@@ -258,11 +292,6 @@ body {
 #Cbutton3 {
     padding-left: 1vw;
     padding-right: 1vw;
-}
-
-#Cbutton4 {
-    padding-left: 1vw;
-    padding-right: 2vw;
 }
 
 #Volt {
@@ -275,7 +304,7 @@ body {
 }
 
 #Controller {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -362,13 +391,13 @@ body {
 
 /*設定*/
 #SettingLayer {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     font-family: MainFont;
     font-size: 3vh;
     display: flex;
     position: absolute;
-    z-index: 3;
+    z-index: 10;
     background: #f0f0f0;
 }
 
@@ -500,4 +529,291 @@ body {
 
 #SettingList input:active::-webkit-slider-thumb {
     box-shadow: 0px 5px 10px -2px rgba(0, 0, 0, 0.3);
+}
+
+/* コマンドツール */
+#Cbutton1 {}
+
+#Cbutton4 {}
+
+#CommandLayer {
+    width: 100%;
+    height: 100vh;
+    font-family: MainFont;
+    display: flex;
+    position: absolute;
+    z-index: 20;
+    background: #f0f0f0;
+}
+
+#Command {
+    width: 100%;
+    height: 100%;
+}
+
+#LeftGroup {
+    width: 20%;
+    height: 100%;
+    float: left;
+    position: relative;
+}
+
+#CenterGroup {
+    width: 60%;
+    height: 100%;
+    float: left;
+	position: relative;
+}
+
+#RightGroup {
+    width: 20%;
+    height: 100%;
+    float: left;
+}
+
+#CommandTop {
+    width: 100%;
+    height: 8vh;
+    position: relative;
+    background-color: #ffffff;
+}
+
+#TopButtonGroup {
+    width: 90%;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    left: 0;
+    margin: auto;
+    float: left;
+}
+
+#TopButtonL {
+    position: absolute;
+	height: 100%;
+    left: 0;
+}
+
+#TopButtonR {
+    position: absolute;
+    height: 100%;
+    right: 0;
+}
+
+#Border1 {
+    height: 100%;
+    width: 2vw;
+    right: -0.5vw;
+    cursor: col-resize;
+    position: absolute;
+    z-index: 21;
+}
+
+#Border1Line {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    border-left: solid 1px #000000;
+}
+
+#Border2 {
+    height: 100%;
+    width: 2vw;
+	left: -0.5vw;
+    cursor: col-resize;
+    position: absolute;
+    z-index: 21;
+}
+
+#Border2Line {
+    height: 100%;
+    right: 0;
+    position: absolute;
+    border-right: solid 1px #000000;
+}
+
+.TextBottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+#Reference {
+    width: 100%;
+    height: 90vh;
+    font-family: CodeFont;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    /* IE, Edge 対応 */
+    scrollbar-width: none;
+    /* Firefox 対応 */
+}
+
+#Reference::-webkit-scrollbar {
+    /* Chrome, Safari 対応 */
+    display: none;
+}
+
+#CommandArea {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    position: relative;
+}
+
+#CommandButton {
+    position: relative;
+    height: 13%;
+}
+
+#CommandButtonMiddle {
+    position: absolute;
+    height: 8.5vh;
+    width: 20vh;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+#CommandStartButton {
+    height: auto;
+    width: 45%;
+    margin: 0;
+    padding: 0;
+    outline: none;
+}
+
+#CommandStopButton {
+    height: auto;
+    width: 45%;
+    margin: 0;
+    padding: 0;
+    outline: none;
+}
+
+#CommandStartButton:hover {
+    opacity: 0.6;
+}
+
+#CommandStopButton:hover {
+    opacity: 0.6;
+}
+
+#Editer {
+    position: absolute;
+    height: 85%;
+    margin: 10px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#CommandArea textarea {
+    resize: none;
+    font-family: CodeFont;
+    font-size: 15pt;
+    width: 100%;
+    height: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.RefrenceCode {
+    font-weight: 900;
+    padding-top: 1vh;
+    padding-left: 3%;
+    padding-bottom: 1vh;
+    border-bottom: solid 0.1vh #000000;
+}
+
+value {
+    color: #da171f;
+}
+
+.RefrenceGuide {
+    font-weight: 400;
+    padding-top: 1vh;
+    padding-left: 4%;
+    padding-bottom: 1vh;
+}
+
+.RefrenceExample {
+    font-weight: 400;
+    padding-top: 1vh;
+    padding-left: 6%;
+    padding-bottom: 1vh;
+}
+
+.Chapter {
+    text-align: center;
+    font-size: 1.8vw;
+    margin-top: 1.8vh;
+    margin-bottom: 0.5vh;
+    font-family: TitleFont;
+    border-bottom: solid 0.3vh #000000;
+}
+
+#ConsoleArea {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#ConsoleTitle {
+    position: absolute;
+    width: 100%;
+    height: 7vh;
+    font-family: TitleFont;
+    font-size: 2vw;
+    border-bottom: solid 0.3vh #000000;
+}
+
+#Console {
+    position: absolute;
+    width: 100%;
+    height: 93vh;
+    top: 7vh;
+    font-family: CodeFont;
+    overflow-y: scroll;
+}
+
+.Consolevalue {
+    font-size: 2vh;
+    font-family: CodeFontLight;
+    padding-left: 4vh;
+    line-height: 2vh;
+    background: url(image/Right-Arrow.png) no-repeat;
+    background-size: 4vh 2vh;
+    white-space: nowrap;
+}
+
+#Console p {
+    margin: 0.5vh;
+}
+
+#Console::-webkit-scrollbar {
+    height: 2vh;
+}
+
+#Console::-webkit-scrollbar-track {
+    background: #e6e6e6;
+}
+
+#Console::-webkit-scrollbar-thumb {
+    background: #8b8b8b;
+}
+
+#Console::-webkit-scrollbar:vertical {
+    display: none;
+}
+
+red {
+    color: #ff000a;
 }

@@ -1,12 +1,19 @@
 CACHE MANIFEST
-# Version 3
+# Version 5
 CACHE:
 index.html
+command-standalone.html
 style.css
 data/bluejelly.js
+data/CodeFont.otf
+data/CodeFontLight.otf
 data/MainFont.ttf
 data/VarsionFont.ttf
 data/TitleFont.ttf
+image/Command.png
+image/CommandStart.png
+image/CommandStop.png
+image/Controle.png
 image/Enter.png
 image/Error.png
 image/FullscreenOn.png
@@ -22,6 +29,7 @@ image/LightOn.png
 image/LightOff.png
 image/Loading.png
 image/Question.png
+image/Right-Arrow.png
 image/Setting.png
 image/StartButton.png
 image/TitleLogo.png
