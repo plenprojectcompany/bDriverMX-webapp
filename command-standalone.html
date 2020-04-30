@@ -86,7 +86,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.alpha2.2 - Command Controle</div>
+			<div id='Varsion'>v.alpha2.3 - Command Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -1241,11 +1241,13 @@
 				Check4 = Check1[i].match(/(?<=[)]{).*(?=})/g);
 				if (Check4) {
 					Check6.push(Check4[0]);
+				}else if(i == Check3){
+					Check4 = Check1[i].match(/^.*?(?=})/g);
+					if (Check4) {
+						Check6.push(Check4[0]);
+					}
 				}
 			}
-
-			console.log(Check5);
-			console.log(Check6);
 
 			var Check7 = '';
 			var Check8 = 0;
@@ -1260,24 +1262,27 @@
 			}
 			Check7 += '}';
 
-			//If関数を削除
-			var Check9 = '';
-			for (var i = Check5.length; i < Check1.length; i++) {
-				Check9 += Check1[i];
-			}
-			StringScript = Check9;
-
 			//前処理
 			if(String(Check1[0].match(/^if/g)) == 'null'){
 				StartCommand(Check1[0]);
 			}
 
+
 			StartCommand(Check7);
 
-			StartCommand(Check6[IfFlag]);
+			//If関数を削除
+			var Check9 = '';
+			for (var i = Check3; i < Check1.length; i++) {
+				if(i == Check3){
+					Check1[i] = Check1[i].replace(/^.*?}/g,'');
+				}
+				Check9 += Check1[i];
+			}
+			StringScript = Check6[IfFlag] + Check9;
+
+			CheckCommand();
 
 			IfFlag = 0;
-
 		} else if (CheckForCount > CheckIfCount && CheckForCount > CheckWhileCount && CheckForCount > CheckWaitCount) {
 			//先頭にforが来る場合
 			//Whileコマンド全体を切り出す
