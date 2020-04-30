@@ -1532,6 +1532,7 @@
 
 	//ループ処理
 	function While(Conditional, ActionFunction, mode) {
+		console.log();
 		if (LoopCount == 0) {
 			//Wait関数の個数を数える
 			LoopFunctionList = [];
@@ -1539,7 +1540,6 @@
 
 			var Check4 = ActionFunction.split(/(?<=;}*)/);
 			var Check5 = '';
-			console.log(Check4);
 
 			for (var i = 0; i < Check4.length; i++) {
 				if (String(Check4[i].match(/Wait[(]/g)) != 'null' && String(Check4[i].match(/".*?Wait[(]/g)) == 'null') {
@@ -1555,10 +1555,10 @@
 			}
 
 			LoopCount = LoopFunctionList.length;
-		}
 
-		if(mode == 1){
-			LoopCount+=1;
+			if(mode == 1){
+				LoopCount+=1;
+			}
 		}
 
 		//関数を実行
