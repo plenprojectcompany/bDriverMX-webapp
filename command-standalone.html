@@ -1346,7 +1346,7 @@
 				//ループしない関数を実行
 				StartCommand(Check6);
 				//For関数を実行
-				While(Check9[1], Check4 + Check9[2] + ';');
+				While(Check9[1], Check4 + Check9[2] + ';',0);
 			} else {
 				ErrorOccurd();
 				ErrorTypeStartCommand = '構文エラー';
@@ -1407,7 +1407,7 @@
 			//ループしない関数を実行
 			StartCommand(Check6);
 			//While関数を実行
-			While(Check5, Check4);
+			While(Check5, Check4,1);
 
 		} else if (CheckWaitCount > CheckIfCount && CheckWaitCount > CheckForCount && CheckWaitCount > CheckWhileCount) {
 			//先頭にWaitが来る場合
@@ -1531,7 +1531,7 @@
 	};
 
 	//ループ処理
-	function While(Conditional, ActionFunction) {
+	function While(Conditional, ActionFunction, mode) {
 		if (LoopCount == 0) {
 			//Wait関数の個数を数える
 			LoopFunctionList = [];
@@ -1539,9 +1539,10 @@
 
 			var Check4 = ActionFunction.split(/(?<=;}*)/);
 			var Check5 = '';
+			console.log(Check4);
 
 			for (var i = 0; i < Check4.length; i++) {
-				if (Check4[i].match(/Wait[(]/g) && Check4[i].match(/".*?Wait[(]/g) == null) {
+				if (String(Check4[i].match(/Wait[(]/g)) != 'null' && String(Check4[i].match(/".*?Wait[(]/g)) == 'null') {
 					LoopFunctionList.push(Check5);
 					LoopWaitList.push(Check4[i]);
 					Check5 = '';
@@ -1554,6 +1555,10 @@
 			}
 
 			LoopCount = LoopFunctionList.length;
+		}
+
+		if(mode == 1){
+			LoopCount+=1;
 		}
 
 		//関数を実行
@@ -1570,17 +1575,17 @@
 			if (Check3 <= 0) {
 				ErrorOccurd();
 				Log('<red>実行エラー</red><br>　Wait関数には0より大きい実数を渡してください<br>現在 : Wait(<red>' + Check3 + '</red>);');
-				While(Conditional, ActionFunction);
+				While(Conditional, ActionFunction,mode);
 			} else {
 				WaitId = setTimeout(function() {
-					While(Conditional, ActionFunction);
+					While(Conditional, ActionFunction,mode);
 				}, Check3 * 1000);
 			}
 		} else {
 			eval(VariableString);
 			if (eval(Conditional)) {
 				//ループ継続
-				While(Conditional, ActionFunction);
+				While(Conditional, ActionFunction,mode);
 			} else {
 				//ループ終了
 				//For文の変数を削除する
