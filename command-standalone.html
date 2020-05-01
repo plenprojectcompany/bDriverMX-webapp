@@ -1381,7 +1381,7 @@
 				}
 			}
 
-			StringScript = Check11+Check10;
+			StringScript = Check11 + Check10;
 
 			//If処理完了
 			//通常動作に戻る
@@ -1939,6 +1939,32 @@
 				var After = Editer.value.substr(Select, Editer.value.length);
 				Editer.value = Before + '	' + After;
 				Editer.setSelectionRange(Select + 1, Select + 1);
+			}
+		});
+
+	//エンターキーを押した際の挙動
+	Editer.addEventListener('keydown',
+		event => {
+			if (event.key == 'Enter') {
+
+				var Select = Editer.selectionStart;
+				var Before = Editer.value.substr(0, Select);
+				var After = Editer.value.substr(Select, Editer.value.length);
+
+				var flag = false;
+				if (After == '') {
+					flag = true;
+				} else if (After.match(/^\s/g)) {
+					flag = true;
+				}
+
+				if (flag && Before.match(/{$/g)) {
+					event.preventDefault();
+					Editer.value = Before + '\n\n}' + After;
+					Editer.setSelectionRange(Select + 1, Select + 1);
+
+					Editer.scrollTop = Editer.scrollTop + 48;
+				}
 			}
 		});
 

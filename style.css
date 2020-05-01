@@ -715,7 +715,7 @@ body::-webkit-scrollbar {
 #CommandArea textarea {
     resize: none;
     font-family: CodeFont;
-    font-size: 15pt;
+    font-size: 12pt;
     width: 100%;
     height: 100%;
     -webkit-box-sizing: border-box;
