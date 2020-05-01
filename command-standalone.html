@@ -984,7 +984,8 @@
 		'RotateMaxBase', 'RotateMin', 'Rotate', 'RotateSet', 'RoRotateBefore', 'LightActive', 'GyroActive', 'KeyBoard', 'Key', 'KeyValue', 'Setting', 'SettiSettingString', 'SettingNow', 'FirstTime', 'ScriptList', 'ScriptCheckList', 'VariableList',
 		'ValueList',
 		'StringList', 'FinishFlag', 'click1', 'click2', 'Traces', 'ConsoleLog', 'MoveFlag', 'NowBorder1', 'NowBorder2', 'NowBorder3', 'StartX1', 'StartX2', 'BeforeX', 'WaitId', 'CommandAction', 'ActionCommand', 'VariableString', 'LoopCount',
-		'LoopFunctionList', 'LoopWaitList', 'ForVariableList', 'StartCommand1', 'ErrorMessageStartCommand', 'ErrorTypeStartCommand', 'StacktraseCheckStartCommand', 'lineStartCommand', 'positionStartCommand', 'IfFlag', 'EndlessLoopCount', 'ErrorHappend'
+		'LoopFunctionList', 'LoopWaitList', 'ForVariableList', 'StartCommand1', 'ErrorMessageStartCommand', 'ErrorTypeStartCommand', 'StacktraseCheckStartCommand', 'lineStartCommand', 'positionStartCommand', 'IfFlag', 'EndlessLoopCount', 'ErrorHappend',
+		'LoopBreakFlag'
 	];
 
 	var Traces = [];
@@ -1021,6 +1022,8 @@
 
 	var EndlessLoopCount;
 	var ErrorHappend = false;
+
+	var LoopBreakFlag = false;
 
 
 	//コマンド開始ボタン
@@ -1133,7 +1136,7 @@
 				var ScriptCheck1 = ScriptCheck.replace(/=.*/g, '');
 				var ScriptCheck2 = ScriptCheck.replace(/.*=/g, '');
 
-				if(ScriptCheck1 == ScriptCheck2){
+				if (ScriptCheck1 == ScriptCheck2) {
 					ScriptCheck2 = undefined;
 				}
 
@@ -1525,7 +1528,7 @@
 
 			//ループしない関数を実行
 			StartCommand(Check6);
-			console.log(ValueList);
+
 			//While関数を実行
 			VariableString = '';
 			for (var i = 0; i < VariableList.length; i++) {
@@ -1665,8 +1668,19 @@
 	function While(Conditional, ActionFunction) {
 
 		var WhileOK = true;
+		LoopBreakFlag = false;
 
 		if (LoopCount == 0) {
+			//オリジナルWihile関数内のbreakを修正
+			var BreakCheck = ActionFunction.split(/(?=[(].*?[)][{].*?[}])|(?<=[(].*?[)][{].*?[}])/g);
+			BreakCheck[0] = BreakCheck[0].replace(/break;/g, 'LoopBreakFlag=true;');
+			for (var i = 1; i < BreakCheck.length; i++) {
+				if (BreakCheck[i - 1].match(/while$|for$/) == null) {
+					BreakCheck[i] = BreakCheck[i].replace(/break;/g, 'LoopBreakFlag=true;');
+				}
+			}
+			ActionFunction = BreakCheck.join('');
+
 			//While条件を満たしているか確認
 			eval(VariableString);
 			if (eval(Conditional) == false) {
@@ -1706,7 +1720,16 @@
 			LoopCount--;
 
 			//Wait関数を実行
-			if (LoopCount > 0) {
+			if (LoopBreakFlag) {
+				//ループ中断
+				//For文の変数を削除する
+				for (var i = 0; i < ForVariableList.length; i++) {
+					VariableList.splice(VariableList.length - i - 1, 1);
+					ValueList.splice(ValueList.length - i - 1, 1);
+				}
+				ForVariableList = [];
+				CheckCommand();
+			} else if (LoopCount > 0) {
 				var Check3 = String(LoopWaitList[LoopWaitList.length - LoopCount]).match(/(?<=Wait[(]).*?(?=[)];)/g);
 
 				var ErrorFlag = false;
