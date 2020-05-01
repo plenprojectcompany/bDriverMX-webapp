@@ -86,7 +86,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.alpha2.4 - Command Controle</div>
+			<div id='Varsion'>v.alpha2.5 - Command Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -1133,6 +1133,10 @@
 				var ScriptCheck1 = ScriptCheck.replace(/=.*/g, '');
 				var ScriptCheck2 = ScriptCheck.replace(/.*=/g, '');
 
+				if(ScriptCheck1 == ScriptCheck2){
+					ScriptCheck2 = undefined;
+				}
+
 				//変数リストに追加する
 				if (VariableList.indexOf(ScriptCheck1) == -1 && ScriptCheck.match(/[(]/) == null) {
 					VariableList.push(ScriptCheck1);
@@ -1456,7 +1460,7 @@
 				//For関数を実行
 				VariableString = '';
 				for (var i = 0; i < VariableList.length; i++) {
-					if (ValueList[i]) {
+					if (ValueList[i] != null) {
 						VariableString += 'var ' + VariableList[i] + '=' + ValueList[i] + ';';
 					}
 				}
@@ -1521,13 +1525,15 @@
 
 			//ループしない関数を実行
 			StartCommand(Check6);
+			console.log(ValueList);
 			//While関数を実行
 			VariableString = '';
 			for (var i = 0; i < VariableList.length; i++) {
-				if (ValueList[i]) {
+				if (ValueList[i] != null) {
 					VariableString += 'var ' + VariableList[i] + '=' + ValueList[i] + ';';
 				}
 			}
+
 			While(Check5, Check4);
 
 		} else if (CheckWaitCount > CheckIfCount && CheckWaitCount > CheckForCount && CheckWaitCount > CheckWhileCount) {
@@ -1568,8 +1574,10 @@
 		try {
 			if (ActionCommand != '') {
 				VariableString = '';
-				for (var StartCommand1 = 0; StartCommand1 < VariableList.length; StartCommand1++) {
-					VariableString += 'var ' + VariableList[StartCommand1] + '=' + ValueList[StartCommand1] + ';';
+				for (var i = 0; i < VariableList.length; i++) {
+					if (ValueList[i] != null) {
+						VariableString += 'var ' + VariableList[i] + '=' + ValueList[i] + ';';
+					}
 				}
 
 				//処理を実行
