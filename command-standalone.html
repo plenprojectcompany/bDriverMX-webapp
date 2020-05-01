@@ -1118,7 +1118,6 @@
 				var ScriptCheck = ScriptCheckList[i].match(/.*?=/g);
 				var ScriptCheck1 = ScriptCheck[0].replace('var', '');
 				ScriptCheck1 = ScriptCheck1.replace('=', '');
-				ScriptCheck1 = ScriptCheck1.replace(/\s/g, '');
 
 				if (ExistVariableList.indexOf(ScriptCheck1) != -1 || ExistFunctionList.indexOf(ScriptCheck1) != -1 || ExistOriginalFunctionList.indexOf(ScriptCheck1) != -1) {
 					ErrorVariable = ScriptCheck1;
@@ -1135,13 +1134,14 @@
 				ScriptCheck = ScriptCheck.replace(';', '');
 				var ScriptCheck1 = ScriptCheck.replace(/=.*/g, '');
 				var ScriptCheck2 = ScriptCheck.replace(/.*=/g, '');
+				ScriptCheck2 = ScriptCheck2.replace(/(?<=^new)/g, ' ');
 
 				if (ScriptCheck1 == ScriptCheck2) {
 					ScriptCheck2 = undefined;
 				}
 
 				//変数リストに追加する
-				if (VariableList.indexOf(ScriptCheck1) == -1 && ScriptCheck.match(/[(]/) == null) {
+				if (VariableList.indexOf(ScriptCheck1) == -1 && ScriptCheck.match(/for[(]|while[(]/g) == null) {
 					VariableList.push(ScriptCheck1);
 					ValueList.push(ScriptCheck2);
 				}
@@ -1176,6 +1176,7 @@
 			for (var i = 0; i < DeleteSpace.length; i += 2) {
 				DeleteSpace[i] = DeleteSpace[i].replace(/\s/g, '');
 				DeleteSpace[i] = DeleteSpace[i].replace(/(?<=var)/g, ' ');
+				DeleteSpace[i] = DeleteSpace[i].replace(/(?<=new)/g, ' ');
 				DeleteSpace[i] = DeleteSpace[i].replace(/elseif/g, 'else if');
 			}
 
@@ -1187,6 +1188,14 @@
 	};
 
 	function CheckCommand() {
+		//While関数を実行
+		VariableString = '';
+		for (var i = 0; i < VariableList.length; i++) {
+			if (ValueList[i] != null) {
+				VariableString += 'var ' + VariableList[i] + '=' + ValueList[i] + ';';
+			}
+		}
+
 		//先頭にある変数を記録し、削除する
 		var DeleteVar1 = StringScript.split(/(?<=;)/g);
 		for (var i = 0; i < DeleteVar1.length; i++) {
@@ -1461,13 +1470,6 @@
 				//ループしない関数を実行
 				StartCommand(Check6);
 				//For関数を実行
-				VariableString = '';
-				for (var i = 0; i < VariableList.length; i++) {
-					if (ValueList[i] != null) {
-						VariableString += 'var ' + VariableList[i] + '=' + ValueList[i] + ';';
-					}
-				}
-
 				While(Check9[1], Check4 + Check9[2] + ';');
 			} else {
 				ErrorOccurd();
@@ -1529,14 +1531,6 @@
 			//ループしない関数を実行
 			StartCommand(Check6);
 
-			//While関数を実行
-			VariableString = '';
-			for (var i = 0; i < VariableList.length; i++) {
-				if (ValueList[i] != null) {
-					VariableString += 'var ' + VariableList[i] + '=' + ValueList[i] + ';';
-				}
-			}
-
 			While(Check5, Check4);
 
 		} else if (CheckWaitCount > CheckIfCount && CheckWaitCount > CheckForCount && CheckWaitCount > CheckWhileCount) {
@@ -1589,7 +1583,7 @@
 				//現時点での変数値を記録する
 				VariableString = '';
 				for (var StartCommand1 = 0; StartCommand1 < VariableList.length; StartCommand1++) {
-					if (eval('typeof ' + VariableList[StartCommand1]) !== 'undefined') {
+					if (eval('typeof ' + VariableList[StartCommand1]) !== 'undefined' && String(ValueList[StartCommand1]).match(/^new /g) == null) {
 						ValueList[StartCommand1] = eval(VariableList[StartCommand1]);
 						VariableString += 'var ' + VariableList[StartCommand1] + '=' + eval(VariableList[StartCommand1]) + ';';
 					}
