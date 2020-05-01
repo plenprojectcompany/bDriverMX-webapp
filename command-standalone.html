@@ -985,7 +985,7 @@
 		'ValueList',
 		'StringList', 'FinishFlag', 'click1', 'click2', 'Traces', 'ConsoleLog', 'MoveFlag', 'NowBorder1', 'NowBorder2', 'NowBorder3', 'StartX1', 'StartX2', 'BeforeX', 'WaitId', 'CommandAction', 'ActionCommand', 'VariableString', 'LoopCount',
 		'LoopFunctionList', 'LoopWaitList', 'ForVariableList', 'StartCommand1', 'ErrorMessageStartCommand', 'ErrorTypeStartCommand', 'StacktraseCheckStartCommand', 'lineStartCommand', 'positionStartCommand', 'IfFlag', 'EndlessLoopCount', 'ErrorHappend',
-		'LoopBreakFlag'
+		'LoopBreakFlag','CommandNow'
 	];
 
 	var Traces = [];
@@ -1022,13 +1022,14 @@
 
 	var EndlessLoopCount;
 	var ErrorHappend = false;
+	var CommandNow = false;
 
 	var LoopBreakFlag = false;
 
 
 	//コマンド開始ボタン
 	CommandStart.addEventListener('click', function() {
-		if (click1 && FinishFlag == 0) {
+		if (click1 && FinishFlag == 0 && CommandNow == false) {
 			click1 = false;
 			OnClickStart();
 			setTimeout(click1 = true, 1000);
@@ -1045,6 +1046,8 @@
 	});
 
 	function CommandFinish() {
+		CommandNow = false;
+
 		//初期位置に戻す
 		PortValue = 0;
 		ServoControll(100);
@@ -1069,6 +1072,7 @@
 	function OnClickStart() {
 		EndlessLoopCount = 0;
 		ErrorHappend = false;
+		CommandNow = true;
 
 		var OriginalCode = {
 			savecode: Editer.value
@@ -1756,6 +1760,7 @@
 					if (EndlessLoopCount > 300) {
 						Log('<red>無限ループ</red><br>　無限ループを検出しました。<br>エラー発生箇所 : ' + ActionFunction);
 						alert('無限ループを検出しました！\nwhile,for関数を確認してください。');
+						CommandFinish();
 					} else {
 						EndlessLoopCount++;
 						While(Conditional, ActionFunction);
