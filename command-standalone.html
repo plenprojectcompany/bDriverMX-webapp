@@ -1998,10 +1998,98 @@
 			}
 		});
 
-	//左側境界線の処理
+	//境界線の処理
+	//タッチ操作
+	Border1.ontouchstart = function(e){
+		MoveFlag = 1;
+		StartX1 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder1 / 100;
+		StartX2 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder2 / 100;
+	}
+	Border2.ontouchstart = function(e){
+		MoveFlag = 2;
+		StartX1 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder1 / 100;
+		StartX2 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder2 / 100;
+	}
+	document.ontouchend = function(e) {
+		if (MoveFlag > 0) {
+			MoveFlag = 0;
+			localStorage.setItem('SaveData2', NowBorder1 + ',' + NowBorder3);
+		}
+	}
+	document.ontouchmove = function(e) {
 
+		if (MoveFlag == 1) {
+			var flag = true;
+
+			NowBorder1 = (e.changedTouches[0].pageX - StartX1) / window.innerWidth * 100;
+			NowBorder2 = 100 - NowBorder1 - NowBorder3;
+
+			if (NowBorder1 < 15) {
+				NowBorder1 = 15;
+				NowBorder2 = 100 - NowBorder1 - NowBorder3;
+				MoveFlag = 3;
+				BeforeX = e.changedTouches[0].pageX;
+			}
+
+			if (NowBorder2 < 15) {
+				NowBorder2 = 15;
+				NowBorder1 = 100 - NowBorder2 - NowBorder3;
+				MoveFlag = 4;
+				BeforeX = e.changedTouches[0].pageX;
+			}
+
+			Area1.style.width = NowBorder1 + "%";
+			Area2.style.width = NowBorder2 + "%";
+		} else if (MoveFlag == 2) {
+
+			NowBorder2 = (e.changedTouches[0].pageX - StartX2) / window.innerWidth * 100;
+			NowBorder3 = 100 - NowBorder1 - NowBorder2;
+
+			if (NowBorder2 < 15) {
+				NowBorder2 = 15;
+				NowBorder3 = 100 - NowBorder1 - NowBorder2;
+				MoveFlag = 5;
+				BeforeX = e.changedTouches[0].pageX;
+			}
+
+			if (NowBorder3 < 15) {
+				NowBorder3 = 15;
+				NowBorder2 = 100 - NowBorder1 - NowBorder3;
+				MoveFlag = 6;
+				BeforeX = e.changedTouches[0].pageX;
+			}
+
+			Area2.style.width = NowBorder2 + "%";
+			Area3.style.width = NowBorder3 + "%";
+		} else if (MoveFlag == 3) {
+			if (e.changedTouches[0].pageX > BeforeX + 10) {
+				MoveFlag = 1;
+			}
+		} else if (MoveFlag == 4) {
+			if (e.changedTouches[0].pageX < BeforeX + 10) {
+				MoveFlag = 1;
+			}
+		} else if (MoveFlag == 5) {
+			if (e.changedTouches[0].pageX > BeforeX + 10) {
+				MoveFlag = 2;
+			}
+		} else if (MoveFlag == 6) {
+			if (e.changedTouches[0].pageX < BeforeX + 10) {
+				MoveFlag = 2;
+			}
+		}
+
+		Area1FontSizeSet();
+	}
+
+	//マウス操作
 	Border1.onmousedown = function(e) {
 		MoveFlag = 1;
+		StartX1 = e.clientX - document.body.clientWidth * NowBorder1 / 100;
+		StartX2 = e.clientX - document.body.clientWidth * NowBorder2 / 100;
+	}
+	Border2.onmousedown = function(e) {
+		MoveFlag = 2;
 		StartX1 = e.clientX - document.body.clientWidth * NowBorder1 / 100;
 		StartX2 = e.clientX - document.body.clientWidth * NowBorder2 / 100;
 	}
@@ -2098,11 +2186,6 @@
 		Area3.style.width = NowBorder3 + "%";
 
 	};
-	Border2.onmousedown = function(e) {
-		MoveFlag = 2;
-		StartX1 = e.clientX - document.body.clientWidth * NowBorder2 / 100;
-		StartX2 = e.clientX - document.body.clientWidth * NowBorder2 / 100;
-	}
 </script>
 
 </html>
