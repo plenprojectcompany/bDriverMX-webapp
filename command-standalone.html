@@ -86,7 +86,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.alpha2.5 - Command Controle</div>
+			<div id='Varsion'>v.alpha2.6 - Command Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -162,6 +162,17 @@
 									<td>Log("Hi!");</td>
 									<td> → </td>
 									<td>「Hi!」をコンソールに表示</td>
+								</tr>
+							</table>
+						</div>
+						<div class='RefrenceCode'>Random(<value>整数1</value>,<value>整数2</value>);</div>
+						<div class='RefrenceGuide'>整数1~整数2の乱数を返します。</div>
+						<div class='RefrenceExample'>
+							<table>
+								<tr>
+									<td>var N = Random(1,3);</td>
+									<td> → </td>
+									<td>変数Nに1~3の整数が代入</td>
 								</tr>
 							</table>
 						</div>
@@ -794,6 +805,7 @@
 			ble.write('UUID5', WriteArray);
 		}
 
+		//Log(PortValue);
 		//Log(ServoValue);
 		//Log(PWMValue);
 		//Log('============');
@@ -979,13 +991,13 @@
 	const ExistFunctionList = ['DisplayOut', 'DisplayLoading', 'DestroyLoading', 'ScanStart', 'OnConnectFinish', 'PWM', 'ServoControll', 'SendData', 'Save', 'SettingSet', 'CommandFinish', 'OnClickStart', 'StartCommand', 'Loop', 'ErrorOccurd',
 		'ErrorSleep'
 	];
-	const ExistOriginalFunctionList = ['Motor', 'Servo', 'Port', 'Wait', 'Log'];
+	const ExistOriginalFunctionList = ['Motor', 'Servo', 'Port', 'Wait', 'Log', 'Random'];
 	const ExistVariableList = ['userAgent', 'Support', 'Device', 'Browser', 'stage', 'ReconnectCount', 'LoadingOpacity', 'Fullscreen', 'PWMRange', 'PWMMin', 'ServoMaxBase', 'ServoMax', 'ServoRange', 'ServoAdj', 'SSendTime', 'PWMValue', 'PortValue',
 		'RotateMaxBase', 'RotateMin', 'Rotate', 'RotateSet', 'RoRotateBefore', 'LightActive', 'GyroActive', 'KeyBoard', 'Key', 'KeyValue', 'Setting', 'SettiSettingString', 'SettingNow', 'FirstTime', 'ScriptList', 'ScriptCheckList', 'VariableList',
 		'ValueList',
 		'StringList', 'FinishFlag', 'click1', 'click2', 'Traces', 'ConsoleLog', 'MoveFlag', 'NowBorder1', 'NowBorder2', 'NowBorder3', 'StartX1', 'StartX2', 'BeforeX', 'WaitId', 'CommandAction', 'ActionCommand', 'VariableString', 'LoopCount',
 		'LoopFunctionList', 'LoopWaitList', 'ForVariableList', 'StartCommand1', 'ErrorMessageStartCommand', 'ErrorTypeStartCommand', 'StacktraseCheckStartCommand', 'lineStartCommand', 'positionStartCommand', 'IfFlag', 'EndlessLoopCount', 'ErrorHappend',
-		'LoopBreakFlag','CommandNow'
+		'LoopBreakFlag', 'CommandNow'
 	];
 
 	var Traces = [];
@@ -1104,8 +1116,45 @@
 			ScriptCheckList[i] = ScriptList[i].replace(/\s/g, '');
 			ScriptCheckList[i] = ScriptCheckList[i].replace(/".*?"/g, '""');
 
+			//文末に;か{}がついているか
+			var LastCheck1 = ScriptCheckList[i].match(/^\s*$/g);
+			var LastCheck2 = ScriptCheckList[i].match(/[{};]$/g);
+			if (LastCheck1 == null && LastCheck2 == null) {
+				ScriptList[i] = ScriptList[i] + ';';
+			}
+
+			//letをvarに変換
+			var LetCheck1 = ScriptList[i].match(/let\s/g);
+			var LetCheck2 = ScriptList[i].match(/".*?let\s/g);
+			if (LetCheck1 != null && LetCheck2 == null) {
+				ScriptList[i] = ScriptList[i].replace(/let\s/g, 'var ');
+				ScriptCheckList[i] = ScriptCheckList[i].replace(/let/g, 'var');
+			}
+
+			//MicroBit関連
+			if (ScriptCheckList[i].match(/^bcore./g)) {
+				ScriptList[i] = ScriptList[i].replace(/bcore./g, '');
+			}
+			if (ScriptCheckList[i].match(/^basic.showString/g)) {
+				ScriptList[i] = ScriptList[i].replace(/basic.showString/g, 'Log');
+			}
+			if (ScriptCheckList[i].match(/^basic.showNumber/g)) {
+				ScriptList[i] = ScriptList[i].replace(/basic.showNumber/g, 'Log');
+			}
+			if (ScriptCheckList[i].match(/(?<=basic.pause[(]).*?(?=[)])/g)) {
+				var Secounds = ScriptCheckList[i].match(/(?<=basic.pause[(]).*?(?=[)])/g);
+				if (Number(Secounds[0]) && Number(Secounds[0]) > 0) {
+					ScriptList[i] = ScriptList[i].replace(/basic.pause[(].*?[)]/g, 'Wait(' + Number(Secounds[0]) / 1000 + ')');
+				} else {
+					ScriptList[i] = ScriptList[i].replace(/basic.pause[(].*?[)]/g, 'Wait(0)');
+				}
+			}
+			if (ScriptCheckList[i].match(/Math.randomRange[(].*?[)]/g)) {
+				ScriptList[i] = ScriptList[i].replace(/Math.randomRange[(]/g, 'Random(');
+			}
+
 			//関数チェックを行う
-			if (ScriptCheckList[i].match(/^\s*[A-Z,a-z,0-9]+[(].*[)][;]/g)) {
+			if (ScriptCheckList[i].match(/^\s*[A-Z,a-z,0-9]+[(].*[)][; ]/g)) {
 
 				var ScriptCheck = String(ScriptCheckList[i].match(/.*?[(]/));
 				ScriptCheck = ScriptCheck.replace('(', '');
@@ -1192,7 +1241,7 @@
 	};
 
 	function CheckCommand() {
-		//While関数を実行
+		//変数の更新
 		VariableString = '';
 		for (var i = 0; i < VariableList.length; i++) {
 			if (ValueList[i] != null) {
@@ -1473,6 +1522,15 @@
 
 				//ループしない関数を実行
 				StartCommand(Check6);
+
+				//変数の更新
+				VariableString = '';
+				for (var i = 0; i < VariableList.length; i++) {
+					if (ValueList[i] != null) {
+						VariableString += 'var ' + VariableList[i] + '=' + ValueList[i] + ';';
+					}
+				}
+
 				//For関数を実行
 				While(Check9[1], Check4 + Check9[2] + ';');
 			} else {
@@ -1480,13 +1538,14 @@
 				ErrorTypeStartCommand = '構文エラー';
 				ErrorMessageStartCommand = '　for関数の構文が誤っています。<br>　スクリプトを確認してください。';
 				Log('<red>構文エラー</red><br>　for関数の構文が誤っています。<br>　スクリプトを確認してください。');
-				Log('エラー発生箇所<br>for(<red>' + Check5 + '</red>){<br><br>');
+				Log('エラー発生箇所<br>for(<red>' + Check5 + '</red>){<br>');
+				CommandFinish();
 			}
 
 		} else if (CheckWhileCount > CheckIfCount && CheckWhileCount > CheckForCount && CheckWhileCount > CheckWaitCount) {
 			//先頭にwhileが来る場合
 			//Whileコマンド全体を切り出す
-			var Check1 = StringScript.split(/(?<={)|(?<=})/g, );
+			var Check1 = StringScript.split(/(?<={)|(?<=})/g);
 			var Check2 = 0;
 			var Check3 = 0;
 			var Check4 = '';
@@ -1541,8 +1600,14 @@
 			//先頭にWaitが来る場合
 			//Waitコマンドまでを切り出す
 			var Check = StringScript.match(/^.*?Wait[(].*?[)][;]/g);
-			StringScript = StringScript.substring(Check[0].length, StringScript.length);
-			StartCommand(Check[0]);
+			if (Check != null) {
+				StringScript = StringScript.substring(Check[0].length, StringScript.length);
+				StartCommand(Check[0]);
+			} else {
+				Log('<red>構文エラー</red><br>　構文に間違いがあります。<br>　スクリプトの構文を確認してください。');
+				CommandAction = true;
+				CommandFinish();
+			}
 
 		} else {
 			//全て実行
@@ -1655,9 +1720,13 @@
 				if (PartArray[0])
 					var Part3 = Part2.substr(Number(String(PartArray[0]).length), Part2.length);
 
-				Log('エラー発生箇所<br>' + Part1 + '<red>' + PartArray[0] + '</red>' + Part3 + '<br><br>');
+				Log('エラー発生箇所<br>' + Part1 + '<red>' + PartArray[0] + '</red>' + Part3 + '<br>');
+				CommandAction = true;
+				CommandFinish();
 			} else {
-				Log('<red> ' + ErrorTypeStartCommand + '</red><br>' + ErrorMessageStartCommand + '<br><br>');
+				Log('<red> ' + ErrorTypeStartCommand + '</red><br>' + ErrorMessageStartCommand + '<br>');
+				CommandAction = true;
+				CommandFinish();
 			}
 		}
 	};
@@ -1760,6 +1829,7 @@
 					if (EndlessLoopCount > 300) {
 						Log('<red>無限ループ</red><br>　無限ループを検出しました。<br>エラー発生箇所 : ' + ActionFunction);
 						alert('無限ループを検出しました！\nwhile,for関数を確認してください。');
+						CommandAction = true;
 						CommandFinish();
 					} else {
 						EndlessLoopCount++;
@@ -1793,6 +1863,13 @@
 		ConsoleLog += "<p class='Consolevalue'>" + value + '</p>';
 		Console.innerHTML = ConsoleLog;
 		Console.scrollTop = Console.scrollHeight;
+	}
+
+	//ランダム関数
+	function Random(min, max) {
+		var random = Math.floor(Math.random() * (max + 1 - min)) + min;
+
+		return random;
 	}
 
 	//一時停止処理
@@ -2000,12 +2077,12 @@
 
 	//境界線の処理
 	//タッチ操作
-	Border1.ontouchstart = function(e){
+	Border1.ontouchstart = function(e) {
 		MoveFlag = 1;
 		StartX1 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder1 / 100;
 		StartX2 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder2 / 100;
 	}
-	Border2.ontouchstart = function(e){
+	Border2.ontouchstart = function(e) {
 		MoveFlag = 2;
 		StartX1 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder1 / 100;
 		StartX2 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder2 / 100;
@@ -2167,18 +2244,19 @@
 
 	function Area1FontSizeSet() {
 
-		var CodeFontSize = 0.6;
-		var GuideFontSize = 0.4;
+		var CodeFontSize = 0.05;
+		var GuideFontSize = 0.04;
 		var ExampleFontSize = 0.35;
 
 		for (i = 0; i < RefrenceCode.length; i++) {
-			RefrenceCode[i].style.fontSize = NowBorder1 * CodeFontSize + 'pt';
+			RefrenceCode[i].style.fontSize = NowBorder1 * CodeFontSize + 'rem';
 		}
 		for (i = 0; i < RefrenceGuide.length; i++) {
-			RefrenceGuide[i].style.fontSize = NowBorder1 * GuideFontSize + 'pt';
+			RefrenceGuide[i].style.fontSize = NowBorder1 * GuideFontSize + 'rem';
 		}
 		for (i = 0; i < RefrenceExample.length; i++) {
-			RefrenceExample[i].style.fontSize = NowBorder1 * ExampleFontSize + 'pt';
+			//RefrenceExample[i].style.fontSize = NowBorder1 * ExampleFontSize + 'pt';
+			RefrenceExample[i].style.fontSize = '0.7rem';
 		}
 
 		Area1.style.width = NowBorder1 + "%";
