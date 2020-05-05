@@ -787,7 +787,7 @@ value {
 }
 
 .Consolevalue {
-  font-size: 0.8rem;
+  font-size: 1.7vh;
   font-family: CodeFontLight;
   padding-left: 4vh;
   line-height: 2vh;
@@ -797,7 +797,8 @@ value {
 }
 
 #Console p {
-  margin: 0.5vh;
+  margin:0;
+  margin-top: 0.5vh;
 }
 
 #Console::-webkit-scrollbar {

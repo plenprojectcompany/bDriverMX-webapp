@@ -86,7 +86,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.alpha2.6 - Command Controle</div>
+			<div id='Varsion'>v.alpha2.7 - Command Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -1132,25 +1132,34 @@
 			}
 
 			//MicroBit関連
-			if (ScriptCheckList[i].match(/^bcore./g)) {
-				ScriptList[i] = ScriptList[i].replace(/bcore./g, '');
-			}
-			if (ScriptCheckList[i].match(/^basic.showString/g)) {
-				ScriptList[i] = ScriptList[i].replace(/basic.showString/g, 'Log');
-			}
-			if (ScriptCheckList[i].match(/^basic.showNumber/g)) {
-				ScriptList[i] = ScriptList[i].replace(/basic.showNumber/g, 'Log');
-			}
-			if (ScriptCheckList[i].match(/(?<=basic.pause[(]).*?(?=[)])/g)) {
-				var Secounds = ScriptCheckList[i].match(/(?<=basic.pause[(]).*?(?=[)])/g);
-				if (Number(Secounds[0]) && Number(Secounds[0]) > 0) {
-					ScriptList[i] = ScriptList[i].replace(/basic.pause[(].*?[)]/g, 'Wait(' + Number(Secounds[0]) / 1000 + ')');
-				} else {
-					ScriptList[i] = ScriptList[i].replace(/basic.pause[(].*?[)]/g, 'Wait(0)');
+			if (ScriptCheckList[i].match(/bcore[.]value.[(]/g)) {
+				var ValueCheck1 = ScriptList[i].match(/(?<=bcore[.]value.[(]).*?(?=[)])/g);
+				var ValueCheck2 = ScriptList[i].match(/bcore[.]value.[(].*?[)]/g);
+				if(ValueCheck1){
+					for(var x = 0;x<ValueCheck1.length;x++){
+						ScriptList[i] = ScriptList[i].replace(ValueCheck2[x], ValueCheck1[x]);
+					}
 				}
 			}
-			if (ScriptCheckList[i].match(/Math.randomRange[(].*?[)]/g)) {
-				ScriptList[i] = ScriptList[i].replace(/Math.randomRange[(]/g, 'Random(');
+			if (ScriptCheckList[i].match(/^bcore[.]/g)) {
+				ScriptList[i] = ScriptList[i].replace(/bcore[.]/g, '');
+			}
+			if (ScriptCheckList[i].match(/^basic[.]showString/g)) {
+				ScriptList[i] = ScriptList[i].replace(/basic[.]showString/g, 'Log');
+			}
+			if (ScriptCheckList[i].match(/^basic[.]showNumber/g)) {
+				ScriptList[i] = ScriptList[i].replace(/basic[.]showNumber/g, 'Log');
+			}
+			if (ScriptCheckList[i].match(/(?<=basic[.]pause[(]).*?(?=[)])/g)) {
+				var Secounds = ScriptCheckList[i].match(/(?<=basic[.]pause[(]).*?(?=[)])/g);
+				if (Number(Secounds[0]) && Number(Secounds[0]) > 0) {
+					ScriptList[i] = ScriptList[i].replace(/basic[.]pause[(].*?[)]/g, 'Wait(' + Number(Secounds[0]) / 1000 + ')');
+				} else {
+					ScriptList[i] = ScriptList[i].replace(/basic[.]pause[(].*?[)]/g, 'Wait(0)');
+				}
+			}
+			if (ScriptCheckList[i].match(/Math[.]randomRange[(].*?[)]/g)) {
+				ScriptList[i] = ScriptList[i].replace(/Math[.]randomRange[(]/g, 'Random(');
 			}
 
 			//関数チェックを行う
@@ -1506,9 +1515,10 @@
 
 			//For関数の変数を取り出す
 			var Check8 = Check5.replace(/for|[()]/g, '');
+			Check8 = Check5.replace(/\s/g, '');
 			var Check9 = Check8.split(/;/g);
 
-			if (Check9.length == 3) {
+			if (Check9.length == 3 && Check9[0] != '' && Check9[1] != '' && Check9[2] != '') {
 				var Check10 = Check9[0];
 				Check10 = Check10.replace(/var/g, '');
 				Check10 = Check10.replace(/\s/g, '');
@@ -2244,19 +2254,18 @@
 
 	function Area1FontSizeSet() {
 
-		var CodeFontSize = 0.05;
+		var CodeFontSize = 0.06;
 		var GuideFontSize = 0.04;
-		var ExampleFontSize = 0.35;
+		var ExampleFontSize = 0.03;
 
 		for (i = 0; i < RefrenceCode.length; i++) {
-			RefrenceCode[i].style.fontSize = NowBorder1 * CodeFontSize + 'rem';
+			RefrenceCode[i].style.fontSize = NowBorder1 * CodeFontSize + 'vw';
 		}
 		for (i = 0; i < RefrenceGuide.length; i++) {
-			RefrenceGuide[i].style.fontSize = NowBorder1 * GuideFontSize + 'rem';
+			RefrenceGuide[i].style.fontSize = NowBorder1 * GuideFontSize + 'vw';
 		}
 		for (i = 0; i < RefrenceExample.length; i++) {
-			//RefrenceExample[i].style.fontSize = NowBorder1 * ExampleFontSize + 'pt';
-			RefrenceExample[i].style.fontSize = '0.7rem';
+			RefrenceExample[i].style.fontSize = NowBorder1 * ExampleFontSize + 'vw';
 		}
 
 		Area1.style.width = NowBorder1 + "%";
