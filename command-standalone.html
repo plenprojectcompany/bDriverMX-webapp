@@ -360,6 +360,8 @@
 	var ServoValue = 127;
 	var PortValue = 0;
 
+	var HttpCameraValue = 50;
+
 	var RotateMaxBase = 40;
 	var RotateMax = 40;
 	var RotateMin = 0;
@@ -991,7 +993,7 @@
 	const ExistFunctionList = ['DisplayOut', 'DisplayLoading', 'DestroyLoading', 'ScanStart', 'OnConnectFinish', 'PWM', 'ServoControll', 'SendData', 'Save', 'SettingSet', 'CommandFinish', 'OnClickStart', 'StartCommand', 'Loop', 'ErrorOccurd',
 		'ErrorSleep'
 	];
-	const ExistOriginalFunctionList = ['Motor', 'Servo', 'Port', 'Wait', 'Log', 'Random'];
+	const ExistOriginalFunctionList = ['Motor', 'Servo', 'Port', 'ReadConePosition', 'Wait', 'Log', 'Random'];
 	const ExistVariableList = ['userAgent', 'Support', 'Device', 'Browser', 'stage', 'ReconnectCount', 'LoadingOpacity', 'Fullscreen', 'PWMRange', 'PWMMin', 'ServoMaxBase', 'ServoMax', 'ServoRange', 'ServoAdj', 'SSendTime', 'PWMValue', 'PortValue',
 		'RotateMaxBase', 'RotateMin', 'Rotate', 'RotateSet', 'RoRotateBefore', 'LightActive', 'GyroActive', 'KeyBoard', 'Key', 'KeyValue', 'Setting', 'SettiSettingString', 'SettingNow', 'FirstTime', 'ScriptList', 'ScriptCheckList', 'VariableList',
 		'ValueList',
@@ -2044,6 +2046,42 @@
 			}
 		}
 	}
+
+	// ローカルサーバ参照
+	function ReadConePosition(){
+		fetch('http://localhost:8080')
+		  .then(function(response) {
+				return response.json();
+		  })
+		  .then(function(myJson) {
+				let data = JSON.stringify(myJson);
+				let value = JSON.parse(data);
+				//Log(value.x_value);
+				HttpCameraValue = Number(value.x_value);
+		  });
+	}
+
+	// ローカルサーバ参照
+	function ReadConePositionOld(){
+		var xhr = new XMLHttpRequest();
+		let value, x_val;
+		xhr.open('GET', 'http://localhost:8080', true);
+
+		xhr.timeout = 2000; // time in milliseconds
+
+		xhr.onload = function () {
+		  // Request finished. Do processing here.
+			value = JSON.parse(xhr.responseText);
+			x_val = value.x_value;
+			Log(x_val);
+		};
+		xhr.ontimeout = function (e) {
+		  // XMLHttpRequest timed out. Do something here.
+			Log("Timeout.");
+		};
+		xhr.send(null);
+	}
+
 
 	//タブキーを押した際の挙動
 	Editer.addEventListener('keydown',
