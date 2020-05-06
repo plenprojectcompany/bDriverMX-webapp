@@ -86,7 +86,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.alpha2.7 - Command Controle</div>
+			<div id='Varsion'>v.alpha2.8 - Command Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -359,8 +359,6 @@
 	var PWMValue = 127;
 	var ServoValue = 127;
 	var PortValue = 0;
-
-	var HttpCameraValue = 50;
 
 	var RotateMaxBase = 40;
 	var RotateMax = 40;
@@ -991,15 +989,15 @@
 
 	//セキュリティ
 	const ExistFunctionList = ['DisplayOut', 'DisplayLoading', 'DestroyLoading', 'ScanStart', 'OnConnectFinish', 'PWM', 'ServoControll', 'SendData', 'Save', 'SettingSet', 'CommandFinish', 'OnClickStart', 'StartCommand', 'Loop', 'ErrorOccurd',
-		'ErrorSleep'
+		'ErrorSleep', 'ReturnLocalServerValue'
 	];
-	const ExistOriginalFunctionList = ['Motor', 'Servo', 'Port', 'ReadConePosition', 'Wait', 'Log', 'Random'];
+	const ExistOriginalFunctionList = ['Motor', 'Servo', 'Port', 'ReadLocalServer', 'Wait', 'Log', 'Random', 'ReadLocalServer', 'RequestLocalServer'];
 	const ExistVariableList = ['userAgent', 'Support', 'Device', 'Browser', 'stage', 'ReconnectCount', 'LoadingOpacity', 'Fullscreen', 'PWMRange', 'PWMMin', 'ServoMaxBase', 'ServoMax', 'ServoRange', 'ServoAdj', 'SSendTime', 'PWMValue', 'PortValue',
 		'RotateMaxBase', 'RotateMin', 'Rotate', 'RotateSet', 'RoRotateBefore', 'LightActive', 'GyroActive', 'KeyBoard', 'Key', 'KeyValue', 'Setting', 'SettiSettingString', 'SettingNow', 'FirstTime', 'ScriptList', 'ScriptCheckList', 'VariableList',
 		'ValueList',
 		'StringList', 'FinishFlag', 'click1', 'click2', 'Traces', 'ConsoleLog', 'MoveFlag', 'NowBorder1', 'NowBorder2', 'NowBorder3', 'StartX1', 'StartX2', 'BeforeX', 'WaitId', 'CommandAction', 'ActionCommand', 'VariableString', 'LoopCount',
 		'LoopFunctionList', 'LoopWaitList', 'ForVariableList', 'StartCommand1', 'ErrorMessageStartCommand', 'ErrorTypeStartCommand', 'StacktraseCheckStartCommand', 'lineStartCommand', 'positionStartCommand', 'IfFlag', 'EndlessLoopCount', 'ErrorHappend',
-		'LoopBreakFlag', 'CommandNow'
+		'LoopBreakFlag', 'CommandNow', 'HttpServerValueColor', 'HttpServerValueX', 'HttpServerValueY'
 	];
 
 	var Traces = [];
@@ -1088,6 +1086,10 @@
 		ErrorHappend = false;
 		CommandNow = true;
 
+		HttpServerValueColor = [];
+		HttpServerValueX = [];
+		HttpServerValueY = [];
+
 		var OriginalCode = {
 			savecode: Editer.value
 		};
@@ -1137,8 +1139,8 @@
 			if (ScriptCheckList[i].match(/bcore[.]value.[(]/g)) {
 				var ValueCheck1 = ScriptList[i].match(/(?<=bcore[.]value.[(]).*?(?=[)])/g);
 				var ValueCheck2 = ScriptList[i].match(/bcore[.]value.[(].*?[)]/g);
-				if(ValueCheck1){
-					for(var x = 0;x<ValueCheck1.length;x++){
+				if (ValueCheck1) {
+					for (var x = 0; x < ValueCheck1.length; x++) {
 						ScriptList[i] = ScriptList[i].replace(ValueCheck2[x], ValueCheck1[x]);
 					}
 				}
@@ -2048,35 +2050,106 @@
 	}
 
 	// ローカルサーバ参照
-	function ReadConePosition(){
-		fetch('http://localhost:8080')
-		  .then(function(response) {
+	//保存先
+	const CameraServerURL='http://localhost:8080';
+	var HttpServerValueColor = [];
+	var HttpServerValueX = [];
+	var HttpServerValueY = [];
+	var HttpServerColorList = ["red", "yellow", "green", "blue"];
+
+	function RequestLocalServer() {
+		fetch(CameraServerURL)
+			.then(function(response) {
 				return response.json();
-		  })
-		  .then(function(myJson) {
+			})
+			.then(function(myJson) {
 				let data = JSON.stringify(myJson);
 				let value = JSON.parse(data);
-				//Log(value.x_value);
-				HttpCameraValue = Number(value.x_value);
-		  });
+				HttpServerValueColor = value.color_list;
+				HttpServerValueX = value.x_axis;
+				HttpServerValueY = value.y_axis;
+			})
+			.catch(function(error) {
+				Log('<red>参照エラー</red>');
+			});
+	}
+
+	var ReadLocalServer = {
+		red: {
+			x: function() {
+				return ReturnLocalServerValue('red','x');
+			},
+			y: function() {
+				return ReturnLocalServerValue('red','y');
+			}
+		},
+		yellow: {
+			x: function() {
+				return ReturnLocalServerValue('yellow','x');
+			},
+			y: function() {
+				return ReturnLocalServerValue('yellow','y');
+			}
+		},
+		green: {
+			x: function() {
+				return ReturnLocalServerValue('green','x');
+			},
+			y: function() {
+				return ReturnLocalServerValue('green','y');
+			}
+		},
+		blue: {
+			x: function() {
+				return ReturnLocalServerValue('blue','x');
+			},
+			y: function() {
+				return ReturnLocalServerValue('blue','y');
+			}
+		}
+	}
+
+	//呼び出し不可関数
+	function ReturnLocalServerValue(color, axis) {
+		RequestLocalServer();
+		if (axis == 'x' || axis == 'y') {
+			if (HttpServerValueColor.length > 0) {
+				var Check1 = HttpServerValueColor.indexOf(color);
+				if (Check1 >= 0) {
+					if (axis == 'x') {
+						return HttpServerValueX[Check1];
+					} else if (axis == 'y') {
+						return HttpServerValueY[Check1];
+					}
+				} else {
+					return null;
+				}
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+			ErrorOccurd();
+			Log('<red>実行エラー</red><br>　ReadLocalServer関数の第2引数にはxかyを指定してください<br>現在 : ReadLocalServer(' + color + ',<red>' + axis + '</red>);');
+		}
 	}
 
 	// ローカルサーバ参照
-	function ReadConePositionOld(){
+	function ReadLocalServerOld() {
 		var xhr = new XMLHttpRequest();
 		let value, x_val;
-		xhr.open('GET', 'http://localhost:8080', true);
+		xhr.open('GET', CameraServerURL, true);
 
 		xhr.timeout = 2000; // time in milliseconds
 
-		xhr.onload = function () {
-		  // Request finished. Do processing here.
+		xhr.onload = function() {
+			// Request finished. Do processing here.
 			value = JSON.parse(xhr.responseText);
 			x_val = value.x_value;
 			Log(x_val);
 		};
-		xhr.ontimeout = function (e) {
-		  // XMLHttpRequest timed out. Do something here.
+		xhr.ontimeout = function(e) {
+			// XMLHttpRequest timed out. Do something here.
 			Log("Timeout.");
 		};
 		xhr.send(null);
