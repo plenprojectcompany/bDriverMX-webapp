@@ -86,7 +86,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.alpha2.9 - Command Controle</div>
+			<div id='Varsion'>v.alpha3.0 - Command Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -1082,6 +1082,7 @@
 	}
 
 	function OnClickStart() {
+		LoopCount = -1;
 		EndlessLoopCount = 0;
 		ErrorHappend = false;
 		CommandNow = true;
@@ -1751,7 +1752,7 @@
 		var WhileOK = true;
 		LoopBreakFlag = false;
 
-		if (LoopCount == 0) {
+		if (LoopCount == -1) {
 			//オリジナルWihile関数内のbreakを修正
 			var BreakCheck = ActionFunction.split(/(?=[(].*?[)][{].*?[}])|(?<=[(].*?[)][{].*?[}])/g);
 			BreakCheck[0] = BreakCheck[0].replace(/break;/g, 'LoopBreakFlag=true;');
@@ -1789,19 +1790,23 @@
 					LoopFunctionList.push(Check5);
 				}
 
-				LoopCount = Math.floor((LoopFunctionList.length + LoopWaitList.length) / 2) + 1;
+				LoopCount = LoopWaitList.length;
 			}
 		}
 
 		if (WhileOK && ErrorHappend == false) {
 			//関数を実行
-			var Check2 = LoopFunctionList[LoopFunctionList.length - LoopCount];
-			StartCommand(Check2);
-
-			LoopCount--;
+			if (LoopCount == 0 && LoopFunctionList.length > LoopWaitList.length) {
+				var Check2 = LoopFunctionList[LoopFunctionList.length - 1];
+				StartCommand(Check2);
+			} else {
+				var Check2 = LoopFunctionList[LoopWaitList.length - LoopCount];
+				StartCommand(Check2);
+			}
 
 			//Wait関数を実行
 			if (LoopBreakFlag) {
+				LoopCount = -1;
 				//ループ中断
 				//For文の変数を削除する
 				for (var i = 0; i < ForVariableList.length; i++) {
@@ -1828,6 +1833,8 @@
 					ErrorFlag = true;
 				}
 
+				LoopCount--;
+
 				if (ErrorFlag) {
 					ErrorOccurd();
 					Log('<red>実行エラー</red><br>　Wait関数には0より大きい実数を渡してください<br>現在 : Wait(<red>' + ErrorValue + '</red>);');
@@ -1839,6 +1846,7 @@
 					}, Check4 * 1000);
 				}
 			} else {
+				LoopCount = -1;
 				eval(VariableString);
 				if (eval(Conditional)) {
 					//ループ継続
@@ -1863,6 +1871,7 @@
 				}
 			}
 		} else {
+			LoopCount = -1;
 			//ループ終了
 			//For文の変数を削除する
 			for (var i = 0; i < ForVariableList.length; i++) {
@@ -2053,7 +2062,7 @@
 
 	// ローカルサーバ参照
 	//保存先
-	const CameraServerURL='http://localhost:8080';
+	const CameraServerURL = 'http://localhost:8080';
 	var HttpServerValueColor = [];
 	var HttpServerValueX = [];
 	var HttpServerValueY = [];
@@ -2079,34 +2088,34 @@
 	var ReadLocalServer = {
 		red: {
 			x: function() {
-				return ReturnLocalServerValue('red','x');
+				return ReturnLocalServerValue('red', 'x');
 			},
 			y: function() {
-				return ReturnLocalServerValue('red','y');
+				return ReturnLocalServerValue('red', 'y');
 			}
 		},
 		yellow: {
 			x: function() {
-				return ReturnLocalServerValue('yellow','x');
+				return ReturnLocalServerValue('yellow', 'x');
 			},
 			y: function() {
-				return ReturnLocalServerValue('yellow','y');
+				return ReturnLocalServerValue('yellow', 'y');
 			}
 		},
 		green: {
 			x: function() {
-				return ReturnLocalServerValue('green','x');
+				return ReturnLocalServerValue('green', 'x');
 			},
 			y: function() {
-				return ReturnLocalServerValue('green','y');
+				return ReturnLocalServerValue('green', 'y');
 			}
 		},
 		blue: {
 			x: function() {
-				return ReturnLocalServerValue('blue','x');
+				return ReturnLocalServerValue('blue', 'x');
 			},
 			y: function() {
-				return ReturnLocalServerValue('blue','y');
+				return ReturnLocalServerValue('blue', 'y');
 			}
 		}
 	}
