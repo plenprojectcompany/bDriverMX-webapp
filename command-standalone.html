@@ -86,7 +86,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.alpha2.8 - Command Controle</div>
+			<div id='Varsion'>v.alpha2.9 - Command Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -1812,12 +1812,14 @@
 				CheckCommand();
 			} else if (LoopCount > 0) {
 				var Check3 = String(LoopWaitList[LoopWaitList.length - LoopCount]).match(/(?<=Wait[(]).*?(?=[)];)/g);
+				eval(VariableString);
+				var Check4 = eval(Check3[0]);
 
 				var ErrorFlag = false;
 				var ErrorValue = '';
 
-				if (Number(Check3[0])) {
-					if (Number(Check3[0]) <= 0) {
+				if (Number(Check4)) {
+					if (Number(Check4) <= 0) {
 						ErrorValue = Check3[0];
 						ErrorFlag = true;
 					}
@@ -1834,7 +1836,7 @@
 					EndlessLoopCount = 0;
 					WaitId = setTimeout(function() {
 						While(Conditional, ActionFunction);
-					}, Check3 * 1000);
+					}, Check4 * 1000);
 				}
 			} else {
 				eval(VariableString);
