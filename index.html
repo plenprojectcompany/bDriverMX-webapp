@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<!--<html manifest="offline.manifest" lang="ja">-->
-<html lang="ja">
-
-<head>
+<html manifest="offline.manifest" lang="ja">
+<!--<head>-->
 	<meta charset="utf-8" />
 	<meta name="robots" content="noindex">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
@@ -278,7 +276,11 @@
 	var KeyBoard = false;
 	var Key = [];
 	var KeyValue = [];
-
+	var StopFlag = false;
+	var FrontKeyPressFlag = false;
+	var FrontKeyPressRepeat;
+	var BackKeyPressFlag = false;
+	var BackKeyPressRepeat;
 
 	//個人設定
 	var Setting = [];
@@ -732,67 +734,25 @@
 
 	//キーボード操作
 
-	var StopFlag = false;
-
 	document.addEventListener('keydown', function(event) {
 		if (SettingNow == false) {
 			if (event.key === Key[0]) {
 				//アクセル
-				if (VSlider.value >= 100) {
-					if (StopFlag) {
-						KeyBoard = false;
-						HSlider.disabled = false;
-						VSlider.disabled = false;
-						VSlider.value = 100;
-						PWM(100);
-					} else {
-						StopFlag = false;
-						KeyBoard = true;
-						HSlider.disabled = true;
-						VSlider.disabled = true;
-						VSlider.value++;
-						PWM(VSlider.value);
-					}
-				} else {
-					StopFlag = true;
-					KeyBoard = true;
-					HSlider.disabled = true;
-					VSlider.disabled = true;
-					if (Number(VSlider.value) + 10 > 100) {
-						VSlider.value = 100;
-					} else {
-						VSlider.value = Number(VSlider.value) + 10;
-					}
-					PWM(VSlider.value);
+				if(FrontKeyPressFlag == false){
+					BackKeyPressFlag = false;
+					clearTimeout(BackKeyPressRepeat);
+
+					FrontKeyPressFlag = true;
+					FrontKeyPress();
 				}
 			} else if (event.key === Key[1]) {
 				//ブレーキ
-				if (VSlider.value <= 100) {
-					if (StopFlag) {
-						KeyBoard = false;
-						HSlider.disabled = false;
-						VSlider.disabled = false;
-						VSlider.value = 100;
-						PWM(100);
-					} else {
-						StopFlag = false;
-						KeyBoard = true;
-						HSlider.disabled = true;
-						VSlider.disabled = true;
-						VSlider.value--;
-						PWM(VSlider.value);
-					}
-				} else {
-					StopFlag = true;
-					KeyBoard = true;
-					HSlider.disabled = true;
-					VSlider.disabled = true;
-					if (Number(VSlider.value) - 10 < 100) {
-						VSlider.value = 100;
-					} else {
-						VSlider.value = Number(VSlider.value) - 10;
-					}
-					PWM(VSlider.value);
+				if(BackKeyPressFlag == false){
+					FrontKeyPressFlag = false;
+					clearTimeout(FrontKeyPressRepeat);
+
+					BackKeyPressFlag = true;
+					BackKeyPress();
 				}
 			} else if (event.key === Key[3]) {
 				//右
@@ -811,6 +771,82 @@
 			}
 		}
 	});
+
+	function FrontKeyPress(){
+		if (VSlider.value > 100) {
+			if (StopFlag) {
+				KeyBoard = false;
+				HSlider.disabled = false;
+				VSlider.disabled = false;
+				VSlider.value = 100;
+				PWM(100);
+			} else {
+				KeyBoard = true;
+				HSlider.disabled = true;
+				VSlider.disabled = true;
+				VSlider.value++;
+				PWM(VSlider.value);
+			}
+		}else if(VSlider.value == 100 && StopFlag == false){
+			KeyBoard = true;
+			HSlider.disabled = true;
+			VSlider.disabled = true;
+			VSlider.value++;
+			PWM(VSlider.value);
+		} else {
+			StopFlag = true;
+			KeyBoard = true;
+			HSlider.disabled = true;
+			VSlider.disabled = true;
+			if (Number(VSlider.value) + 3 > 100) {
+				VSlider.value = 100;
+			} else {
+				VSlider.value = Number(VSlider.value) + 3;
+			}
+			PWM(VSlider.value);
+		}
+		if(FrontKeyPressFlag){
+			FrontKeyPressRepeat = setTimeout(function(){FrontKeyPress();}, 10);
+		}
+	}
+
+	function BackKeyPress(){
+		if (VSlider.value < 100) {
+			if (StopFlag) {
+				KeyBoard = false;
+				HSlider.disabled = false;
+				VSlider.disabled = false;
+				VSlider.value = 100;
+				PWM(100);
+			} else {
+				KeyBoard = true;
+				HSlider.disabled = true;
+				VSlider.disabled = true;
+				VSlider.value--;
+				PWM(VSlider.value);
+			}
+		}else if(VSlider.value == 100 && StopFlag == false){
+			KeyBoard = true;
+			HSlider.disabled = true;
+			VSlider.disabled = true;
+			VSlider.value--;
+			PWM(VSlider.value);
+		} else {
+			StopFlag = true;
+			KeyBoard = true;
+			HSlider.disabled = true;
+			VSlider.disabled = true;
+			if (Number(VSlider.value) - 3 < 100) {
+				VSlider.value = 100;
+			} else {
+				VSlider.value = Number(VSlider.value) - 3;
+			}
+			PWM(VSlider.value);
+		}
+		if(BackKeyPressFlag){
+			BackKeyPressRepeat = setTimeout(function(){BackKeyPress();}, 10);
+		}
+	}
 
 	document.addEventListener('keyup', function(event) {
 		if (SettingNow == false) {
@@ -834,7 +870,13 @@
 				VSlider.disabled = false;
 				HSlider.value = 100;
 				Servo(100);
-			} else if (event.key === Key[0] || event.key === Key[1]) {
+			} else if (event.key === Key[0]) {
+				FrontKeyPressFlag = false;
+				clearTimeout(FrontKeyPressRepeat);
+				StopFlag = false;
+			} else if (event.key === Key[1]) {
+				BackKeyPressFlag = false;
+				clearTimeout(BackKeyPressRepeat);
 				StopFlag = false;
 			}
 		}
