@@ -413,7 +413,7 @@ body::-webkit-scrollbar {
 #SettingList table {}
 
 #SettingList table td {
-  height: 6vh;
+  height: 5.5vh;
 }
 
 .col1 {

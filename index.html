@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!--<html manifest="offline.manifest" lang="ja">-->
-<head>
+<html manifest="offline.manifest" lang="ja">
+<!--<head>-->
 	<meta charset="utf-8" />
 	<meta name="robots" content="noindex">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
@@ -84,7 +84,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.2.01</div>
+			<div id='Varsion'>v.2.1</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -146,6 +146,12 @@
 						<td>初期位置調整</td>
 						<td id='Svalue3' class='Svalue'>0</td>
 						<td colspan="2"><input type="range" id='Sslider3' class='SettingSlider' min='-30' max='30' value='0'></td>
+					</tr>
+					<tr>
+						<td>反転</td>
+						<td id='Svalue10' class='Svalue'>OFF</td>
+						<td class='col4'><input type="range" id='Sslider10' class='SettingSlider' min='0' max='1' value='0'></td>
+						<td></td>
 					</tr>
 					<tr class='row2'>
 						<td colspan="4">全体設定</td>
@@ -224,6 +230,7 @@
 	const SSlider7 = document.getElementById('Sslider7');
 	const SSlider8 = document.getElementById('Sslider8');
 	const SSlider9 = document.getElementById('Sslider9');
+	const SSlider10 = document.getElementById('Sslider10');
 	const SButton1 = document.getElementById('Sbutton1');
 	const SValue1 = document.getElementById('Svalue1');
 	const SValue2 = document.getElementById('Svalue2');
@@ -234,6 +241,7 @@
 	const SValue7 = document.getElementById('Svalue7');
 	const SValue8 = document.getElementById('Svalue8');
 	const SValue9 = document.getElementById('Svalue9');
+	const SValue10 = document.getElementById('Svalue10');
 	const SkeySet1 = document.getElementById('keySet1');
 	const SkeySet2 = document.getElementById('keySet2');
 	const SkeySet3 = document.getElementById('keySet3');
@@ -257,7 +265,7 @@
 	var ServoRange = 80;
 	var ServoAdj = 0;
 
-	var SendTime = 200;
+	var SendTime = 100;
 
 	var PWMValue = 127;
 	var ServoValue = 127;
@@ -401,14 +409,14 @@
 			//セーブデータの存在確認
 			if (localStorage.getItem('SaveData') == null) {
 				//プリセットを登録する
-				localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true');
+				localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true,0');
 				FirstTime = 'true';
 			}
 			Setting = localStorage.getItem('SaveData').split(',');
 
-			if (Setting.length != 14) {
+			if (Setting.length != 15) {
 				//プリセットを登録する
-				localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true');
+				localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true,0');
 				Setting = localStorage.getItem('SaveData').split(',');
 				FirstTime = 'true';
 			}
@@ -470,6 +478,12 @@
 				FirstTime = 'false';
 			}
 
+			SSlider10.value = Setting[14];
+			if (SSlider10.value == 0) {
+				SValue10.innerHTML = 'OFF';
+			} else {
+				SValue10.innerHTML = 'ON';
+			}
 
 			//設定を反映
 			SettingSet();
@@ -874,10 +888,16 @@
 				FrontKeyPressFlag = false;
 				clearTimeout(FrontKeyPressRepeat);
 				StopFlag = false;
+				KeyBoard = false;
+				HSlider.disabled = false;
+				VSlider.disabled = false;
 			} else if (event.key === Key[1]) {
 				BackKeyPressFlag = false;
 				clearTimeout(BackKeyPressRepeat);
 				StopFlag = false;
+				KeyBoard = false;
+				HSlider.disabled = false;
+				VSlider.disabled = false;
 			}
 		}
 	});
@@ -1047,7 +1067,13 @@
 			if (ServoValue < 5) {
 				ServoValue = 5;
 			}
-			WriteArray = [PWMValue, PWMValue, PortValue, ServoValue, ServoValue, ServoValue, ServoValue];
+
+			//操作反転
+			var SendServoValue = ServoValue;
+			if (SSlider10.value == 1) {
+				SendServoValue = 127 + (127 - ServoValue);
+			}
+			WriteArray = [PWMValue, PWMValue, PortValue, SendServoValue, SendServoValue, SendServoValue, SendServoValue];
 			ble.write('UUID5', WriteArray);
 		}
 
@@ -1213,6 +1239,16 @@
 	});
 	SSlider8.addEventListener('change', function() {
 		Lsetting.style.opacity = '1';
+		Save();
+	});
+	SSlider10.addEventListener('input', function() {
+		if (SSlider10.value == 0) {
+			SValue10.innerHTML = 'OFF';
+		} else {
+			SValue10.innerHTML = 'ON';
+		}
+	});
+	SSlider10.addEventListener('change', function() {
 		Save();
 	});
 
@@ -1405,7 +1441,7 @@
 	function Save() {
 		localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + SSlider5.value + ',' + SSlider6.value + ',' + SSlider7.value + ',' + SSlider8.value + ',' + Key[0] + ',' + Key[1] + ',' + Key[2] +
 			',' +
-			Key[3] + ',' + SSlider9.value + ',' + FirstTime);
+			Key[3] + ',' + SSlider9.value + ',' + FirstTime + ',' + SSlider10.value);
 	};
 
 	//設定データを反映させる
