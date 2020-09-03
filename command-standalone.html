@@ -86,7 +86,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.alpha3.3 - Command Controle</div>
+			<div id='Varsion'>v.alpha3.4 - Command Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -809,18 +809,25 @@
 
 	function SendData() {
 		if (stage >= 3) {
-			//bCoreのバグ？対策
+			//上限の数字にしない
 			if (ServoValue < 5) {
 				ServoValue = 5;
+			}else if(ServoValue > 250){
+				ServoValue = 250;
 			}
-			WriteArray = [PWMValue, PWMValue, PortValue, ServoValue, ServoValue, ServoValue, ServoValue];
+			if (PWMValue < 5) {
+				PWMValue = 5;
+			}else if(PWMValue > 250){
+				PWMValue = 250;
+			}
+
+			WriteArray = [parseInt(PWMValue), parseInt(PWMValue), parseInt(PortValue), parseInt(SendServoValue), parseInt(SendServoValue), parseInt(SendServoValue), parseInt(SendServoValue)];
 			ble.write('UUID5', WriteArray);
 		}
 
-		//Log(PortValue);
-		//Log(ServoValue);
-		//Log(PWMValue);
-		//Log('============');
+		//console.log(parseInt(ServoValue));
+		//console.log(parseInt(PWMValue));
+		//console.log('============');
 
 		//ローディングテキストの変更
 		var text1;

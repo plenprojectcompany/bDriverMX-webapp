@@ -84,7 +84,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.2.1</div>
+			<div id='Varsion'>v.2.2</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -1063,9 +1063,16 @@
 
 	function SendData() {
 		if (stage >= 3) {
-			//bCoreのバグ？対策
+			//上限の数字にしない
 			if (ServoValue < 5) {
 				ServoValue = 5;
+			}else if(ServoValue > 250){
+				ServoValue = 250;
+			}
+			if (PWMValue < 5) {
+				PWMValue = 5;
+			}else if(PWMValue > 250){
+				PWMValue = 250;
 			}
 
 			//操作反転
@@ -1073,12 +1080,12 @@
 			if (SSlider10.value == 1) {
 				SendServoValue = 127 + (127 - ServoValue);
 			}
-			WriteArray = [PWMValue, PWMValue, PortValue, SendServoValue, SendServoValue, SendServoValue, SendServoValue];
+			WriteArray = [parseInt(PWMValue), parseInt(PWMValue), parseInt(PortValue), parseInt(SendServoValue), parseInt(SendServoValue), parseInt(SendServoValue), parseInt(SendServoValue)];
 			ble.write('UUID5', WriteArray);
 		}
 
-		//console.log(ServoValue);
-		//console.log(PWMValue);
+		//console.log(parseInt(ServoValue));
+		//console.log(parseInt(PWMValue));
 		//console.log('============');
 
 		//ローディングテキストの変更
