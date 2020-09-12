@@ -490,6 +490,13 @@
 				Support = false;
 				Browser = 'Unknown';
 			}
+		}else{
+			//例外
+			if (userAgent.indexOf('bluefy') != -1) {
+				//Bluefy
+				Support = true;
+				Browser = 'Bluefy';
+			}
 		}
 
 		if (Support) {
@@ -575,7 +582,7 @@
 			GuideButton.innerHTML = '<a href="pdf/' + Device + 'Guide.pdf" target="_blank"><img src="image/Question.png" alt="説明書"></a>';
 			SettingGuideButton.innerHTML = '<a href="pdf/' + Device + 'Setting.pdf" target="_blank"><img src="image/Question.png" alt="設定ガイド"></a>';
 
-			if (Device == 'Android') {
+			if (Device == 'Android' || Device == 'ios') {
 				//hoverを無効にする
 				StartButton.style.opacity = '1';
 				CButton1.style.opacity = '1';
