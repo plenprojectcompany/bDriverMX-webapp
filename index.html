@@ -327,20 +327,20 @@
 		if (userAgent.indexOf('iphone') != -1) {
 			//iphone
 			Support = false;
-			Device = 'Mobile';
+			Device = 'ios';
 		} else if (userAgent.indexOf('ipad') != -1) {
 			//ipad
 			Support = false;
 			Device = 'ios';
 		} else if (userAgent.indexOf('android') != -1) {
-			if (userAgent.indexOf('mobile') != -1) {
+			if (userAgent.indexOf('Android') != -1) {
 				//Android
 				Support = true;
-				Device = 'Mobile';
+				Device = 'Android';
 			} else {
 				//AndroidTablet
 				Support = true;
-				Device = 'Mobile';
+				Device = 'Android';
 			}
 		} else {
 			//PC
@@ -504,7 +504,13 @@
 			GuideButton.innerHTML = '<a href="pdf/' + Device + 'Guide.pdf" target="_blank"><img src="image/Question.png" alt="説明書"></a>';
 			SettingGuideButton.innerHTML = '<a href="pdf/' + Device + 'Setting.pdf" target="_blank"><img src="image/Question.png" alt="設定ガイド"></a>';
 
-			if (Device == 'Mobile') {
+			if (Device == 'Android' || Device == 'ios') {
+
+				if(Device == 'ios'){
+					DeviceMotionEvent.requestPermission()
+					DeviceOrientationEvent.requestPermission()
+				}
+
 				//hoverを無効にする
 				StartButton.style.opacity = '1';
 				CButton1.style.opacity = '1';
