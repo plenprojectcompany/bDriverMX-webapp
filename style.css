@@ -145,8 +145,8 @@ body::-webkit-scrollbar {
 }
 
 #SupportList table td {
-  font-size: 2vh;
-  height: 3vh;
+  font-size: 2.5vh;
+  height: 4vh;
   width: 20vw;
   border: 1px #ffffff solid;
 }
@@ -413,7 +413,7 @@ body::-webkit-scrollbar {
 #SettingList table {}
 
 #SettingList table td {
-  height: 5.5vh;
+  height: 5vh;
 }
 
 .col1 {

@@ -33,45 +33,42 @@
 			<div id='SupportList'>
 				<table align="center">
 					<tr>
-						<td colspan="3" class='errorTop'><img src="image/Error.png" width="250px"></td>
+						<td colspan="2" class='errorTop'><img src="image/Error.png" width="250px"></td>
 					</tr>
 					<tr>
-						<td colspan="3" class='errorTop'>ご利用のブラウザには対応しておりません<br>以下のサポートリストをご確認ください</td>
+						<td colspan="2" class='errorTop'>ご利用のブラウザには対応しておりません<br>以下のサポートリストをご確認ください</td>
 					</tr>
 					<tr>
-						<th colspan="3">サポートリスト</th>
+						<th colspan="2">サポートリスト</th>
 					</tr>
 					<tr class='top' class='underline'>
 						<td>OS</td>
 						<td>ブラウザ</td>
-						<td>バージョン(以降)</td>
+					</tr>
+					<tr class='underline'>
+						<td rowspan="2" class='OS'>ios</td>
+						<td><a href='https://apps.apple.com/us/app/bluefy-web-ble-browser/id1492822055'>Bluefy</a></td>
+					</tr>
+					<tr>
+						<td><a href='https://apps.apple.com/jp/app/bdrivermx/id1193985458'>公式アプリ</a></td>
 					</tr>
 					<tr class='underline'>
 						<td rowspan="3" class='OS'>Android</td>
-						<td>Chrome</td>
-						<td>80</td>
+						<td><a href="https://play.google.com/store/apps/details?id=com.android.chrome">Chrome</a></td>
 					</tr>
 					<tr>
-						<td>Opera</td>
-						<td>46</td>
+						<td><a href="https://play.google.com/store/apps/details?id=com.opera.browser">Opera</a></td>
 					</tr>
 					<tr>
-						<td>Samsung Internet Browser</td>
-						<td>6.2</td>
+						<td><a href="https://play.google.com/store/apps/details?id=com.sec.android.app.sbrowser">Samsung Internet Browser</a></td>
 					</tr>
 					<tr class='underline'>
 						<td rowspan="1" class='OS'>Windows</td>
-						<td>Chrome</td>
-						<td>56</td>
+						<td><a href="https://www.google.com/intl/ja_jp/chrome/">Chrome</a></td>
 					</tr>
 					<tr class='underline'>
 						<td rowspan="1" class='OS'>Mac</td>
-						<td>Chrome</td>
-						<td>56</td>
-					</tr>
-					<tr class='underline'>
-						<td class='OS'>ios</td>
-						<td colspan="2">非対応･･･公式アプリをご利用ください<br><a href="https://apps.apple.com/jp/app/bdrivermx/id1193985458">「bDriverMX」をApp Storeで</a></td>
+						<td><a href="https://www.google.com/intl/ja_jp/chrome/">Chrome</a></td>
 					</tr>
 				</table>
 			</div>
@@ -506,11 +503,6 @@
 
 			if (Device == 'Android' || Device == 'ios') {
 
-				if(Device == 'ios'){
-					DeviceMotionEvent.requestPermission()
-					DeviceOrientationEvent.requestPermission()
-				}
-
 				//hoverを無効にする
 				StartButton.style.opacity = '1';
 				CButton1.style.opacity = '1';
@@ -520,6 +512,16 @@
 
 				//キーボードを無効にする
 				document.getElementById('KeySetting').style.display = "none";
+
+				if(Device == 'ios'){
+					//フルスクリーンを無効にする
+					CButton4.style.display = "none";
+
+					//ジャイロを無効にする
+					CButton3.style.display = "none";
+					document.getElementById('GyroSetting').style.display = "none";
+				}
+
 			} else {
 				//ジャイロを無効にする
 				CButton3.style.display = "none";
