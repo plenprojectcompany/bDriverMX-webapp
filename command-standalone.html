@@ -1585,7 +1585,7 @@
 				ErrorTypeStartCommand = '構文エラー';
 				ErrorMessageStartCommand = '　for関数の構文が誤っています。<br>　スクリプトを確認してください。';
 				Log('<red>構文エラー</red><br>　for関数の構文が誤っています。<br>　スクリプトを確認してください。');
-				Log('　エラー発生箇所<br>for(<red>' + Check5 + '</red>){<br>');
+				Log('　エラー発生箇所 : for(<red>' + Check5 + '</red>){<br>');
 				CommandFinish();
 			}
 
@@ -1767,7 +1767,7 @@
 				if (PartArray[0])
 					var Part3 = Part2.substr(Number(String(PartArray[0]).length), Part2.length);
 
-				Log('　エラー発生箇所<br>' + Part1 + '<red>' + PartArray[0] + '</red>' + Part3 + '<br>');
+				Log('　エラー発生箇所 : ' + Part1 + '<red>' + PartArray[0] + '</red>' + Part3 + '<br>');
 				CommandAction = true;
 				CommandFinish();
 			} else {
