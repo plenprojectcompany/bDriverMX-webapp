@@ -821,7 +821,7 @@
 				PWMValue = 250;
 			}
 
-			WriteArray = [parseInt(PWMValue), parseInt(PWMValue), parseInt(PortValue), parseInt(SendServoValue), parseInt(SendServoValue), parseInt(SendServoValue), parseInt(SendServoValue)];
+			WriteArray = [parseInt(PWMValue), parseInt(PWMValue), parseInt(PortValue), parseInt(ServoValue), parseInt(ServoValue), parseInt(ServoValue), parseInt(ServoValue)];
 			ble.write('UUID5', WriteArray);
 		}
 
