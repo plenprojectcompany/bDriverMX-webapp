@@ -1585,7 +1585,7 @@
 				ErrorTypeStartCommand = '構文エラー';
 				ErrorMessageStartCommand = '　for関数の構文が誤っています。<br>　スクリプトを確認してください。';
 				Log('<red>構文エラー</red><br>　for関数の構文が誤っています。<br>　スクリプトを確認してください。');
-				Log('エラー発生箇所<br>for(<red>' + Check5 + '</red>){<br>');
+				Log('　エラー発生箇所<br>for(<red>' + Check5 + '</red>){<br>');
 				CommandFinish();
 			}
 
@@ -1767,7 +1767,7 @@
 				if (PartArray[0])
 					var Part3 = Part2.substr(Number(String(PartArray[0]).length), Part2.length);
 
-				Log('エラー発生箇所<br>' + Part1 + '<red>' + PartArray[0] + '</red>' + Part3 + '<br>');
+				Log('　エラー発生箇所<br>' + Part1 + '<red>' + PartArray[0] + '</red>' + Part3 + '<br>');
 				CommandAction = true;
 				CommandFinish();
 			} else {
@@ -1782,6 +1782,7 @@
 	function While(Conditional, ActionFunction) {
 
 		var WhileOK = true;
+		var RoopNoError = true;
 		LoopBreakFlag = false;
 
 		if (LoopCount == -1) {
@@ -1796,12 +1797,19 @@
 			ActionFunction = BreakCheck.join('');
 
 			//While条件を満たしているか確認
-			eval(VariableString);
-			if (eval(Conditional) == false) {
-				WhileOK = false;
+			try{
+				eval(VariableString);
+				if (eval(Conditional) == false) {
+					WhileOK = false;
+				}
+			} catch (e) {
+				ErrorOccurd();
+				Log('<red>構文エラー</red><br>　条件式を確認してください。<br>　現在 : <red>' + Conditional + '</red>');
+				CheckCommand();
+				RoopNoError = false;
 			}
 
-			if (WhileOK) {
+			if (RoopNoError && WhileOK) {
 				//Wait関数の個数を数える
 				LoopFunctionList = [];
 				LoopWaitList = [];
@@ -1826,73 +1834,21 @@
 			}
 		}
 
-		if (WhileOK && ErrorHappend == false) {
-			//関数を実行
-			if (LoopCount == 0 && LoopFunctionList.length > LoopWaitList.length) {
-				var Check2 = LoopFunctionList[LoopFunctionList.length - 1];
-				StartCommand(Check2);
-			} else {
-				var Check2 = LoopFunctionList[LoopWaitList.length - LoopCount];
-				StartCommand(Check2);
-			}
-
-			//Wait関数を実行
-			if (LoopBreakFlag) {
-				LoopCount = -1;
-				//ループ中断
-				//For文の変数を削除する
-				for (var i = 0; i < ForVariableList.length; i++) {
-					VariableList.splice(VariableList.length - i - 1, 1);
-					ValueList.splice(ValueList.length - i - 1, 1);
-				}
-				ForVariableList = [];
-				CheckCommand();
-			} else if (LoopCount > 0) {
-				var Check3 = String(LoopWaitList[LoopWaitList.length - LoopCount]).match(/(?<=Wait[(]).*?(?=[)];)/g);
-				eval(VariableString);
-				var Check4 = eval(Check3[0]);
-
-				var ErrorFlag = false;
-				var ErrorValue = '';
-
-				if (Number(Check4)) {
-					if (Number(Check4) <= 0) {
-						ErrorValue = Check3[0];
-						ErrorFlag = true;
-					}
+		if(RoopNoError){
+			if (WhileOK && ErrorHappend == false) {
+				//関数を実行
+				if (LoopCount == 0 && LoopFunctionList.length > LoopWaitList.length) {
+					var Check2 = LoopFunctionList[LoopFunctionList.length - 1];
+					StartCommand(Check2);
 				} else {
-					ErrorValue = Check3[0];
-					ErrorFlag = true;
+					var Check2 = LoopFunctionList[LoopWaitList.length - LoopCount];
+					StartCommand(Check2);
 				}
 
-				LoopCount--;
-
-				if (ErrorFlag) {
-					ErrorOccurd();
-					Log('<red>実行エラー</red><br>　Wait関数には0より大きい実数を渡してください<br>現在 : Wait(<red>' + ErrorValue + '</red>);');
-					While(Conditional, ActionFunction);
-				} else {
-					EndlessLoopCount = 0;
-					WaitId = setTimeout(function() {
-						While(Conditional, ActionFunction);
-					}, Check4 * 1000);
-				}
-			} else {
-				LoopCount = -1;
-				eval(VariableString);
-				if (eval(Conditional)) {
-					//ループ継続
-					if (EndlessLoopCount > 300) {
-						Log('<red>無限ループ</red><br>　無限ループを検出しました。<br>エラー発生箇所 : ' + ActionFunction);
-						alert('無限ループを検出しました！\nwhile,for関数を確認してください。');
-						CommandAction = true;
-						CommandFinish();
-					} else {
-						EndlessLoopCount++;
-						While(Conditional, ActionFunction);
-					}
-				} else {
-					//ループ終了
+				//Wait関数を実行
+				if (LoopBreakFlag) {
+					LoopCount = -1;
+					//ループ中断
 					//For文の変数を削除する
 					for (var i = 0; i < ForVariableList.length; i++) {
 						VariableList.splice(VariableList.length - i - 1, 1);
@@ -1900,19 +1856,74 @@
 					}
 					ForVariableList = [];
 					CheckCommand();
+				} else if (LoopCount > 0) {
+					var Check3 = String(LoopWaitList[LoopWaitList.length - LoopCount]).match(/(?<=Wait[(]).*?(?=[)];)/g);
+					eval(VariableString);
+					var Check4 = eval(Check3[0]);
+
+					var ErrorFlag = false;
+					var ErrorValue = '';
+
+					if (Number(Check4)) {
+						if (Number(Check4) <= 0) {
+							ErrorValue = Check3[0];
+							ErrorFlag = true;
+						}
+					} else {
+						ErrorValue = Check3[0];
+						ErrorFlag = true;
+					}
+
+					LoopCount--;
+
+					if (ErrorFlag) {
+						ErrorOccurd();
+						Log('<red>実行エラー</red><br>　Wait関数には0より大きい実数を渡してください<br>現在 : Wait(<red>' + ErrorValue + '</red>);');
+						While(Conditional, ActionFunction);
+					} else {
+						EndlessLoopCount = 0;
+						WaitId = setTimeout(function() {
+							While(Conditional, ActionFunction);
+						}, Check4 * 1000);
+					}
+				} else {
+					LoopCount = -1;
+					eval(VariableString);
+					if (eval(Conditional)) {
+						//ループ継続
+						if (EndlessLoopCount > 300) {
+							Log('<red>無限ループ</red><br>　無限ループを検出しました。<br>　エラー発生箇所 : ' + ActionFunction);
+							alert('無限ループを検出しました！\nwhile,for関数を確認してください。');
+							CommandAction = true;
+							CommandFinish();
+						} else {
+							EndlessLoopCount++;
+							While(Conditional, ActionFunction);
+						}
+					} else {
+						//ループ終了
+						//For文の変数を削除する
+						for (var i = 0; i < ForVariableList.length; i++) {
+							VariableList.splice(VariableList.length - i - 1, 1);
+							ValueList.splice(ValueList.length - i - 1, 1);
+						}
+						ForVariableList = [];
+						CheckCommand();
+					}
 				}
+			} else {
+				LoopCount = -1;
+				//ループ終了
+				//For文の変数を削除する
+				for (var i = 0; i < ForVariableList.length; i++) {
+					VariableList.splice(VariableList.length - i - 1, 1);
+					ValueList.splice(ValueList.length - i - 1, 1);
+				}
+				ForVariableList = [];
+				CheckCommand();
 			}
-		} else {
-			LoopCount = -1;
-			//ループ終了
-			//For文の変数を削除する
-			for (var i = 0; i < ForVariableList.length; i++) {
-				VariableList.splice(VariableList.length - i - 1, 1);
-				ValueList.splice(ValueList.length - i - 1, 1);
-			}
-			ForVariableList = [];
-			CheckCommand();
 		}
+
 	};
 
 	//ログ
