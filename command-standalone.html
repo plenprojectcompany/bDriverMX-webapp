@@ -401,6 +401,7 @@
 
 	//画面外はみ出し確認
 	function DisplayOut() {
+		console.log("a");
 		Rotate = true;
 		if (window.innerHeight >= LNoSupportContent.clientHeight) {
 			LNoSupport.style.height = '100vh';
@@ -1192,27 +1193,32 @@
 			}
 
 			//関数チェックを行う
-			if (ScriptCheckList[i].match(/^\s*[A-Z,a-z,0-9]+[(].*[)][; ]/g)) {
+			if (ScriptCheckList[i].match(/^\s*[A-Z,a-z,0-9]+[(].*[)]/g)) {
 
-				var ScriptCheck = String(ScriptCheckList[i].match(/.*?[(]/));
-				ScriptCheck = ScriptCheck.replace('(', '');
+				var ScriptCheck = ScriptCheckList[i].match(/.*?[(]/g);
 
-				if (ExistFunctionList.indexOf(ScriptCheck) != -1) {
-					ErrorFunction = ScriptCheck;
-					CommandOK = false;
+				for(var n = 0;n<ScriptCheck.length;n++){
+					var ScriptCheck2 = ScriptCheck[n].replace('(', '');
+					if (ExistFunctionList.indexOf(ScriptCheck2) != -1) {
+						ErrorFunction = ScriptCheck2;
+						CommandOK = false;
+					}
 				}
 			}
 
 			//変数チェックを行う
-			if (ScriptCheckList[i].match(/.*=.*/g)) {
+			if (ScriptCheckList[i].match(/[a-z|A-Z|0-9]*=/g)) {
 
-				var ScriptCheck = ScriptCheckList[i].match(/.*?=/g);
-				var ScriptCheck1 = ScriptCheck[0].replace('var', '');
-				ScriptCheck1 = ScriptCheck1.replace('=', '');
+				var ScriptCheck = ScriptCheckList[i].match(/[a-z|A-Z|0-9]*=/g);
 
-				if (ExistVariableList.indexOf(ScriptCheck1) != -1 || ExistFunctionList.indexOf(ScriptCheck1) != -1 || ExistOriginalFunctionList.indexOf(ScriptCheck1) != -1) {
-					ErrorVariable = ScriptCheck1;
-					CommandOK2 = false;
+				for(var n = 0;n<ScriptCheck.length;n++){
+					var ScriptCheck1 = ScriptCheck[n].replace('var', '');
+					ScriptCheck1 = ScriptCheck1.replace('=', '');
+
+					if (ExistVariableList.indexOf(ScriptCheck1) != -1 || ExistFunctionList.indexOf(ScriptCheck1) != -1 || ExistOriginalFunctionList.indexOf(ScriptCheck1) != -1) {
+						ErrorVariable = ScriptCheck1;
+						CommandOK2 = false;
+					}
 				}
 
 			}
@@ -1243,12 +1249,14 @@
 			//使用できない関数あり
 			ErrorOccurd();
 			Log('<red>' + ErrorFunction + '();</red>は使用できない関数です！<br><br>');
+			CommandFinish();
 		}
 
 		if (CommandOK2 == false) {
 			//使用できない変数あり
 			ErrorOccurd();
 			Log('var <red>' + ErrorVariable + '</red>;は使用できない変数です！<br>変数名を変更してください。<br><br>');
+			CommandFinish();
 		}
 
 		if (CommandOK && CommandOK2) {
