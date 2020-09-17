@@ -83,7 +83,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.alpha3.4 - Command Controle</div>
+			<div id='Varsion'>v.alpha3.5 - Command Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -300,6 +300,12 @@
 						<td id='Svalue3' class='Svalue'>0</td>
 						<td colspan="2"><input type="range" id='Sslider3' class='SettingSlider' min='-30' max='30' value='0'></td>
 					</tr>
+					<tr>
+						<td>反転</td>
+						<td id='Svalue10' class='Svalue'>OFF</td>
+						<td class='col4'><input type="range" id='Sslider10' class='SettingSlider' min='0' max='1' value='0'></td>
+						<td></td>
+					</tr>
 					<tr class='row3'>
 						<td colspan="4" class='col5'><input type='image' src='image/Enter.png' id='Sbutton1'></td>
 					</tr>
@@ -334,6 +340,7 @@
 	const SSlider7 = document.getElementById('Sslider7');
 	const SSlider8 = document.getElementById('Sslider8');
 	const SSlider9 = document.getElementById('Sslider9');
+	const SSlider10 = document.getElementById('Sslider10');
 	const SButton1 = document.getElementById('Sbutton1');
 	const SValue1 = document.getElementById('Svalue1');
 	const SValue2 = document.getElementById('Svalue2');
@@ -344,6 +351,7 @@
 	const SValue7 = document.getElementById('Svalue7');
 	const SValue8 = document.getElementById('Svalue8');
 	const SValue9 = document.getElementById('Svalue9');
+	const SValue10 = document.getElementById('Svalue10');
 	const GuideButton = document.getElementById('Guide1');
 	const SettingGuideButton = document.getElementById('Guide2');
 
@@ -391,6 +399,45 @@
 	var FirstTime = 'false';
 
 
+	//iosへの対応 (?<=) (?=)
+	function GetRegex(mode,pattern1,pattern2,value,replace){
+		if(mode == 1){
+			//パターン1とパターン2の間
+			var check1 = value.match(new RegExp(pattern1));
+			var check2 = value.match(new RegExp(pattern2));
+
+			if(check1 && check2){
+				var regex1 = new RegExp('^.*'+pattern1);
+				var regex3 = new RegExp('^.*'+pattern2);
+				var regex2 = new RegExp(pattern2+'.*$');
+
+				var count1 = value.match(regex1);
+				var count2 = value.match(regex3);
+
+				if(count1[0].length < count2[0].length){
+					var result = value.replace(regex1,'');
+					result = result.replace(regex2,'');
+					return result;
+				}else{
+					return null;
+				}
+			}else{
+				return null;
+			}
+		}else if(mode == 2){
+			var regex = new RegExp('(' + pattern1 + ').*?(' + pattern2 + ')');
+			if(value.match(regex)){
+				var result = value.replace(regex,'$1'+replace+'$2');
+				return result;
+			}else{
+				return null;
+			}
+		}else{
+			return null;
+		}
+	}
+
+
 	//画像ドラッグ対策
 	document.ondragstart = function() {
 		return false;
@@ -413,9 +460,16 @@
 		}, 100);
 	});
 
+	function sleep(second) {
+    return new Promise(resolve => {
+        WaitId = setTimeout(() => {
+            resolve()
+        }, second * 1000)
+    })
+}
+
 	//初期動作
 	window.onload = function() {
-
 		stage = 0;
 
 		if (userAgent.indexOf('iphone') != -1) {
@@ -510,14 +564,14 @@
 			//セーブデータの存在確認
 			if (localStorage.getItem('SaveData') == null) {
 				//プリセットを登録する
-				localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true');
+				localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true,0');
 				FirstTime = 'true';
 			}
 			Setting = localStorage.getItem('SaveData').split(',');
 
-			if (Setting.length != 14) {
+			if (Setting.length != 15) {
 				//プリセットを登録する
-				localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true');
+				localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true,0');
 				Setting = localStorage.getItem('SaveData').split(',');
 				FirstTime = 'true';
 			}
@@ -567,6 +621,13 @@
 				FirstTime = 'true';
 			} else {
 				FirstTime = 'false';
+			}
+
+			SSlider10.value = Setting[14];
+			if (SSlider10.value == 0) {
+				SValue10.innerHTML = 'OFF';
+			} else {
+				SValue10.innerHTML = 'ON';
 			}
 
 			//設定を反映
@@ -825,7 +886,12 @@
 				PWMValue = 250;
 			}
 
-			WriteArray = [parseInt(PWMValue), parseInt(PWMValue), parseInt(PortValue), parseInt(ServoValue), parseInt(ServoValue), parseInt(ServoValue), parseInt(ServoValue)];
+			//操作反転
+			var SendServoValue = ServoValue;
+			if (SSlider10.value == 1) {
+				SendServoValue = 127 + (127 - ServoValue);
+			}
+			WriteArray = [parseInt(PWMValue), parseInt(PWMValue), parseInt(PortValue), parseInt(SendServoValue), parseInt(SendServoValue), parseInt(SendServoValue), parseInt(SendServoValue)];
 			ble.write('UUID5', WriteArray);
 		}
 
@@ -906,6 +972,16 @@
 		Save();
 		ServoValue = 127 + Number(SSlider3.value);
 	});
+	SSlider10.addEventListener('input', function() {
+		if (SSlider10.value == 0) {
+			SValue10.innerHTML = 'OFF';
+		} else {
+			SValue10.innerHTML = 'ON';
+		}
+	});
+	SSlider10.addEventListener('change', function() {
+		Save();
+	});
 
 	//Enterボタン
 	SButton1.addEventListener('click', function() {
@@ -922,19 +998,9 @@
 	});
 
 	function Save() {
-		if (SSlider5) {
-			localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + SSlider5.value + ',' + SSlider6.value + ',' + SSlider7.value + ',' + SSlider8.value + ',' + Key[0] + ',' + Key[1] + ',' + Key[
-					2] +
-				',' +
-				Key[3] + ',' + SSlider9.value + ',' + FirstTime);
-		} else {
-			Setting = localStorage.getItem('SaveData').split(',');
+		Setting = localStorage.getItem('SaveData').split(',');
 
-			localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + Setting[4] + ',' + Setting[5] + ',' + Setting[6] + ',' + Setting[7] + ',' + Setting[8] + ',' + Setting[9] + ',' + Setting[10] +
-				',' + Setting[11] +
-				',' +
-				Setting[12] + ',' + 'false');
-		}
+		localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + Setting[4] + ',' + Setting[5] + ',' + Setting[6] + ',' + Setting[7] + ',' + Setting[8] + ',' + Setting[9] + ',' + Setting[10] +	',' + Setting[11] + ',' + Setting[12] + ',' + 'false' + ',' + SSlider10.value);
 	};
 
 	//設定データを反映させる
@@ -1012,7 +1078,7 @@
 
 	//セキュリティ
 	const ExistFunctionList = ['DisplayOut', 'DisplayLoading', 'DestroyLoading', 'ScanStart', 'OnConnectFinish', 'PWM', 'ServoControll', 'SendData', 'Save', 'SettingSet', 'CommandFinish', 'OnClickStart', 'StartCommand', 'Loop', 'ErrorOccurd',
-		'ErrorSleep', 'ReturnLocalServerValue'
+		'ErrorSleep', 'ReturnLocalServerValue', 'ErrorCheck' , 'Finish'
 	];
 	const ExistOriginalFunctionList = ['Motor', 'Servo', 'Port', 'ReadLocalServer', 'Wait', 'Log', 'Random', 'ReadLocalServer', 'RequestLocalServer'];
 	const ExistVariableList = ['userAgent', 'Support', 'Device', 'Browser', 'stage', 'ReconnectCount', 'LoadingOpacity', 'Fullscreen', 'PWMRange', 'PWMMin', 'ServoMaxBase', 'ServoMax', 'ServoRange', 'ServoAdj', 'SSendTime', 'PWMValue', 'PortValue',
@@ -1165,13 +1231,19 @@
 			}
 
 			//MicroBit関連
-			if (ScriptCheckList[i].match(/bcore[.]value.[(]/g)) {
-				var ValueCheck1 = ScriptList[i].match(/(?<=bcore[.]value.[(]).*?(?=[)])/g);
-				var ValueCheck2 = ScriptList[i].match(/bcore[.]value.[(].*?[)]/g);
-				if (ValueCheck1) {
-					for (var x = 0; x < ValueCheck1.length; x++) {
-						ScriptList[i] = ScriptList[i].replace(ValueCheck2[x], ValueCheck1[x]);
+			var RoopFlag = true;
+			while (RoopFlag) {
+				if (ScriptList[i].match(/bcore\.value.\(.*?\)/g)) {
+					//var ValueCheck1 = ScriptList[i].match(/(?<=).*?(?=)/g);
+					var ValueCheck1 = GetRegex(1,"bcore\\.value.\\(","\\)",ScriptList[i],"");
+					var ValueCheck2 = ScriptList[i].match(/bcore\.value.\(.*?\)/);
+					if (ValueCheck1) {
+						ScriptList[i] = ScriptList[i].replace(ValueCheck2[0], ValueCheck1);
+					}else{
+						RoopFlag = false;
 					}
+				}else{
+					RoopFlag = false;
 				}
 			}
 			if (ScriptCheckList[i].match(/^bcore[.]/g)) {
@@ -1183,22 +1255,24 @@
 			if (ScriptCheckList[i].match(/^basic[.]showNumber/g)) {
 				ScriptList[i] = ScriptList[i].replace(/basic[.]showNumber/g, 'Log');
 			}
-			if (ScriptCheckList[i].match(/(?<=basic[.]pause[(]).*?(?=[)])/g)) {
-				var Secounds = ScriptCheckList[i].match(/(?<=basic[.]pause[(]).*?(?=[)])/g);
+			//if (ScriptCheckList[i].match(/(?<=basic[.]pause\().*?(?=\))/g)) {
+			if (GetRegex(1,"basic\\.pause\\(","\\),ScriptCheckList[i]","")) {
+				//var Secounds = ScriptCheckList[i].match(/(?<=basic[.]pause\().*?(?=\))/g);
+				var Secounds = GetRegex(1,"basic\\.pause\\(","\\)",ScriptCheckList[i],"");
 				if (Number(Secounds[0]) && Number(Secounds[0]) > 0) {
-					ScriptList[i] = ScriptList[i].replace(/basic[.]pause[(].*?[)]/g, 'Wait(' + Number(Secounds[0]) / 1000 + ')');
+					ScriptList[i] = ScriptList[i].replace(/basic[.]pause\(.*?\)/g, 'Wait(' + Number(Secounds[0]) / 1000 + ')');
 				} else {
-					ScriptList[i] = ScriptList[i].replace(/basic[.]pause[(].*?[)]/g, 'Wait(0)');
+					ScriptList[i] = ScriptList[i].replace(/basic[.]pause\(.*?\)/g, 'Wait(0)');
 				}
 			}
-			if (ScriptCheckList[i].match(/Math[.]randomRange[(].*?[)]/g)) {
-				ScriptList[i] = ScriptList[i].replace(/Math[.]randomRange[(]/g, 'Random(');
+			if (ScriptCheckList[i].match(/Math[.]randomRange\(.*?\)/g)) {
+				ScriptList[i] = ScriptList[i].replace(/Math[.]randomRange\(/g, 'Random(');
 			}
 
 			//関数チェックを行う
-			if (ScriptCheckList[i].match(/^\s*[A-Z,a-z,0-9]+[(].*[)]/g)) {
+			if (ScriptCheckList[i].match(/^\s*[A-Z,a-z,0-9]+\(.*\)/g)) {
 
-				var ScriptCheck = ScriptCheckList[i].match(/.*?[(]/g);
+				var ScriptCheck = ScriptCheckList[i].match(/.*?\(/g);
 
 				for(var n = 0;n<ScriptCheck.length;n++){
 					var ScriptCheck2 = ScriptCheck[n].replace('(', '');
@@ -1223,28 +1297,11 @@
 						CommandOK2 = false;
 					}
 				}
-
 			}
 
-			//変数定義リスト
-			if (ScriptCheckList[i].match(/var.*/g)) {
-
-				var ScriptCheck = ScriptCheckList[i];
-				ScriptCheck = ScriptCheck.replace('var', '');
-				ScriptCheck = ScriptCheck.replace(';', '');
-				var ScriptCheck1 = ScriptCheck.replace(/=.*/g, '');
-				var ScriptCheck2 = ScriptCheck.replace(/.*=/g, '');
-				ScriptCheck2 = ScriptCheck2.replace(/(?<=^new)/g, ' ');
-
-				if (ScriptCheck1 == ScriptCheck2) {
-					ScriptCheck2 = undefined;
-				}
-
-				//変数リストに追加する
-				if (VariableList.indexOf(ScriptCheck1) == -1 && ScriptCheck.match(/for[(]|while[(]/g) == null) {
-					VariableList.push(ScriptCheck1);
-					ValueList.push(ScriptCheck2);
-				}
+			//Wait関数を書き換える
+			if (ScriptCheckList[i].match(/^\s*Wait\(.*\)/g)) {
+				ScriptList[i] = ScriptList[i].replace(/(^\s*Wait)(\(.*\))/g, 'await sleep$2');
 			}
 		}
 
@@ -1272,662 +1329,114 @@
 
 			CommandAction = true;
 
-			//配列の無駄な空白を消す
-			var DeleteSpace = ScriptList.join('').split(/(?<=")/g);
-
-			for (var i = 0; i < DeleteSpace.length; i += 2) {
-				DeleteSpace[i] = DeleteSpace[i].replace(/\s/g, '');
-				DeleteSpace[i] = DeleteSpace[i].replace(/(?<=var)/g, ' ');
-				DeleteSpace[i] = DeleteSpace[i].replace(/(?<=new)/g, ' ');
-				DeleteSpace[i] = DeleteSpace[i].replace(/elseif/g, 'else if');
-			}
-
 			//配列を文字列に変換
-			StringScript = DeleteSpace.join('');
+			StringScript = ScriptList.join('');
 
-			CheckCommand();
+			CommandExe();
 		}
 	};
 
-	function CheckCommand() {
-		//変数の更新
-		VariableString = '';
-		for (var i = 0; i < VariableList.length; i++) {
-			if (ValueList[i] != null) {
-				VariableString += 'var ' + VariableList[i] + '=' + ValueList[i] + ';';
-			}
+	function CommandExe() {
+		try {
+			eval("(async (error, result) => {try {" + StringScript + "Finish();} catch (e) {ErrorCheck(e);}})()");
+		} catch (e) {
+			ErrorCheck(e);
+		}
+	};
+
+	function ErrorCheck(e) {
+		var ErrorTypeStartCommand = '';
+		var ErrorMessageStartCommand = '';
+
+		ErrorHappend = true;
+
+		console.log(e);
+
+		if (e instanceof TypeError) {
+			ErrorTypeStartCommand = '変数型エラー';
+			ErrorMessageStartCommand = '　変数の代入先が不正です。<br>　変数を確認してください。';
+		} else if (e instanceof RangeError) {
+			ErrorTypeStartCommand = '範囲エラー';
+			ErrorMessageStartCommand = '　定義域を越しています。<br>　計算式を確認してください。';
+		} else if (e instanceof ReferenceError) {
+			ErrorTypeStartCommand = '参照エラー';
+			ErrorMessageStartCommand = '　変数の参照に失敗しました。<br>　変数を確認してください。';
+		} else if (e instanceof SyntaxError) {
+			ErrorTypeStartCommand = '構文エラー';
+			ErrorMessageStartCommand = '　構文に間違いがあります。<br>　スクリプトの構文を確認してください。';
+		} else {
+			ErrorTypeStartCommand = 'エラー';
+			ErrorMessageStartCommand = '　エラーが発生しました。<br>　スクリプトを確認してください。';
 		}
 
-		//先頭にある変数を記録し、削除する
-		var DeleteVar1 = StringScript.split(/(?<=;)/g);
-		for (var i = 0; i < DeleteVar1.length; i++) {
-			if (DeleteVar1[i].match(/^var.*?=.*?;/g)) {
-				var DeleteVarCheck = DeleteVar1[i];
-				DeleteVarCheck = DeleteVarCheck.replace('var', '');
-				DeleteVarCheck = DeleteVarCheck.replace(';', '');
-				var DeleteVarCheck1 = DeleteVarCheck.replace(/=.*/g, '');
-				var DeleteVarCheck2 = DeleteVarCheck.replace(/.*=/g, '');
+		stacktrace = e.stack.split(/\r\n?|\n/).slice(1);
 
-				for (var x = 0; x < VariableList.length; x++) {
-					if (VariableList[x] == DeleteVarCheck1) {
-						ValueList[x] = DeleteVarCheck2;
-						break;
-					}
-				}
-				DeleteVar1.splice(i, 1);
-				i = -1;
-			} else {
+		var StacktraseCheckStartCommand = [];
+		var lineStartCommand = -1;
+		var positionStartCommand = -1;
+
+		for (var i = 0; i < stacktrace.length; i++) {
+			if (stacktrace[i].indexOf('eval') != -1) {
+				StacktraseCheckStartCommand = stacktrace[i].split('<anonymous>');
+				StacktraseCheckStartCommand = StacktraseCheckStartCommand[1].split(':');
+				lineStartCommand = StacktraseCheckStartCommand[1];
+				positionStartCommand = StacktraseCheckStartCommand[2].replace(')', '');
 				break;
 			}
 		}
 
-		StringScript = DeleteVar1.join('');
+		ErrorOccurd();
+		CommandAction = false;
+		CommandFinish();
 
-		//if,for,while,Waitの位置を調べる
-		var CheckIf = StringScript.match(/^.*?if[(]/);
-		var CheckFor = StringScript.match(/^.*?for[(]/);
-		var CheckWhile = StringScript.match(/^.*?while[(]/);
-		var CheckWait = StringScript.match(/^.*?Wait[(]/);
+		positionStartCommand -= 32;
 
-		if (CheckIf) {
-			var CheckIfCount = 1 / String(CheckIf).length;
-		} else {
-			CheckIfCount = -1;
-		}
-		if (CheckFor) {
-			var CheckForCount = 1 / String(CheckFor).length;
-		} else {
-			CheckForCount = -1;
-		}
-		if (CheckWhile) {
-			var CheckWhileCount = 1 / String(CheckWhile).length;
-		} else {
-			CheckWhileCount = -1;
-		}
-		if (CheckWait) {
-			var CheckWaitCount = 1 / String(CheckWait).length;
-		} else {
-			CheckWaitCount = -1;
-		}
+		if (positionStartCommand >= 0) {
+			Log('<red> ' + ErrorTypeStartCommand + '</red><br>' + ErrorMessageStartCommand);
 
-		if (CheckIfCount > CheckForCount && CheckIfCount > CheckWhileCount && CheckIfCount > CheckWaitCount) {
-			//先頭にifが来る場合
-			var Check1 = StringScript.split(/(?={)|(?<={)|(?=})|(?<=})|(?=if[(])/g);
+			var ProblemScript = '';
+			ProblemScript = StringScript;
 
-			//不要な部分をカットする
-			var Check2 = -1;
-			var Check3 = -1;
-			var Check4 = -1;
-
-			var Check5 = [];
-			var Check6 = [];
-
-			for (var i = 0; i < Check1.length; i++) {
-				Check5[i] = Check1[i];
-			}
-
-			//Check1からif文より下をカットする
-			var Count = -1;
-			for (var i = 0; i < Check1.length; i++) {
-				if (Check1[i].match(/^{$/g)) {
-					if (Count == -1) {
-						Count = 1;
-					} else {
-						Count++;
-					}
-				} else if (Check1[i].match(/^}$/g)) {
-					Count--;
-					if (i + 1 < Check1.length && Check1[i + 1].match(/^else.*?$/g)) {
-
-					} else {
-						if (Count == 0) {
-							Check1.splice(i + 1, Check1.length);
-							break;
-						}
-					}
-				}
-			}
-
-			for (var i = 0; i < Check1.length; i++) {
-				Check6[i] = i;
-			}
-
-			//データを解析する
-			for (var i = 0; i < Check1.length; i++) {
-				if (Check1[i].match(/^{$/g)) {
-					if (Check4 == -1) {
-						Check4 = i;
-					}
-					Check2 = i;
-				} else if (Check1[i].match(/^}$/g)) {
-					if (i - 3 >= 0 && Check2 - 1 >= 0 && i + 1 < Check1.length && Check2 - 1 < Check1.length) {
-						//ここから上を削除
-						if (i <= Check4) {
-							//最初のIf分は消さない
-						} else if (Check1[Check2 - 1].match(/^.*?if[(]/g) != null && Check1[i - 3].match(/^else.*?$/g) == null && i - 2 > Check4) {
-							//ifの上にelseがない
-							if (Check1[i + 1].match(/^else.*?$/g)) {
-								if (Check1[i + 2].match(/^{$/g)) {
-									Check1.splice(Check2 - 1, i - Check2 + 3);
-									Check6.splice(Check2 - 1, i - Check2 + 3);
-									i = -1;
-								} else {
-									Check1.splice(Check2 - 1, i - Check2 + 3);
-									Check6.splice(Check2 - 1, i - Check2 + 3);
-									i = -1;
-								}
-							} else {
-								Check1.splice(Check2 - 1, i - Check2 + 1);
-								Check6.splice(Check2 - 1, i - Check2 + 1);
-								i = -1;
-							}
-						} else if (Check1[i - 3].match(/^else.*?$/g)) {
-							//上にelse文
-						} else if (Check1[i + 1].match(/^else.*?$/g)) {
-							//下にelse文
-							if (Check1[Check2 - 1].match(/^{$|^}$/g)) {
-								Check1.splice(Check2, i - Check2 + 3);
-								Check6.splice(Check2, i - Check2 + 3);
-								i = -1;
-							}
-
-						} else {
-							if (Check1[Check2 - 1].match(/^{$|^}$/g)) {
-								Check1.splice(Check2, i - Check2 + 1);
-								Check6.splice(Check2, i - Check2 + 1);
-							} else {
-								Check1.splice(Check2 - 1, i - Check2 + 2);
-								Check6.splice(Check2 - 1, i - Check2 + 2);
-							}
-							i = -1;
-						}
-					}
-				}
-			}
-
-			for (var i = 0; i < Check1.length; i++) {
-				if (i - 1 >= 0 && i + 1 < Check1.length)
-					if (Check1[i - 1].match(/^{$/g) && Check1[i + 1].match(/^}$/g)) {
-						Check1.splice(i, 1);
-						Check6.splice(i, 1);
-						i = -1;
-					}
-			}
-
-			//前処理を実行
-			var Startnumber = 0;
-			if (Check5[0].match(/if[(].*?[)]/g) == null) {
-				StartCommand(Check1[0]);
-				Startnumber = 1;
-			}
-
-			//実行位置を決める
-			var Check7 = '';
-
-			for (var i = Startnumber; i < Check1.length; i++) {
-				if (Check1[i].match(/^}$/g)) {
-					Check7 += 'IfFlag=' + i + ';'
-					Check7 += Check1[i];
-				} else if (Check1[i].match(/^{$/g) != null || Check1[i].match(/^.*?if[(]/g) != null || Check1[i].match(/^else.*?$/g) != null) {
-					Check7 += Check1[i];
-				}
-			}
-
-			//If関数を実行
-			IfFlag = -1;
-			StartCommand(Check7);
-
-			var Check8;
-			var Check9;
-
-			Check8 = Check6[Check6.length - 1] + 1;
-			Check9 = Check5.length - 1;
-
-			var Check10 = '';
-			var Check11 = '';
-
-			//StringScriptを書き換える
-			for (var i = Check8; i <= Check9; i++) {
-				Check10 += Check5[i];
-			}
-
-			if (IfFlag != -1) {
-				Check8 = Check6[IfFlag - 1] + 1;
-				Check9 = Check6[IfFlag] - 1;
-				for (var i = Check8; i <= Check9; i++) {
-					Check11 += Check5[i];
-				}
-			}
-
-			StringScript = Check11 + Check10;
-
-			//If処理完了
-			//通常動作に戻る
-			CheckCommand();
-		} else if (CheckForCount > CheckIfCount && CheckForCount > CheckWhileCount && CheckForCount > CheckWaitCount) {
-			//先頭にforが来る場合
-			//Whileコマンド全体を切り出す
-			var Check1 = StringScript.split(/(?<={)|(?<=})/g, );
-			var Check2 = 0;
-			var Check3 = 0;
-			var Check4 = '';
-			var Check5 = '';
-			var Check6 = '';
-
-			for (var i = 0; i < Check1.length; i++) {
-				if (Check1[i].match('{')) {
-					Check2++;
-				} else if (Check1[i].match('}')) {
-					Check2--;
-					if (Check2 == 0) {
-						Check3 = i;
-						i = Check1.length;
-					}
-				}
-			}
-
-			for (var i = 1; i <= Check3; i++) {
-				if (i > 1 && i < Check3) {
-					var Check8 = Check1[i].split(/(?<=[)];)/);
-					for (var x = 0; x < Check8.length; x++) {
-						if (Check8[x].match(/".*?Wait[(]/g)) {} else {
-							Check8[x] = Check8[x].replace(/Wait[(]/g, 'ErrorSleep(');
-						}
-					}
-					Check1[i] = Check8.join('');
-				}
-				Check4 += Check1[i];
-			}
-
-			Check4 = Check4.replace(/}$/g, '');
-
-			Check5 = String(Check1[0].match(/(?<=for[(]).*?[)]{$/g));
-			Check5 = Check5.replace(/[)]{$/g, '');
-
-			Check6 = String(StringScript.match(/^.*?(?=for)/g));
-
-			//For関数を削除
-			Check7 = '';
-			for (var i = Check3 + 1; i < Check1.length; i++) {
-				Check7 += Check1[i];
-			}
-			StringScript = Check7;
-
-			//For関数の変数を取り出す
-			var Check8 = Check5.replace(/for|[()]/g, '');
-			Check8 = Check5.replace(/\s/g, '');
-			var Check9 = Check8.split(/;/g);
-
-			if (Check9.length == 3 && Check9[0] != '' && Check9[1] != '' && Check9[2] != '') {
-				var Check10 = Check9[0];
-				Check10 = Check10.replace(/var/g, '');
-				Check10 = Check10.replace(/\s/g, '');
-				var Check11 = Check10.replace(/=.*/g, '');
-				Check10 = Check10.replace(/.*=/g, '');
-
-				//一時変数リストに追加する
-				VariableList.push(Check11);
-				ForVariableList.push(Check11);
-				ValueList.push(Check10);
-
-				//ループしない関数を実行
-				StartCommand(Check6);
-
-				//変数の更新
-				VariableString = '';
-				for (var i = 0; i < VariableList.length; i++) {
-					if (ValueList[i] != null) {
-						VariableString += 'var ' + VariableList[i] + '=' + ValueList[i] + ';';
-					}
-				}
-
-				//For関数を実行
-				While(Check9[1], Check4 + Check9[2] + ';');
+			var Part1 = ProblemScript.substr(0, positionStartCommand - 1);
+			var Part2 = ProblemScript.substr(positionStartCommand - 1, ProblemScript.length);
+			var PartArray = [];
+			if (Part2.match(/^[^A-X,^a-x,^0-9]/g)) {
+				PartArray[0] = Part2.match(/^[^A-X,^a-x,^0-9]*[A-X,a-x,0-9]*/g);
 			} else {
-				ErrorOccurd();
-				ErrorTypeStartCommand = '構文エラー';
-				ErrorMessageStartCommand = '　for関数の構文が誤っています。<br>　スクリプトを確認してください。';
-				Log('<red>構文エラー</red><br>　for関数の構文が誤っています。<br>　スクリプトを確認してください。');
-				Log('　エラー発生箇所 : for(<red>' + Check5 + '</red>){<br>');
-				CommandFinish();
+				PartArray = Part2.split(/[^A-X,^a-x,^0-9]/g);
 			}
+			if (PartArray[0])
+				var Part3 = Part2.substr(Number(String(PartArray[0]).length), Part2.length);
 
-		} else if (CheckWhileCount > CheckIfCount && CheckWhileCount > CheckForCount && CheckWhileCount > CheckWaitCount) {
-			//先頭にwhileが来る場合
-			//Whileコマンド全体を切り出す
-			var Check1 = StringScript.split(/(?<={)|(?<=})/g);
-			var Check2 = 0;
-			var Check3 = 0;
-			var Check4 = '';
-			var Check5 = '';
-			var Check6 = '';
-
-			for (var i = 0; i < Check1.length; i++) {
-				if (Check1[i].match('{')) {
-					Check2++;
-				} else if (Check1[i].match('}')) {
-					Check2--;
-					if (Check2 == 0) {
-						Check3 = i;
-						i = Check1.length;
-					}
-				}
-			}
-
-			for (var i = 1; i <= Check3; i++) {
-				if (i > 1 && i < Check3) {
-					var Check8 = Check1[i].split(/(?<=[)];)/);
-					for (var x = 0; x < Check8.length; x++) {
-						if (Check8[x].match(/".*?Wait[(]/g)) {} else {
-							Check8[x] = Check8[x].replace(/Wait[(]/g, 'ErrorSleep(');
-						}
-					}
-					Check1[i] = Check8.join('');
-				}
-				Check4 += Check1[i];
-			}
-
-			Check4 = Check4.replace(/}$/g, '');
-
-			Check5 = String(Check1[0].match(/(?<=while[(]).*?[)]{$/g));
-			Check5 = Check5.replace(/[)]{$/g, '');
-
-			Check6 = String(StringScript.match(/^.*?(?=while)/g));
-
-			//While関数を削除
-			Check7 = '';
-			for (var i = Check3 + 1; i < Check1.length; i++) {
-				Check7 += Check1[i];
-			}
-			StringScript = Check7;
-
-			//ループしない関数を実行
-			StartCommand(Check6);
-
-			While(Check5, Check4);
-
-		} else if (CheckWaitCount > CheckIfCount && CheckWaitCount > CheckForCount && CheckWaitCount > CheckWhileCount) {
-			//先頭にWaitが来る場合
-			//Waitコマンドまでを切り出す
-			var Check = StringScript.match(/^.*?Wait[(].*?[)][;]/g);
-			if (Check != null) {
-				StringScript = StringScript.substring(Check[0].length, StringScript.length);
-				StartCommand(Check[0]);
-			} else {
-				Log('<red>構文エラー</red><br>　構文に間違いがあります。<br>　スクリプトの構文を確認してください。');
-				CommandAction = true;
-				CommandFinish();
-			}
-
-		} else {
-			//全て実行
-			var now = new Date();
-			var min = now.getMinutes();
-			var Sec = now.getSeconds();
-			var Time = '[' + min + '分' + Sec + '秒]';
-
-			if (StringScript == '') {
-				if (FinishFlag == 0) {
-					Log(Time + ' - 処理終了<br><br>');
-
-					CommandAction = false;
-					CommandFinish();
-				}
-			} else {
-				StartCommand(StringScript);
-				StringScript = '';
-				if (FinishFlag == 0) {
-					Log(Time + ' - 処理終了<br><br>');
-
-					CommandAction = false;
-					CommandFinish();
-				}
-			}
-		}
-	}
-
-	function StartCommand(ActionCommand) {
-		try {
-			if (ActionCommand != '') {
-				VariableString = '';
-				for (var i = 0; i < VariableList.length; i++) {
-					if (ValueList[i] != null) {
-						VariableString += 'var ' + VariableList[i] + '=' + ValueList[i] + ';';
-					}
-				}
-
-				//処理を実行
-				eval(VariableString + ActionCommand);
-
-				//現時点での変数値を記録する
-				VariableString = '';
-				for (var StartCommand1 = 0; StartCommand1 < VariableList.length; StartCommand1++) {
-					if (eval('typeof ' + VariableList[StartCommand1]) !== 'undefined' && String(ValueList[StartCommand1]).match(/^new /g) == null) {
-						ValueList[StartCommand1] = eval(VariableList[StartCommand1]);
-						VariableString += 'var ' + VariableList[StartCommand1] + '=' + eval(VariableList[StartCommand1]) + ';';
-					}
-				}
-			}
-		} catch (e) {
-			var ErrorTypeStartCommand = '';
-			var ErrorMessageStartCommand = '';
-
-			ErrorHappend = true;
-
-			console.log(e);
-
-			if (e instanceof TypeError) {
-				ErrorTypeStartCommand = '変数型エラー';
-				ErrorMessageStartCommand = '　変数の代入先が不正です。<br>　変数を確認してください。';
-			} else if (e instanceof RangeError) {
-				ErrorTypeStartCommand = '範囲エラー';
-				ErrorMessageStartCommand = '　定義域を越しています。<br>　計算式を確認してください。';
-			} else if (e instanceof ReferenceError) {
-				ErrorTypeStartCommand = '参照エラー';
-				ErrorMessageStartCommand = '　変数の参照に失敗しました。<br>　変数を確認してください。';
-			} else if (e instanceof SyntaxError) {
-				ErrorTypeStartCommand = '構文エラー';
-				ErrorMessageStartCommand = '　構文に間違いがあります。<br>　スクリプトの構文を確認してください。';
-			} else {
-				ErrorTypeStartCommand = 'エラー';
-				ErrorMessageStartCommand = '　エラーが発生しました。<br>　スクリプトを確認してください。';
-			}
-
-			stacktrace = e.stack.split(/\r\n?|\n/).slice(1);
-
-			var StacktraseCheckStartCommand = [];
-			var lineStartCommand = -1;
-			var positionStartCommand = -1;
-
-			for (var i = 0; i < stacktrace.length; i++) {
-				if (stacktrace[i].indexOf('eval') != -1) {
-					StacktraseCheckStartCommand = stacktrace[i].split('<anonymous>');
-					StacktraseCheckStartCommand = StacktraseCheckStartCommand[1].split(':');
-					lineStartCommand = StacktraseCheckStartCommand[1];
-					positionStartCommand = StacktraseCheckStartCommand[2].replace(')', '');
-				}
-			}
-
-			ErrorOccurd();
-
-			CommandAction = false;
+			Log('　エラー発生箇所 : '  + '<red>' + PartArray[0] + '</red>' + '<br>　　' + Part1 + '<red>' + PartArray[0] + '</red>' + Part3 + '<br>');
+			CommandAction = true;
 			CommandFinish();
-
-			if (positionStartCommand >= 0) {
-				Log('<red> ' + ErrorTypeStartCommand + '</red><br>' + ErrorMessageStartCommand);
-
-				var ProblemScript = '';
-				ProblemScript = VariableString + ActionCommand;
-
-				var Part1 = ProblemScript.substr(0, positionStartCommand - 1);
-				var Part2 = ProblemScript.substr(positionStartCommand - 1, ProblemScript.length);
-				var PartArray = [];
-				if (Part2.match(/^[^A-X,^a-x,^0-9]/g)) {
-					PartArray[0] = Part2.match(/^[^A-X,^a-x,^0-9]*[A-X,a-x,0-9]*/g);
-				} else {
-					PartArray = Part2.split(/[^A-X,^a-x,^0-9]/g);
-				}
-				if (PartArray[0])
-					var Part3 = Part2.substr(Number(String(PartArray[0]).length), Part2.length);
-
-				Log('　エラー発生箇所 : ' + Part1 + '<red>' + PartArray[0] + '</red>' + Part3 + '<br>');
-				CommandAction = true;
-				CommandFinish();
-			} else {
-				Log('<red> ' + ErrorTypeStartCommand + '</red><br>' + ErrorMessageStartCommand + '<br>');
-				CommandAction = true;
-				CommandFinish();
-			}
+		} else {
+			Log('<red> ' + ErrorTypeStartCommand + '</red><br>' + ErrorMessageStartCommand + '<br>');
+			CommandAction = true;
+			CommandFinish();
 		}
 	};
 
-	//ループ処理
-	function While(Conditional, ActionFunction) {
+	function ErrorOccurd() {
+	var now = new Date();
+	var min = now.getMinutes();
+	var Sec = now.getSeconds();
+	var Time = '[' + min + '分' + Sec + '秒]';
 
-		var WhileOK = true;
-		var RoopNoError = true;
-		LoopBreakFlag = false;
+	Log('<red>' + Time + ' - エラー発生</red>');
+}
 
-		if (LoopCount == -1) {
-			//オリジナルWihile関数内のbreakを修正
-			var BreakCheck = ActionFunction.split(/(?=[(].*?[)][{].*?[}])|(?<=[(].*?[)][{].*?[}])/g);
-			BreakCheck[0] = BreakCheck[0].replace(/break;/g, 'LoopBreakFlag=true;');
-			for (var i = 1; i < BreakCheck.length; i++) {
-				if (BreakCheck[i - 1].match(/while$|for$/) == null) {
-					BreakCheck[i] = BreakCheck[i].replace(/break;/g, 'LoopBreakFlag=true;');
-				}
-			}
-			ActionFunction = BreakCheck.join('');
+function Finish() {
+var now = new Date();
+var min = now.getMinutes();
+var Sec = now.getSeconds();
+var Time = '[' + min + '分' + Sec + '秒]';
 
-			//While条件を満たしているか確認
-			try{
-				eval(VariableString);
-				if (eval(Conditional) == false) {
-					WhileOK = false;
-				}
-			} catch (e) {
-				ErrorOccurd();
-				Log('<red>構文エラー</red><br>　条件式を確認してください。<br>　現在 : <red>' + Conditional + '</red>');
-				CheckCommand();
-				RoopNoError = false;
-			}
-
-			if (RoopNoError && WhileOK) {
-				//Wait関数の個数を数える
-				LoopFunctionList = [];
-				LoopWaitList = [];
-
-				var Check4 = ActionFunction.split(/(?<=;}*)/);
-				var Check5 = '';
-
-				for (var i = 0; i < Check4.length; i++) {
-					if (String(Check4[i].match(/Wait[(]/g)) != 'null' && String(Check4[i].match(/".*?Wait[(]/g)) == 'null') {
-						LoopFunctionList.push(Check5);
-						LoopWaitList.push(Check4[i]);
-						Check5 = '';
-					} else {
-						Check5 += Check4[i];
-					}
-				}
-				if (Check5 != '') {
-					LoopFunctionList.push(Check5);
-				}
-
-				LoopCount = LoopWaitList.length;
-			}
-		}
-
-		if(RoopNoError){
-			if (WhileOK && ErrorHappend == false) {
-				//関数を実行
-				if (LoopCount == 0 && LoopFunctionList.length > LoopWaitList.length) {
-					var Check2 = LoopFunctionList[LoopFunctionList.length - 1];
-					StartCommand(Check2);
-				} else {
-					var Check2 = LoopFunctionList[LoopWaitList.length - LoopCount];
-					StartCommand(Check2);
-				}
-
-				//Wait関数を実行
-				if (LoopBreakFlag) {
-					LoopCount = -1;
-					//ループ中断
-					//For文の変数を削除する
-					for (var i = 0; i < ForVariableList.length; i++) {
-						VariableList.splice(VariableList.length - i - 1, 1);
-						ValueList.splice(ValueList.length - i - 1, 1);
-					}
-					ForVariableList = [];
-					CheckCommand();
-				} else if (LoopCount > 0) {
-					var Check3 = String(LoopWaitList[LoopWaitList.length - LoopCount]).match(/(?<=Wait[(]).*?(?=[)];)/g);
-					eval(VariableString);
-					var Check4 = eval(Check3[0]);
-
-					var ErrorFlag = false;
-					var ErrorValue = '';
-
-					if (Number(Check4)) {
-						if (Number(Check4) <= 0) {
-							ErrorValue = Check3[0];
-							ErrorFlag = true;
-						}
-					} else {
-						ErrorValue = Check3[0];
-						ErrorFlag = true;
-					}
-
-					LoopCount--;
-
-					if (ErrorFlag) {
-						ErrorOccurd();
-						Log('<red>実行エラー</red><br>　Wait関数には0より大きい実数を渡してください<br>現在 : Wait(<red>' + ErrorValue + '</red>);');
-						While(Conditional, ActionFunction);
-					} else {
-						EndlessLoopCount = 0;
-						WaitId = setTimeout(function() {
-							While(Conditional, ActionFunction);
-						}, Check4 * 1000);
-					}
-				} else {
-					LoopCount = -1;
-					eval(VariableString);
-					if (eval(Conditional)) {
-						//ループ継続
-						if (EndlessLoopCount > 300) {
-							Log('<red>無限ループ</red><br>　無限ループを検出しました。<br>　エラー発生箇所 : ' + ActionFunction);
-							alert('無限ループを検出しました！\nwhile,for関数を確認してください。');
-							CommandAction = true;
-							CommandFinish();
-						} else {
-							EndlessLoopCount++;
-							While(Conditional, ActionFunction);
-						}
-					} else {
-						//ループ終了
-						//For文の変数を削除する
-						for (var i = 0; i < ForVariableList.length; i++) {
-							VariableList.splice(VariableList.length - i - 1, 1);
-							ValueList.splice(ValueList.length - i - 1, 1);
-						}
-						ForVariableList = [];
-						CheckCommand();
-					}
-				}
-			} else {
-				LoopCount = -1;
-				//ループ終了
-				//For文の変数を削除する
-				for (var i = 0; i < ForVariableList.length; i++) {
-					VariableList.splice(VariableList.length - i - 1, 1);
-					ValueList.splice(ValueList.length - i - 1, 1);
-				}
-				ForVariableList = [];
-				CheckCommand();
-			}
-		}
-
-	};
+Log(Time + ' - 処理終了<br><br>');
+	CommandAction = false;
+	CommandFinish();
+}
 
 	//ログ
 	function Log(value) {
@@ -1941,47 +1450,6 @@
 		var random = Math.floor(Math.random() * (max + 1 - min)) + min;
 
 		return random;
-	}
-
-	//一時停止処理
-	function Wait(Secound) {
-		var ErrorFlag = false;
-		var ErrorValue = '';
-		if (typeof Secound != 'number') {
-			ErrorValue = '[' + typeof Secound + ']';
-			ErrorFlag = true;
-		} else {
-			if (Secound <= 0) {
-				ErrorValue = Secound;
-				ErrorFlag = true;
-			}
-		}
-
-		if (ErrorFlag) {
-			ErrorOccurd();
-			Log('<red>実行エラー</red><br>　Wait関数には0より大きい実数を渡してください<br>現在 : Wait(<red>' + ErrorValue + '</red>);');
-			CheckCommand();
-		} else {
-			FinishFlag++;
-			WaitId = setTimeout(function() {
-				FinishFlag--;
-				CheckCommand();
-			}, Secound * 1000);
-		}
-	};
-
-	function ErrorSleep(Secound) {
-		ErrorOccurd();
-		Log('<red>実行エラー</red><br>　Wait関数をfor,while関数内にあるif,for,while関数に使うことはできません。');
-	}
-
-	function ErrorOccurd() {
-		var now = new Date();
-		var min = now.getMinutes();
-		var Sec = now.getSeconds();
-		var Time = '[' + min + '分' + Sec + '秒]';
-
-		Log('<red>' + Time + ' - エラー発生</red>');
 	}
 
 	//Motor関数
