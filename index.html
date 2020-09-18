@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html manifest="offline.manifest" lang="ja">
+<html lang="ja">
 <head>
 	<meta charset="utf-8" />
 	<meta name="robots" content="noindex">
@@ -318,6 +318,18 @@
 
 	//初期動作
 	window.onload = function() {
+
+		//オフラインで使用可能にする
+		if (navigator.serviceWorker) {
+
+  //(1)Service Workerのインストール
+  navigator.serviceWorker.register('/service-worker.js', { scope: '.' });
+
+  //(2)マニュフェストに変更があれば、Service Worker側でリソースの再キャッシュを行う
+  if (navigator.onLine) {
+    fetch("/site.appcache");
+  }
+	}
 
 		stage = 0;
 
