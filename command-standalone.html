@@ -675,7 +675,7 @@
 				}
 			}
 
-			if (FirstTime == 'true') {
+			if (FirstTime == 'true' && Device != 'ios') {
 				Status.innerHTML = '<font color="red">初回利用時は位置情報の権限設定が必要です</font><br><a href="pdf/Permission' + Device + Browser + '.pdf" target="_blank">ブラウザ権限の設定手順</a>';
 			}
 
