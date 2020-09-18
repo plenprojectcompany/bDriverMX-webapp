@@ -1,27 +1,27 @@
 /*全体設定*/
 @font-face {
   font-family: 'MainFont';
-  src: url(data/MainFont.ttf);
+  src: url(MainFont.ttf);
 }
 
 @font-face {
   font-family: 'TitleFont';
-  src: url(data/TitleFont.ttf);
+  src: url(TitleFont.ttf);
 }
 
 @font-face {
   font-family: 'VarsionFont';
-  src: url(data/VarsionFont.ttf);
+  src: url(VarsionFont.ttf);
 }
 
 @font-face {
   font-family: 'CodeFont';
-  src: url(data/CodeFont.otf);
+  src: url(CodeFont.otf);
 }
 
 @font-face {
   font-family: 'CodeFontLight';
-  src: url(data/CodeFontLight.otf);
+  src: url(CodeFontLight.otf);
 }
 
 body {
