@@ -320,16 +320,15 @@
 	window.onload = function() {
 
 		//オフラインで使用可能にする
-		if (navigator.serviceWorker) {
-
-  //(1)Service Workerのインストール
-  navigator.serviceWorker.register('service-worker.js', { scope: '.' });
-
-  //(2)マニュフェストに変更があれば、Service Worker側でリソースの再キャッシュを行う
-  if (navigator.onLine) {
-    fetch("site.appcache");
-  }
-	}
+		if ('serviceWorker' in navigator) {
+		  navigator.serviceWorker.register('sw.js').then(function(registration) {
+		    // 登録成功
+		    console.log('ServiceWorker の登録に成功しました。スコープ: ', registration.scope);
+		  }).catch(function(err) {
+		    // 登録失敗
+		    console.log('ServiceWorker の登録に失敗しました。', err);
+		  });
+		}
 
 		stage = 0;
 
