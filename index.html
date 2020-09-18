@@ -323,11 +323,11 @@
 		if (navigator.serviceWorker) {
 
   //(1)Service Workerのインストール
-  navigator.serviceWorker.register('data/service-worker.js', { scope: '.' });
+  navigator.serviceWorker.register('service-worker.js', { scope: '.' });
 
   //(2)マニュフェストに変更があれば、Service Worker側でリソースの再キャッシュを行う
   if (navigator.onLine) {
-    fetch("data/site.appcache");
+    fetch("site.appcache");
   }
 	}
 
