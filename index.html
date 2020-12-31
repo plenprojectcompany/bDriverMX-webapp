@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
 	<meta charset="utf-8" />
 	<meta name="robots" content="noindex">
@@ -321,13 +322,13 @@
 
 		//オフラインで使用可能にする
 		if ('serviceWorker' in navigator) {
-		  navigator.serviceWorker.register('sw.js').then(function(registration) {
-		    // 登録成功
-		    console.log('ServiceWorker の登録に成功しました。スコープ: ', registration.scope);
-		  }).catch(function(err) {
-		    // 登録失敗
-		    console.log('ServiceWorker の登録に失敗しました。', err);
-		  });
+			navigator.serviceWorker.register('sw.js').then(function(registration) {
+				// 登録成功
+				console.log('ServiceWorker の登録に成功しました。スコープ: ', registration.scope);
+			}).catch(function(err) {
+				// 登録失敗
+				console.log('ServiceWorker の登録に失敗しました。', err);
+			});
 		}
 
 		stage = 0;
@@ -403,7 +404,7 @@
 				Support = false;
 				Browser = 'Unknown';
 			}
-		}else{
+		} else {
 			//例外
 			if (userAgent.indexOf('bluefy') != -1) {
 				//Bluefy
@@ -524,7 +525,7 @@
 				//キーボードを無効にする
 				document.getElementById('KeySetting').style.display = "none";
 
-				if(Device == 'ios'){
+				if (Device == 'ios') {
 					//フルスクリーンを無効にする
 					CButton4.style.display = "none";
 
@@ -778,7 +779,7 @@
 		if (SettingNow == false) {
 			if (event.key === Key[0]) {
 				//アクセル
-				if(FrontKeyPressFlag == false){
+				if (FrontKeyPressFlag == false) {
 					BackKeyPressFlag = false;
 					clearTimeout(BackKeyPressRepeat);
 
@@ -787,7 +788,7 @@
 				}
 			} else if (event.key === Key[1]) {
 				//ブレーキ
-				if(BackKeyPressFlag == false){
+				if (BackKeyPressFlag == false) {
 					FrontKeyPressFlag = false;
 					clearTimeout(FrontKeyPressRepeat);
 
@@ -812,7 +813,7 @@
 		}
 	});
 
-	function FrontKeyPress(){
+	function FrontKeyPress() {
 		if (VSlider.value > 100) {
 			if (StopFlag) {
 				KeyBoard = false;
@@ -827,7 +828,7 @@
 				VSlider.value++;
 				PWM(VSlider.value);
 			}
-		}else if(VSlider.value == 100 && StopFlag == false){
+		} else if (VSlider.value == 100 && StopFlag == false) {
 			KeyBoard = true;
 			HSlider.disabled = true;
 			VSlider.disabled = true;
@@ -845,12 +846,14 @@
 			}
 			PWM(VSlider.value);
 		}
-		if(FrontKeyPressFlag){
-			FrontKeyPressRepeat = setTimeout(function(){FrontKeyPress();}, 10);
+		if (FrontKeyPressFlag) {
+			FrontKeyPressRepeat = setTimeout(function() {
+				FrontKeyPress();
+			}, 10);
 		}
 	}
 
-	function BackKeyPress(){
+	function BackKeyPress() {
 		if (VSlider.value < 100) {
 			if (StopFlag) {
 				KeyBoard = false;
@@ -865,7 +868,7 @@
 				VSlider.value--;
 				PWM(VSlider.value);
 			}
-		}else if(VSlider.value == 100 && StopFlag == false){
+		} else if (VSlider.value == 100 && StopFlag == false) {
 			KeyBoard = true;
 			HSlider.disabled = true;
 			VSlider.disabled = true;
@@ -883,8 +886,10 @@
 			}
 			PWM(VSlider.value);
 		}
-		if(BackKeyPressFlag){
-			BackKeyPressRepeat = setTimeout(function(){BackKeyPress();}, 10);
+		if (BackKeyPressFlag) {
+			BackKeyPressRepeat = setTimeout(function() {
+				BackKeyPress();
+			}, 10);
 		}
 	}
 
@@ -1092,12 +1097,12 @@
 			//上限の数字にしない
 			if (ServoValue < 5) {
 				ServoValue = 5;
-			}else if(ServoValue > 250){
+			} else if (ServoValue > 250) {
 				ServoValue = 250;
 			}
 			if (PWMValue < 5) {
 				PWMValue = 5;
-			}else if(PWMValue > 250){
+			} else if (PWMValue > 250) {
 				PWMValue = 250;
 			}
 
@@ -1472,7 +1477,8 @@
 	});
 
 	function Save() {
-		localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + SSlider5.value + ',' + SSlider6.value + ',' + SSlider7.value + ',' + SSlider8.value + ',' + Key[0] + ',' + Key[1] + ',' + Key[2] + ',' + Key[3] + ',' + SSlider9.value + ',' + FirstTime + ',' + SSlider10.value);
+		localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + SSlider5.value + ',' + SSlider6.value + ',' + SSlider7.value + ',' + SSlider8.value + ',' + Key[0] + ',' + Key[1] + ',' + Key[2] +
+			',' + Key[3] + ',' + SSlider9.value + ',' + FirstTime + ',' + SSlider10.value);
 	};
 
 	//設定データを反映させる
@@ -1577,6 +1583,11 @@
 				Status.innerHTML = '<font color="red">認証に失敗しました</font><br>正しく"bCore"を選択できているか確認してください';
 			}
 		}
+	}
+
+	window.onerror = function(msg, url, linenumber) {
+		alert('Error message: ' + msg + '\nURL: ' + url + '\nLine Number: ' + linenumber);
+		return true;
 	}
 </script>
 
