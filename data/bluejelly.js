@@ -62,8 +62,8 @@ var BlueJelly = function() {
 //setUUID
 //--------------------------------------------------
 BlueJelly.prototype.setUUID = function(name, serviceUUID, characteristicUUID) {
-  console.log('Execute : setUUID');
-  console.log(this.hashUUID);
+  //console.log('Execute : setUUID');
+  //console.log(this.hashUUID);
 
   this.hashUUID[name] = {
     'serviceUUID': serviceUUID,
@@ -90,14 +90,11 @@ BlueJelly.prototype.scan = function(uuid) {
 BlueJelly.prototype.requestDevice = function(uuid) {
   console.log('Execute : requestDevice');
   return navigator.bluetooth.requestDevice({
-      filters: [{
-          services: [this.hashUUID[uuid].serviceUUID]
-        },
-        {
-          namePrefix: "bCore"
-        }
-      ],
-      optionalServices: [this.hashUUID[uuid].serviceUUID]
+    acceptAllDevices: false,
+    filters: [
+      {services: ['389caaf0-843f-4d3b-959d-c954cce14655']}
+    ],
+    optionalServices: [this.hashUUID[uuid].serviceUUID]
     })
     .then(device => {
       this.bluetoothDevice = device;
