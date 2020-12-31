@@ -833,7 +833,7 @@ red {
 @media screen and (max-width:1000px) {
 
   /* 設定画面を見やすくする */
-  #SettingTable th, td {
+  #SettingTable th, #SettingTable td {
     display: block;
     clear: both;
   }
