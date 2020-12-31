@@ -120,9 +120,9 @@
 		<div id='SettingLayer'>
 			<div class="Guide" id='Guide2'></div>
 			<div id='SettingList'>
-				<table align="center">
+				<table align="center" id="SettingTable">
 					<tr class='row1'>
-						<td colspan="4">設定</td>
+						<td id='SettingTitle' colspan="4">設定</td>
 					</tr>
 					<tr class='row4'>
 						<td colspan="4">前後レバー</td>
@@ -136,18 +136,18 @@
 						<td colspan="4">左右レバー</td>
 					</tr>
 					<tr>
-						<td>感度</td>
-						<td id='Svalue2' class='Svalue'>100%</td>
-						<td colspan="2"><input type="range" id='Sslider2' class='SettingSlider' min='20' max='100' value='100'></td>
+						<td class='col1'>感度</td>
+						<td class='col2' id='Svalue2'>100%</td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider2' class='SettingSlider' min='20' max='100' value='100'></td>
 					</tr>
 					<tr>
-						<td>初期位置調整</td>
-						<td id='Svalue3' class='Svalue'>0</td>
-						<td colspan="2"><input type="range" id='Sslider3' class='SettingSlider' min='-30' max='30' value='0'></td>
+						<td class='col1'>初期位置調整</td>
+						<td class='col2' id='Svalue3'>0</td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider3' class='SettingSlider' min='-30' max='30' value='0'></td>
 					</tr>
 					<tr>
-						<td>反転</td>
-						<td id='Svalue10' class='Svalue'>OFF</td>
+						<td class='col1'>反転</td>
+						<td class='col2' id='Svalue10'>OFF</td>
 						<td class='col4'><input type="range" id='Sslider10' class='SettingSlider' min='0' max='1' value='0'></td>
 						<td></td>
 					</tr>
@@ -155,13 +155,13 @@
 						<td colspan="4">全体設定</td>
 					</tr>
 					<tr id='GyroSetting'>
-						<td>ジャイロ感度</td>
-						<td id='Svalue5' class='Svalue'>50%</td>
-						<td colspan="2"><input type="range" id='Sslider5' class='SettingSlider' min='0' max='100' value='50'></td>
+						<td class='col1'>ジャイロ感度</td>
+						<td class='col2' id='Svalue5'>50%</td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider5' class='SettingSlider' min='0' max='100' value='50'></td>
 					</tr>
 					<tr id='KeySetting'>
-						<td>キー割り当て</td>
-						<td colspan="3">
+						<td class='col1'>キー割り当て</td>
+						<td class='col3' colspan="3">
 							<div class='keySet' id='keySet1'>前 / ↑</div>
 							<div class='keySet' id='keySet2'>後 / ↓</div>
 							<div class='keySet' id='keySet3'>左 / ←</div>
@@ -169,23 +169,23 @@
 						</td>
 					</tr>
 					<tr>
-						<td>レバーサイズ</td>
-						<td id='Svalue6' class='Svalue'>100%</td>
-						<td colspan="2"><input type="range" id='Sslider6' class='SettingSlider' min='0' max='200' value='100'></td>
+						<td class='col1'>レバーサイズ</td>
+						<td class='col2' id='Svalue6'>100%</td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider6' class='SettingSlider' min='0' max='200' value='100'></td>
 					</tr>
 					<tr>
-						<td>レバー位置(上下)</td>
-						<td id='Svalue7' class='Svalue'>0</td>
-						<td colspan="2"><input type="range" id='Sslider7' class='SettingSlider' min='-20' max='20' value='0'></td>
+						<td class='col1'>レバー位置(上下)</td>
+						<td class='col2' id='Svalue7'>0</td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider7' class='SettingSlider' min='-20' max='20' value='0'></td>
 					</tr>
 					<tr>
-						<td>レバー位置(左右)</td>
-						<td id='Svalue9' class='Svalue'>0</td>
-						<td colspan="2"><input type="range" id='Sslider9' class='SettingSlider' min='-20' max='20' value='0'></td>
+						<td class='col1'>レバー位置(左右)</td>
+						<td class='col2' id='Svalue9'>0</td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider9' class='SettingSlider' min='-20' max='20' value='0'></td>
 					</tr>
 					<tr>
-						<td>左右反転</td>
-						<td id='Svalue8' class='Svalue'>OFF</td>
+						<td class='col1'>左右反転</td>
+						<td class='col2' id='Svalue8'>OFF</td>
 						<td class='col4'><input type="range" id='Sslider8' class='SettingSlider' min='0' max='1' value='0'></td>
 						<td></td>
 					</tr>
@@ -547,7 +547,7 @@
 			Lcontroller.style.display = 'none';
 			Lsetting.style.display = 'none';
 			LNoSupport.style.display = 'none';
-			LTitle.style.datalist = '';
+			LTitle.style.display = '';
 			Lloading.style.display = 'none';
 		}else{
 			//非対応ブラウザ
@@ -555,7 +555,7 @@
 			//ローディング画面の削除
 			Lcontroller.style.display = 'none';
 			Lsetting.style.display = 'none';
-			LTitle.style.datalist = 'none';
+			LTitle.style.display = 'none';
 			LNoSupport.style.display = '';
 			Lloading.style.display = 'none';
 		}
@@ -1568,7 +1568,7 @@
 			//ローディング画面の削除
 			Lcontroller.style.display = 'none';
 			Lsetting.style.display = 'none';
-			LTitle.style.datalist = 'none';
+			LTitle.style.display = 'none';
 			LNoSupport.style.display = '';
 			DestroyLoading();
 		} else {

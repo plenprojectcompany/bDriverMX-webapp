@@ -287,9 +287,9 @@
 		<div id='SettingLayer'>
 			<div class="Guide" id='Guide2'></div>
 			<div id='SettingList'>
-				<table align="center">
+				<table align="center" id="SettingTable">
 					<tr class='row1'>
-						<td colspan="4">設定</td>
+						<td id='SettingTitle' colspan="4">設定</td>
 					</tr>
 					<tr class='row4'>
 						<td colspan="4">前後</td>
@@ -303,18 +303,18 @@
 						<td colspan="4">ステアリング</td>
 					</tr>
 					<tr>
-						<td>最大角度</td>
-						<td id='Svalue2' class='Svalue'>100%</td>
-						<td colspan="2"><input type="range" id='Sslider2' class='SettingSlider' min='20' max='100' value='100'></td>
+						<td class='col1'>最大角度</td>
+						<td class='col2' id='Svalue2'>100%</td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider2' class='SettingSlider' min='20' max='100' value='100'></td>
 					</tr>
 					<tr>
-						<td>初期位置調整</td>
-						<td id='Svalue3' class='Svalue'>0</td>
-						<td colspan="2"><input type="range" id='Sslider3' class='SettingSlider' min='-30' max='30' value='0'></td>
+						<td class='col1'>初期位置調整</td>
+						<td class='col2' id='Svalue3'>0</td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider3' class='SettingSlider' min='-30' max='30' value='0'></td>
 					</tr>
 					<tr>
-						<td>反転</td>
-						<td id='Svalue10' class='Svalue'>OFF</td>
+						<td class='col1'>反転</td>
+						<td class='col2' id='Svalue10'>OFF</td>
 						<td class='col4'><input type="range" id='Sslider10' class='SettingSlider' min='0' max='1' value='0'></td>
 						<td></td>
 					</tr>
@@ -688,7 +688,7 @@
 			Lcommand.style.display = '';
 			Lsetting.style.display = 'none';
 			LNoSupport.style.display = 'none';
-			LTitle.style.datalist = '';
+			LTitle.style.display= '';
 			Lloading.style.display = 'none';
 		}else{
 			//非対応ブラウザ
@@ -696,7 +696,7 @@
 			//ローディング画面の削除
 			Lcommand.style.display = 'none';
 			Lsetting.style.display = 'none';
-			LTitle.style.datalist = 'none';
+			LTitle.style.display = 'none';
 			LNoSupport.style.display = '';
 			Lloading.style.display = 'none';
 		}
@@ -1067,7 +1067,7 @@
 			//ローディング画面の削除
 			Lcommand.style.display = 'none';
 			Lsetting.style.display = 'none';
-			LTitle.style.datalist = 'none';
+			LTitle.style.display = 'none';
 			LNoSupport.style.display = '';
 			DestroyLoading();
 		} else {
