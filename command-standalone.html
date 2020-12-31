@@ -683,12 +683,23 @@
 			Status.innerHTML = '<font color="red">初回利用時は位置情報の権限設定をご確認ください</font><br><a href="pdf/Permission' + Device + Browser + '.pdf" target="_blank">ブラウザ権限の設定手順</a>';
 		}
 
-		//ローディング画面の削除
-		Lcommand.style.display = '';
-		Lsetting.style.display = 'none';
-		LNoSupport.style.display = 'none';
-		LTitle.style.datalist = '';
-		Lloading.style.display = 'none';
+		if(Support){
+			//ローディング画面の削除
+			Lcommand.style.display = '';
+			Lsetting.style.display = 'none';
+			LNoSupport.style.display = 'none';
+			LTitle.style.datalist = '';
+			Lloading.style.display = 'none';
+		}else{
+			//非対応ブラウザ
+			DisplayOut();
+			//ローディング画面の削除
+			Lcommand.style.display = 'none';
+			Lsetting.style.display = 'none';
+			LTitle.style.datalist = 'none';
+			LNoSupport.style.display = '';
+			Lloading.style.display = 'none';
+		}
 	}
 
 	//ローディング画面の表示
