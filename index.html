@@ -1138,6 +1138,8 @@
 		} else if (stage == 3 || stage == 4) {
 			text1 = '';
 			text2 = 'Complete!';
+		} else if (stage == 5){
+			text2 = 'Reconnecting';
 		} else {
 			text2 = 'Loading';
 		}
@@ -1581,6 +1583,10 @@
 					StartButton.disabled = false;
 					Status.innerHTML = '<font color="red">認証に失敗しました</font><br>正しく"bCore"を選択できているか確認してください';
 				}
+			}else if(stage == 4){
+				//bCore切断
+				stage = 5;
+				DisplayLoading()
 			}
 		}
 	}
