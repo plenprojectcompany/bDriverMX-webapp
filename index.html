@@ -1560,7 +1560,6 @@
 
 	//エラー時
 	ble.onError = function(error) {
-		alert(error);
 		if (error.toString().search(/Web Bluetooth is not supported/) != -1) {
 			//WebBLE非対応
 			Lcontroller.style.display = 'none';

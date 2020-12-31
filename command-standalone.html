@@ -1055,35 +1055,40 @@
 
 	//エラー時
 	ble.onError = function(error) {
-		if (stage == 1) {
-			//スキャン失敗  →  タイトル
-			Lcommand.style.display = 'none';
+		if (error.toString().search(/Web Bluetooth is not supported/) != -1) {
+			//WebBLE非対応
+			Lcontroller.style.display = 'none';
 			LTitle.style.display = '';
 			DestroyLoading();
 			stage = 0;
 			StartButton.disabled = false;
-			Status.innerHTML = '<font color="red">ペアリングに失敗しました</font><br>"bCore"を選択し、ペア設定を行ってください';
-		} else if (stage == 2) {
-			//接続失敗  →  再接続
-			if (ReconnectCount < 5) {
-				ReconnectCount++;
-				ble.connectGATT('UUID6');
-			} else {
-				Lcommand.style.display = 'none';
+			Status.innerHTML = '<font color="red">ご利用のブラウザはWebBLEに対応しておりません</font><br>Chrome等のブラウザをご利用ください';
+		} else {
+			if (stage == 1) {
+				//スキャン失敗 → タイトル
+				Lcontroller.style.display = 'none';
 				LTitle.style.display = '';
 				DestroyLoading();
-				ble.reset();
 				stage = 0;
 				StartButton.disabled = false;
-				Status.innerHTML = '<font color="red">認証に失敗しました</font><br>正しく"bCore"を選択できているか確認してください';
+				Status.innerHTML = '<font color="red">ペアリングに失敗しました</font><br>"bCore"を選択し、ペア設定を行ってください';
+			} else if (stage == 2) {
+				//接続失敗 → 再接続
+				if (ReconnectCount < 5) {
+					ReconnectCount++;
+					ble.connectGATT('UUID6');
+				} else {
+					Lcontroller.style.display = 'none';
+					LTitle.style.display = '';
+					DestroyLoading();
+					ble.reset();
+					stage = 0;
+					StartButton.disabled = false;
+					Status.innerHTML = '<font color="red">認証に失敗しました</font><br>正しく"bCore"を選択できているか確認してください';
+				}
 			}
 		}
 	}
-
-
-
-
-
 
 	//エディター機能
 	//変数の定義
