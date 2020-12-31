@@ -240,7 +240,10 @@
 						</div>
 						<div class='Chapter'>ローカルサーバー</div>
 						<div class='RefrenceCode'>ReadLocalServer.<value>色</value>.<value>軸</value>();</div>
-						<div class='RefrenceGuide'>ローカルサーバーからデータを受け取ります<br>受け取りに失敗するとnullを返します<br><br>呼び出しから取得まで時間差があります<br>繰り返し呼び出してください<br><br><value> 色</value> : red, yellow, green, blue<br><value> 軸</value> : x, y</div>
+						<div class='RefrenceGuide'>ローカルサーバーからデータを受け取ります<br>受け取りに失敗するとnullを返します<br><br>呼び出しから取得まで時間差があります<br>繰り返し呼び出してください<br><br>
+							<value> 色</value> : red, yellow, green, blue<br>
+							<value> 軸</value> : x, y
+						</div>
 						<div class='RefrenceExample'>
 							<table>
 								<tr>
@@ -409,39 +412,39 @@
 
 
 	//iosへの対応 (?<=) (?=)
-	function GetRegex(mode,pattern1,pattern2,value,replace){
-		if(mode == 1){
+	function GetRegex(mode, pattern1, pattern2, value, replace) {
+		if (mode == 1) {
 			//パターン1とパターン2の間
 			var check1 = value.match(new RegExp(pattern1));
 			var check2 = value.match(new RegExp(pattern2));
 
-			if(check1 && check2){
-				var regex1 = new RegExp('^.*'+pattern1);
-				var regex3 = new RegExp('^.*'+pattern2);
-				var regex2 = new RegExp(pattern2+'.*$');
+			if (check1 && check2) {
+				var regex1 = new RegExp('^.*' + pattern1);
+				var regex3 = new RegExp('^.*' + pattern2);
+				var regex2 = new RegExp(pattern2 + '.*$');
 
 				var count1 = value.match(regex1);
 				var count2 = value.match(regex3);
 
-				if(count1[0].length < count2[0].length){
-					var result = value.replace(regex1,'');
-					result = result.replace(regex2,'');
+				if (count1[0].length < count2[0].length) {
+					var result = value.replace(regex1, '');
+					result = result.replace(regex2, '');
 					return result;
-				}else{
+				} else {
 					return null;
 				}
-			}else{
+			} else {
 				return null;
 			}
-		}else if(mode == 2){
+		} else if (mode == 2) {
 			var regex = new RegExp('(' + pattern1 + ').*?(' + pattern2 + ')');
-			if(value.match(regex)){
-				var result = value.replace(regex,'$1'+replace+'$2');
+			if (value.match(regex)) {
+				var result = value.replace(regex, '$1' + replace + '$2');
 				return result;
-			}else{
+			} else {
 				return null;
 			}
-		}else{
+		} else {
 			return null;
 		}
 	}
@@ -470,25 +473,25 @@
 	});
 
 	function sleep(second) {
-    return new Promise(resolve => {
-        WaitId = setTimeout(() => {
-            resolve()
-        }, second * 1000)
-    })
-}
+		return new Promise(resolve => {
+			WaitId = setTimeout(() => {
+				resolve()
+			}, second * 1000)
+		})
+	}
 
 	//初期動作
 	window.onload = function() {
 
 		//オフラインで使用可能にする
 		if ('serviceWorker' in navigator) {
-		  navigator.serviceWorker.register('sw.js').then(function(registration) {
-		    // 登録成功
-		    console.log('ServiceWorker の登録に成功しました。スコープ: ', registration.scope);
-		  }).catch(function(err) {
-		    // 登録失敗
-		    console.log('ServiceWorker の登録に失敗しました。', err);
-		  });
+			navigator.serviceWorker.register('sw.js').then(function(registration) {
+				// 登録成功
+				console.log('ServiceWorker の登録に成功しました。スコープ: ', registration.scope);
+			}).catch(function(err) {
+				// 登録失敗
+				console.log('ServiceWorker の登録に失敗しました。', err);
+			});
 		}
 
 		stage = 0;
@@ -564,7 +567,7 @@
 				Support = false;
 				Browser = 'Unknown';
 			}
-		}else{
+		} else {
 			//例外
 			if (userAgent.indexOf('bluefy') != -1) {
 				//Bluefy
@@ -669,7 +672,7 @@
 				CButton1.style.opacity = '1';
 				CButton4.style.opacity = '1';
 
-				if(Device == 'ios'){
+				if (Device == 'ios') {
 					//フルスクリーンを無効にする
 					CButton4.style.display = "none";
 				}
@@ -901,12 +904,12 @@
 			//上限の数字にしない
 			if (ServoValue < 5) {
 				ServoValue = 5;
-			}else if(ServoValue > 250){
+			} else if (ServoValue > 250) {
 				ServoValue = 250;
 			}
 			if (PWMValue < 5) {
 				PWMValue = 5;
-			}else if(PWMValue > 250){
+			} else if (PWMValue > 250) {
 				PWMValue = 250;
 			}
 
@@ -1024,7 +1027,8 @@
 	function Save() {
 		Setting = localStorage.getItem('SaveData').split(',');
 
-		localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + Setting[4] + ',' + Setting[5] + ',' + Setting[6] + ',' + Setting[7] + ',' + Setting[8] + ',' + Setting[9] + ',' + Setting[10] +	',' + Setting[11] + ',' + Setting[12] + ',' + 'false' + ',' + SSlider10.value);
+		localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + Setting[4] + ',' + Setting[5] + ',' + Setting[6] + ',' + Setting[7] + ',' + Setting[8] + ',' + Setting[9] + ',' + Setting[10] + ',' +
+			Setting[11] + ',' + Setting[12] + ',' + 'false' + ',' + SSlider10.value);
 	};
 
 	//設定データを反映させる
@@ -1057,7 +1061,7 @@
 	ble.onError = function(error) {
 		if (error.toString().search(/Web Bluetooth is not supported/) != -1) {
 			//WebBLE非対応
-			Lcontroller.style.display = 'none';
+			Lcommand.style.display = 'none';
 			LTitle.style.display = '';
 			DestroyLoading();
 			stage = 0;
@@ -1065,20 +1069,20 @@
 			Status.innerHTML = '<font color="red">ご利用のブラウザはWebBLEに対応しておりません</font><br>Chrome等のブラウザをご利用ください';
 		} else {
 			if (stage == 1) {
-				//スキャン失敗 → タイトル
-				Lcontroller.style.display = 'none';
+				//スキャン失敗  →  タイトル
+				Lcommand.style.display = 'none';
 				LTitle.style.display = '';
 				DestroyLoading();
 				stage = 0;
 				StartButton.disabled = false;
 				Status.innerHTML = '<font color="red">ペアリングに失敗しました</font><br>"bCore"を選択し、ペア設定を行ってください';
 			} else if (stage == 2) {
-				//接続失敗 → 再接続
+				//接続失敗  →  再接続
 				if (ReconnectCount < 5) {
 					ReconnectCount++;
 					ble.connectGATT('UUID6');
 				} else {
-					Lcontroller.style.display = 'none';
+					Lcommand.style.display = 'none';
 					LTitle.style.display = '';
 					DestroyLoading();
 					ble.reset();
@@ -1107,7 +1111,7 @@
 
 	//セキュリティ
 	const ExistFunctionList = ['DisplayOut', 'DisplayLoading', 'DestroyLoading', 'ScanStart', 'OnConnectFinish', 'PWM', 'ServoControll', 'SendData', 'Save', 'SettingSet', 'CommandFinish', 'OnClickStart', 'StartCommand', 'Loop', 'ErrorOccurd',
-		'ErrorSleep', 'ReturnLocalServerValue', 'ErrorCheck' , 'Finish'
+		'ErrorSleep', 'ReturnLocalServerValue', 'ErrorCheck', 'Finish'
 	];
 	const ExistOriginalFunctionList = ['Motor', 'Servo', 'Port', 'ReadLocalServer', 'Wait', 'Log', 'Random', 'ReadLocalServer', 'RequestLocalServer'];
 	const ExistVariableList = ['userAgent', 'Support', 'Device', 'Browser', 'stage', 'ReconnectCount', 'LoadingOpacity', 'Fullscreen', 'PWMRange', 'PWMMin', 'ServoMaxBase', 'ServoMax', 'ServoRange', 'ServoAdj', 'SSendTime', 'PWMValue', 'PortValue',
@@ -1264,14 +1268,14 @@
 			while (RoopFlag) {
 				if (ScriptList[i].match(/bcore\.value.\(.*?\)/g)) {
 					//var ValueCheck1 = ScriptList[i].match(/(?<=).*?(?=)/g);
-					var ValueCheck1 = GetRegex(1,"bcore\\.value.\\(","\\)",ScriptList[i],"");
+					var ValueCheck1 = GetRegex(1, "bcore\\.value.\\(", "\\)", ScriptList[i], "");
 					var ValueCheck2 = ScriptList[i].match(/bcore\.value.\(.*?\)/);
 					if (ValueCheck1) {
 						ScriptList[i] = ScriptList[i].replace(ValueCheck2[0], ValueCheck1);
-					}else{
+					} else {
 						RoopFlag = false;
 					}
-				}else{
+				} else {
 					RoopFlag = false;
 				}
 			}
@@ -1285,9 +1289,9 @@
 				ScriptList[i] = ScriptList[i].replace(/basic[.]showNumber/g, 'Log');
 			}
 			//if (ScriptCheckList[i].match(/(?<=basic[.]pause\().*?(?=\))/g)) {
-			if (GetRegex(1,"basic\\.pause\\(","\\),ScriptCheckList[i]","")) {
+			if (GetRegex(1, "basic\\.pause\\(", "\\),ScriptCheckList[i]", "")) {
 				//var Secounds = ScriptCheckList[i].match(/(?<=basic[.]pause\().*?(?=\))/g);
-				var Secounds = GetRegex(1,"basic\\.pause\\(","\\)",ScriptCheckList[i],"");
+				var Secounds = GetRegex(1, "basic\\.pause\\(", "\\)", ScriptCheckList[i], "");
 				if (Number(Secounds[0]) && Number(Secounds[0]) > 0) {
 					ScriptList[i] = ScriptList[i].replace(/basic[.]pause\(.*?\)/g, 'Wait(' + Number(Secounds[0]) / 1000 + ')');
 				} else {
@@ -1303,7 +1307,7 @@
 
 				var ScriptCheck = ScriptCheckList[i].match(/.*?\(/g);
 
-				for(var n = 0;n<ScriptCheck.length;n++){
+				for (var n = 0; n < ScriptCheck.length; n++) {
 					var ScriptCheck2 = ScriptCheck[n].replace('(', '');
 					if (ExistFunctionList.indexOf(ScriptCheck2) != -1) {
 						ErrorFunction = ScriptCheck2;
@@ -1317,7 +1321,7 @@
 
 				var ScriptCheck = ScriptCheckList[i].match(/[a-z|A-Z|0-9]*=/g);
 
-				for(var n = 0;n<ScriptCheck.length;n++){
+				for (var n = 0; n < ScriptCheck.length; n++) {
 					var ScriptCheck1 = ScriptCheck[n].replace('var', '');
 					ScriptCheck1 = ScriptCheck1.replace('=', '');
 
@@ -1437,7 +1441,7 @@
 			if (PartArray[0])
 				var Part3 = Part2.substr(Number(String(PartArray[0]).length), Part2.length);
 
-			Log('　エラー発生箇所 : '  + '<red>' + PartArray[0] + '</red>' + '<br>　　' + Part1 + '<red>' + PartArray[0] + '</red>' + Part3 + '<br>');
+			Log('　エラー発生箇所 : ' + '<red>' + PartArray[0] + '</red>' + '<br>　　' + Part1 + '<red>' + PartArray[0] + '</red>' + Part3 + '<br>');
 			CommandAction = true;
 			CommandFinish();
 		} else {
@@ -1448,24 +1452,24 @@
 	};
 
 	function ErrorOccurd() {
-	var now = new Date();
-	var min = now.getMinutes();
-	var Sec = now.getSeconds();
-	var Time = '[' + min + '分' + Sec + '秒]';
+		var now = new Date();
+		var min = now.getMinutes();
+		var Sec = now.getSeconds();
+		var Time = '[' + min + '分' + Sec + '秒]';
 
-	Log('<red>' + Time + ' - エラー発生</red>');
-}
+		Log('<red>' + Time + ' - エラー発生</red>');
+	}
 
-function Finish() {
-var now = new Date();
-var min = now.getMinutes();
-var Sec = now.getSeconds();
-var Time = '[' + min + '分' + Sec + '秒]';
+	function Finish() {
+		var now = new Date();
+		var min = now.getMinutes();
+		var Sec = now.getSeconds();
+		var Time = '[' + min + '分' + Sec + '秒]';
 
-Log(Time + ' - 処理終了<br><br>');
-	CommandAction = false;
-	CommandFinish();
-}
+		Log(Time + ' - 処理終了<br><br>');
+		CommandAction = false;
+		CommandFinish();
+	}
 
 	//ログ
 	function Log(value) {
