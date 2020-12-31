@@ -92,7 +92,6 @@ BlueJelly.prototype.requestDevice = function(uuid) {
   return navigator.bluetooth.requestDevice({
     acceptAllDevices: false,
     filters: [
-      {namePrefix: 'bCore'},
       {services: ['389caaf0-843f-4d3b-959d-c954cce14655']}
     ],
     optionalServices: [this.hashUUID[uuid].serviceUUID]
