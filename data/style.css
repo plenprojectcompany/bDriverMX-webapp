@@ -593,6 +593,8 @@ body::-webkit-scrollbar {
   left: 0;
   margin: auto;
   float: left;
+  z-index: 30;
+  overflow: hidden;
 }
 
 #TopButtonL {
@@ -609,8 +611,8 @@ body::-webkit-scrollbar {
 
 #Border1 {
   height: 100%;
-  width: 2vw;
-  right: -0.5vw;
+  width: 20px;
+  right: -10px;
   cursor: col-resize;
   position: absolute;
   z-index: 21;
@@ -621,12 +623,14 @@ body::-webkit-scrollbar {
   left: 0;
   position: absolute;
   border-left: solid 1px #000000;
+  z-index: 22;
+  pointer-events: none;
 }
 
 #Border2 {
   height: 100%;
-  width: 2vw;
-  left: -0.5vw;
+  width: 20px;
+  left: -10px;
   cursor: col-resize;
   position: absolute;
   z-index: 21;
@@ -637,6 +641,8 @@ body::-webkit-scrollbar {
   right: 0;
   position: absolute;
   border-right: solid 1px #000000;
+  z-index: 22;
+  pointer-events: none;
 }
 
 .TextBottom {
@@ -672,7 +678,7 @@ body::-webkit-scrollbar {
 
 #CommandButton {
   position: relative;
-  height: 13%;
+  height: 14%;
 }
 
 #CommandButtonMiddle {

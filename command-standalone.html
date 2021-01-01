@@ -617,12 +617,6 @@
 		NowBorder3 = Setting2[1];
 		NowBorder2 = 100 - NowBorder1 - NowBorder3;
 
-		if (NowBorder1 < 15 || NowBorder2 < 15 || NowBorder3 < 15) {
-			NowBorder1 = 20;
-			NowBorder3 = 60;
-			NowBorder2 = 20;
-		}
-
 		if (localStorage.getItem('SaveData3') != null) {
 			var getOriginalCode = JSON.parse(localStorage.getItem('SaveData3'));
 			Editer.value = getOriginalCode['savecode'];
@@ -1099,6 +1093,7 @@
 
 	//エディター機能
 	//変数の定義
+	const CommandButtonGroup = document.getElementById('CommandButtonMiddle');
 	const CommandStart = document.getElementById('CommandStartButton');
 	const CommandStop = document.getElementById('CommandStopButton');
 	const Editer = document.getElementById('EditerTextArea');
@@ -1760,85 +1755,27 @@
 	//境界線の処理
 	//タッチ操作
 	Border1.ontouchstart = function(e) {
+		Border1.style.backgroundColor = '#ffc9cc';
 		MoveFlag = 1;
 		StartX1 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder1 / 100;
 		StartX2 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder2 / 100;
 	}
 	Border2.ontouchstart = function(e) {
+		Border2.style.backgroundColor = '#ffc9cc';
 		MoveFlag = 2;
 		StartX1 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder1 / 100;
 		StartX2 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder2 / 100;
 	}
 	document.ontouchend = function(e) {
+		Border1.style.backgroundColor = 'initial';
+		Border2.style.backgroundColor = 'initial';
 		if (MoveFlag > 0) {
 			MoveFlag = 0;
 			localStorage.setItem('SaveData2', NowBorder1 + ',' + NowBorder3);
 		}
 	}
 	document.ontouchmove = function(e) {
-
-		if (MoveFlag == 1) {
-			var flag = true;
-
-			NowBorder1 = (e.changedTouches[0].pageX - StartX1) / window.innerWidth * 100;
-			NowBorder2 = 100 - NowBorder1 - NowBorder3;
-
-			if (NowBorder1 < 15) {
-				NowBorder1 = 15;
-				NowBorder2 = 100 - NowBorder1 - NowBorder3;
-				MoveFlag = 3;
-				BeforeX = e.changedTouches[0].pageX;
-			}
-
-			if (NowBorder2 < 15) {
-				NowBorder2 = 15;
-				NowBorder1 = 100 - NowBorder2 - NowBorder3;
-				MoveFlag = 4;
-				BeforeX = e.changedTouches[0].pageX;
-			}
-
-			Area1.style.width = NowBorder1 + "%";
-			Area2.style.width = NowBorder2 + "%";
-		} else if (MoveFlag == 2) {
-
-			NowBorder2 = (e.changedTouches[0].pageX - StartX2) / window.innerWidth * 100;
-			NowBorder3 = 100 - NowBorder1 - NowBorder2;
-
-			if (NowBorder2 < 15) {
-				NowBorder2 = 15;
-				NowBorder3 = 100 - NowBorder1 - NowBorder2;
-				MoveFlag = 5;
-				BeforeX = e.changedTouches[0].pageX;
-			}
-
-			if (NowBorder3 < 15) {
-				NowBorder3 = 15;
-				NowBorder2 = 100 - NowBorder1 - NowBorder3;
-				MoveFlag = 6;
-				BeforeX = e.changedTouches[0].pageX;
-			}
-
-			Area2.style.width = NowBorder2 + "%";
-			Area3.style.width = NowBorder3 + "%";
-		} else if (MoveFlag == 3) {
-			if (e.changedTouches[0].pageX > BeforeX + 10) {
-				MoveFlag = 1;
-			}
-		} else if (MoveFlag == 4) {
-			if (e.changedTouches[0].pageX < BeforeX + 10) {
-				MoveFlag = 1;
-			}
-		} else if (MoveFlag == 5) {
-			if (e.changedTouches[0].pageX > BeforeX + 10) {
-				MoveFlag = 2;
-			}
-		} else if (MoveFlag == 6) {
-			if (e.changedTouches[0].pageX < BeforeX + 10) {
-				MoveFlag = 2;
-			}
-		}
-
-		Area1FontSizeSet();
+		OnMoveBoarder(e.changedTouches[0].pageX);
 	}
 
 	//マウス操作
@@ -1859,68 +1796,73 @@
 		}
 	}
 	document.onmousemove = function(e) {
+		OnMoveBoarder(e.clientX);
+	}
+
+	function OnMoveBoarder(X){
+		ConnandWidthRestrintion = CommandButtonGroup.clientWidth / window.innerWidth * 100;
+		WidthRestrintion = 5;
 
 		if (MoveFlag == 1) {
 			var flag = true;
 
-			NowBorder1 = (e.clientX - StartX1) / window.innerWidth * 100;
+			NowBorder1 = (X - StartX1) / window.innerWidth * 100;
 			NowBorder2 = 100 - NowBorder1 - NowBorder3;
 
-			if (NowBorder1 < 15) {
-				NowBorder1 = 15;
+			if (NowBorder1 < WidthRestrintion) {
+				NowBorder1 = 0;
 				NowBorder2 = 100 - NowBorder1 - NowBorder3;
 				MoveFlag = 3;
-				BeforeX = e.clientX;
+				BeforeX = X;
 			}
 
-			if (NowBorder2 < 15) {
-				NowBorder2 = 15;
+			if (NowBorder2 < ConnandWidthRestrintion) {
+				NowBorder2 = ConnandWidthRestrintion;
 				NowBorder1 = 100 - NowBorder2 - NowBorder3;
 				MoveFlag = 4;
-				BeforeX = e.clientX;
+				BeforeX = X;
 			}
 
 			Area1.style.width = NowBorder1 + "%";
 			Area2.style.width = NowBorder2 + "%";
 		} else if (MoveFlag == 2) {
 
-			NowBorder2 = (e.clientX - StartX2) / window.innerWidth * 100;
+			NowBorder2 = (X - StartX2) / window.innerWidth * 100;
 			NowBorder3 = 100 - NowBorder1 - NowBorder2;
 
-			if (NowBorder2 < 15) {
-				NowBorder2 = 15;
+			if (NowBorder2 < ConnandWidthRestrintion) {
+				NowBorder2 = ConnandWidthRestrintion;
 				NowBorder3 = 100 - NowBorder1 - NowBorder2;
 				MoveFlag = 5;
-				BeforeX = e.clientX;
+				BeforeX = X;
 			}
 
-			if (NowBorder3 < 15) {
-				NowBorder3 = 15;
+			if (NowBorder3 < WidthRestrintion) {
+				NowBorder3 = 0;
 				NowBorder2 = 100 - NowBorder1 - NowBorder3;
 				MoveFlag = 6;
-				BeforeX = e.clientX;
+				BeforeX = X;
 			}
 
 			Area2.style.width = NowBorder2 + "%";
 			Area3.style.width = NowBorder3 + "%";
 		} else if (MoveFlag == 3) {
-			if (e.clientX > BeforeX + 10) {
+			if (X > BeforeX + 10) {
 				MoveFlag = 1;
 			}
 		} else if (MoveFlag == 4) {
-			if (e.clientX < BeforeX + 10) {
+			if (X < BeforeX + 10) {
 				MoveFlag = 1;
 			}
 		} else if (MoveFlag == 5) {
-			if (e.clientX > BeforeX + 10) {
+			if (X > BeforeX + 10) {
 				MoveFlag = 2;
 			}
 		} else if (MoveFlag == 6) {
-			if (e.clientX < BeforeX + 10) {
+			if (X < BeforeX + 10) {
 				MoveFlag = 2;
 			}
 		}
-
 		Area1FontSizeSet();
 	}
 
