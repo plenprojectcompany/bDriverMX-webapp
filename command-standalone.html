@@ -1756,15 +1756,19 @@
 	//タッチ操作
 	Border1.ontouchstart = function(e) {
 		Border1.style.backgroundColor = '#ffc9cc';
-		MoveFlag = 1;
 		StartX1 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder1 / 100;
 		StartX2 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder2 / 100;
+		MoveFlag = -1;
+		OnMoveBoarder(0);
+		MoveFlag = 1;
 	}
 	Border2.ontouchstart = function(e) {
 		Border2.style.backgroundColor = '#ffc9cc';
-		MoveFlag = 2;
 		StartX1 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder1 / 100;
 		StartX2 = e.changedTouches[0].pageX - document.body.clientWidth * NowBorder2 / 100;
+		MoveFlag = -2;
+		OnMoveBoarder(0);
+		MoveFlag = 2;
 	}
 	document.ontouchend = function(e) {
 		Border1.style.backgroundColor = 'initial';
@@ -1803,9 +1807,23 @@
 		ConnandWidthRestrintion = CommandButtonGroup.clientWidth / window.innerWidth * 100;
 		WidthRestrintion = 5;
 
-		if (MoveFlag == 1) {
-			var flag = true;
+		if (MoveFlag == -1) {
+			if (NowBorder1 <= 0) {
+				NowBorder1 = 15;
+				NowBorder2 = 100 - NowBorder1 - NowBorder3;
 
+				Area1.style.width = NowBorder1 + "%";
+				Area2.style.width = NowBorder2 + "%";
+			}
+		} else if (MoveFlag == -2) {
+			if (NowBorder3 <= 0) {
+				NowBorder3 = 15;
+				NowBorder2 = 100 - NowBorder1 - NowBorder3;
+
+				Area2.style.width = NowBorder2 + "%";
+				Area3.style.width = NowBorder3 + "%";
+			}
+		} else if (MoveFlag == 1) {
 			NowBorder1 = (X - StartX1) / window.innerWidth * 100;
 			NowBorder2 = 100 - NowBorder1 - NowBorder3;
 
