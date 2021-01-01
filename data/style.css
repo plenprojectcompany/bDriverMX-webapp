@@ -740,7 +740,7 @@ body::-webkit-scrollbar {
   box-sizing: border-box;
 }
 
-.RefrenceCode {
+.ReferenceCode {
   font-weight: 900;
   padding-top: 1vh;
   padding-left: 3%;
@@ -752,14 +752,14 @@ value {
   color: #da171f;
 }
 
-.RefrenceGuide {
+.ReferenceGuide {
   font-weight: 400;
   padding-top: 1vh;
   padding-left: 4%;
   padding-bottom: 1vh;
 }
 
-.RefrenceExample {
+.ReferenceExample {
   font-weight: 400;
   padding-top: 1vh;
   padding-left: 6%;
@@ -768,7 +768,6 @@ value {
 
 .Chapter {
   text-align: center;
-  font-size: 1.8vw;
   margin-top: 1.8vh;
   margin-bottom: 0.5vh;
   font-family: TitleFont;
