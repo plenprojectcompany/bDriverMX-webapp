@@ -489,7 +489,7 @@
 		if (Setting[13] == 'true') {
 			DisplayGPSwarning = 'true';
 		}
-		if(Support==false || Device=='ios'){
+		if (Support == false || Device == 'ios') {
 			DisplayGPSwarning = false;
 		}
 
@@ -527,10 +527,6 @@
 			if (Device == 'ios') {
 				//フルスクリーンを無効にする
 				CButton4.style.display = "none";
-
-				//ジャイロを無効にする
-				CButton3.style.display = "none";
-				document.getElementById('GyroSetting').style.display = "none";
 			}
 
 		} else {
@@ -542,14 +538,14 @@
 		if (DisplayGPSwarning) {
 			Status.innerHTML = '<font color="red">初回利用時は位置情報の権限設定をご確認ください</font><br><a href="pdf/Permission' + Device + Browser + '.pdf" target="_blank">ブラウザ権限の設定手順</a>';
 		}
-		if(Support){
+		if (Support) {
 			//ローディング画面の削除
 			Lcontroller.style.display = 'none';
 			Lsetting.style.display = 'none';
 			LNoSupport.style.display = 'none';
 			LTitle.style.display = '';
 			Lloading.style.display = 'none';
-		}else{
+		} else {
 			//非対応ブラウザ
 			DisplayOut();
 			//ローディング画面の削除
@@ -688,6 +684,14 @@
 
 	//ジャイロボタン
 	CButton3.addEventListener('click', function() {
+		//ジャイロ権限を確認する
+		if (DeviceMotionEvent && DeviceMotionEvent.requestPermission && typeof DeviceMotionEvent.requestPermission === 'function') {
+			DeviceMotionEvent.requestPermission();
+		}
+		if (DeviceOrientationEvent && DeviceOrientationEvent.requestPermission && typeof DeviceOrientationEvent.requestPermission === 'function') {
+			DeviceOrientationEvent.requestPermission();
+		}
+
 		if (GyroActive) {
 			RotateBefore = false;
 			GyroActive = false;
@@ -1149,7 +1153,7 @@
 		} else if (stage == 3 || stage == 4) {
 			text1 = '';
 			text2 = 'Complete!';
-		} else if (stage == 5){
+		} else if (stage == 5) {
 			text2 = 'Reconnecting';
 		} else {
 			text2 = 'Loading';
@@ -1594,7 +1598,7 @@
 					StartButton.disabled = false;
 					Status.innerHTML = '<font color="red">認証に失敗しました</font><br>正しく"bCore"を選択できているか確認してください';
 				}
-			}else if(stage == 4){
+			} else if (stage == 4) {
 				//bCore切断
 				stage = 5;
 				DisplayLoading()
