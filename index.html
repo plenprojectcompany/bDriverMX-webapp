@@ -329,12 +329,10 @@
 		//古いバージョンの削除
 		if (navigator.onLine) {
 			//オンラインの場合ServiceWorker削除
-			navigator.serviceWorker.getRegistration('sw.js').then(function(registration) {
-				for (let registration of registrations) {
-					registration.unregister();
-				}
+			serviceWorkerRegistration.unregister('sw.js').then(function(registration) {
+				// 削除成功
 			}).catch(function(err) {
-				// 登録失敗
+				// 削除失敗
 				console.log('ServiceWorkerの削除に失敗しました。', err);
 			});
 		}
