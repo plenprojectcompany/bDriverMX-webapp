@@ -320,14 +320,27 @@
 	//初期動作
 	window.onload = function() {
 
+		//古いバージョンの削除
+		if (navigator.onLine) {
+			//オンラインの場合serviceWorker削除
+			navigator.serviceWorker.getRegistrations().then(function(registrations) {
+				for (let registration of registrations) {
+					registration.unregister();
+				}
+			}).catch(function(err) {
+				// 登録失敗
+				console.log('ServiceWorkerの削除に失敗しました。', err);
+			});
+		}
+
 		//オフラインで使用可能にする
 		if ('serviceWorker' in navigator) {
 			navigator.serviceWorker.register('sw.js').then(function(registration) {
 				// 登録成功
-				console.log('ServiceWorker の登録に成功しました。スコープ: ', registration.scope);
+				console.log('ServiceWorkerの登録に成功しました。スコープ: ', registration.scope);
 			}).catch(function(err) {
 				// 登録失敗
-				console.log('ServiceWorker の登録に失敗しました。', err);
+				console.log('ServiceWorkerの登録に失敗しました。', err);
 			});
 		}
 
