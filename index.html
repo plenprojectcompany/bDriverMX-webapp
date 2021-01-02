@@ -326,20 +326,6 @@
 	//初期動作
 	window.onload = function() {
 
-		//古いバージョンの削除
-		if (navigator.onLine) {
-			//オンラインの場合ServiceWorker削除
-			navigator.serviceWorker.getRegistrations()
-				.then(registrations => {
-					for (let registration of registrations) {
-						registration.unregister();
-					}
-				}).catch(function(err) {
-					// 削除失敗
-					console.log('ServiceWorkerの削除に失敗しました。', err);
-				});
-		}
-
 		//オフラインで使用可能にする
 		if ('serviceWorker' in navigator) {
 			navigator.serviceWorker.register('sw.js').then(function(registration) {
