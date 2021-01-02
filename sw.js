@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `${registration.scope}!${CACHE_VERSION}`;
 
 // キャッシュするファイルをセットする
@@ -9,6 +9,7 @@ const urlsToCache = [
   'index.html',
   'data/server.py',
   'data/style.css',
+  'data/Right-Arrow.png',
   'data/CodeFont.otf',
   'data/CodeFontLight.otf',
   'data/MainFont.ttf',
@@ -29,7 +30,6 @@ const urlsToCache = [
   'image/LightOn.png',
   'image/Loading.png',
   'image/Question.png',
-  'image/Right-Arrow.png',
   'image/Setting.png',
   'image/StartButton.png',
   'image/TitleLogo.png',

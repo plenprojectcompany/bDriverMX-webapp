@@ -83,7 +83,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.alpha3.5 - Command Controle</div>
+			<div id='Varsion'>v.alpha3.6 - Command Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -638,7 +638,7 @@
 		if (Setting[13] == 'true') {
 			DisplayGPSwarning = 'true';
 		}
-		if(Support==false || Device=='ios'){
+		if (Support == false || Device == 'ios') {
 			DisplayGPSwarning = false;
 		}
 
@@ -677,14 +677,14 @@
 			Status.innerHTML = '<font color="red">初回利用時は位置情報の権限設定をご確認ください</font><br><a href="pdf/Permission' + Device + Browser + '.pdf" target="_blank">ブラウザ権限の設定手順</a>';
 		}
 
-		if(Support){
+		if (Support) {
 			//ローディング画面の削除
 			Lcommand.style.display = '';
 			Lsetting.style.display = 'none';
 			LNoSupport.style.display = 'none';
-			LTitle.style.display= '';
+			LTitle.style.display = '';
 			Lloading.style.display = 'none';
-		}else{
+		} else {
 			//非対応ブラウザ
 			DisplayOut();
 			//ローディング画面の削除
@@ -1804,7 +1804,7 @@
 		OnMoveBoarder(e.clientX);
 	}
 
-	function OnMoveBoarder(X){
+	function OnMoveBoarder(X) {
 		ConnandWidthRestrintion = CommandButtonGroup.clientWidth / window.innerWidth * 100;
 		WidthRestrintion = 5;
 
