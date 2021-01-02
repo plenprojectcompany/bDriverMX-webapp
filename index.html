@@ -634,6 +634,12 @@
 		}, 1000);
 	}
 
+	//bCore切断時
+	ble.onDisconnect = function() {
+		stage = 5;
+		DisplayLoading()
+	}
+
 	function OnConnectFinish() {
 		if (stage == 3) {
 			if (FirstTime == 'true') {
@@ -1598,10 +1604,6 @@
 					StartButton.disabled = false;
 					Status.innerHTML = '<font color="red">認証に失敗しました</font><br>正しく"bCore"を選択できているか確認してください';
 				}
-			} else if (stage == 4) {
-				//bCore切断
-				stage = 5;
-				DisplayLoading()
 			}
 		}
 	}
