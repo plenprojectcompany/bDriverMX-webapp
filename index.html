@@ -328,6 +328,19 @@
 
 		//オフラインで使用可能にする
 		if ('serviceWorker' in navigator) {
+			//古いバージョンの削除
+			if (navigator.onLine) {
+				//オンラインの場合ServiceWorker削除
+				navigator.serviceWorker.getRegistrations().then(function(registrations) {
+					for (let registration of registrations) {
+						registration.unregister();
+					}
+				}).catch(function(err) {
+					// 登録失敗
+					console.log('ServiceWorkerの削除に失敗しました。', err);
+				});
+			}
+			
 			navigator.serviceWorker.register('sw.js').then(function(registration) {
 				// 登録成功
 			}).catch(function(err) {
@@ -429,13 +442,13 @@
 		//セーブデータの存在確認
 		if (localStorage.getItem('SaveData') == null) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0');
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0');
 		}
 		Setting = localStorage.getItem('SaveData').split(',');
 
 		if (Setting.length != 16) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0');
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0');
 			Setting = localStorage.getItem('SaveData').split(',');
 		}
 
@@ -482,11 +495,11 @@
 				KeyValue[i] = 'Enter';
 			} else if (Key[i] == ' ') {
 				KeyValue[i] = 'Spece';
-			} else if (Key[i].match(/^[a-z]$/)) {
+			} else if(Key[i].match(/^[a-z]$/)) {
 				KeyValue[i] = Key[i].toUpperCase();
-			} else {
-				Key = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '];
-				KeyValue = ['↑', '↓', '←', '→', 'Space'];
+			}else{
+				Key = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '];
+				KeyValue = ['↑','↓','←','→','Space'];
 				break
 			}
 		}
@@ -641,12 +654,12 @@
 
 	//接続完了
 	ble.onConnectGATT = function(uuid) {
-		if (stage == 2) {
+		if(stage == 2){
 			stage = 3;
 			setTimeout(function() {
 				OnConnectFinish();
 			}, 1000);
-		} else if (stage == 5) {
+		}else if(stage == 5){
 			DestroyLoading(null);
 			stage = 4;
 		}
@@ -654,12 +667,12 @@
 
 	//bCore切断時
 	ble.onDisconnect = function() {
-		if (stage == 5) {
+		if(stage == 5){
 
-		} else if (stage == 4) {
+		}else if(stage == 4){
 			stage = 5;
 			DisplayLoading()
-		} else {
+		}else{
 			//接続する
 			stage = 2;
 			ble.connectGATT('UUID6');
@@ -817,10 +830,10 @@
 	//キーボード操作
 	document.addEventListener('keydown', function(event) {
 		if (SettingNow == false) {
-			if (stage == 4) {
+			if(stage == 4){
 				if (event.key === Key[4]) {
 					//ブレーキ
-					if (BrakeKeyPressFlag == false) {
+					if (BrakeKeyPressFlag == false){
 						clearTimeout(FrontKeyPressRepeat);
 						clearTimeout(BackKeyPressRepeat);
 						BrakeKeyPressFlag = true;
@@ -865,20 +878,20 @@
 	});
 
 	function FrontKeyPress() {
-		if (BrakeKeyPressFlag == false) {
-			if (NowSpeed > 100) {
-				NewSpeed = NowSpeed + ((200 - NowSpeed) / 100) ** 2;
-			} else {
-				NewSpeed = NowSpeed + (NowSpeed / 50) ** 2;
+		if(BrakeKeyPressFlag == false){
+			if(NowSpeed > 100){
+				NewSpeed = NowSpeed + ((200-NowSpeed)/100)**2;
+			}else{
+				NewSpeed = NowSpeed + (NowSpeed/50)**2;
 			}
-			if (NewSpeed > 200) {
-				NewSpeed = 200;
+			if(NewSpeed>200){
+				NewSpeed=200;
 			}
 			KeyBoard = true;
 			HSlider.disabled = true;
 			VSlider.disabled = true;
 			NowSpeed = NewSpeed;
-			VSlider.value = NewSpeed;
+			VSlider.value=NewSpeed;
 			PWM(NewSpeed);
 			if (FrontKeyPressFlag) {
 				FrontKeyPressRepeat = setTimeout(function() {
@@ -889,20 +902,20 @@
 	}
 
 	function BackKeyPress() {
-		if (BrakeKeyPressFlag == false) {
-			if (NowSpeed > 100) {
-				NewSpeed = NowSpeed - ((200 - NowSpeed) / 50) ** 2;
-			} else {
-				NewSpeed = NowSpeed - (NowSpeed / 100) ** 2;
+		if(BrakeKeyPressFlag == false){
+			if(NowSpeed > 100){
+				NewSpeed = NowSpeed - ((200-NowSpeed)/50)**2;
+			}else{
+				NewSpeed = NowSpeed - (NowSpeed/100)**2;
 			}
-			if (NewSpeed < 0) {
-				NewSpeed = 0;
+			if(NewSpeed<0){
+				NewSpeed=0;
 			}
 			KeyBoard = true;
 			HSlider.disabled = true;
 			VSlider.disabled = true;
 			NowSpeed = NewSpeed;
-			VSlider.value = NewSpeed;
+			VSlider.value=NewSpeed;
 			PWM(NewSpeed);
 			if (BackKeyPressFlag) {
 				BackKeyPressRepeat = setTimeout(function() {
@@ -914,19 +927,19 @@
 
 	function BrakeKeyPress() {
 		if (BrakeKeyPressFlag) {
-			if (NowSpeed > 100) {
-				NewSpeed = NowSpeed - (NowSpeed / 50) ** 2;
-				if (NewSpeed < 100) {
-					NewSpeed = 100;
+			if(NowSpeed>100){
+				NewSpeed = NowSpeed - (NowSpeed/50)**2;
+				if(NewSpeed<100){
+					NewSpeed=100;
 				}
-			} else {
-				NewSpeed = NowSpeed + ((200 - NowSpeed) / 50) ** 2;
-				if (NewSpeed > 100) {
-					NewSpeed = 100;
+			}else{
+				NewSpeed = NowSpeed + ((200 - NowSpeed)/50)**2;
+				if(NewSpeed>100){
+					NewSpeed=100;
 				}
 			}
 			NowSpeed = NewSpeed;
-			VSlider.value = NewSpeed;
+			VSlider.value=NewSpeed;
 			PWM(NewSpeed);
 			BrakeKeyPressRepeat = setTimeout(function() {
 				BrakeKeyPress();
@@ -948,7 +961,7 @@
 				if (FrontKeyPressFlag) {
 					NowSpeed = Number(VSlider.value);
 					FrontKeyPress();
-				} else if (BackKeyPressFlag) {
+				}else if(BackKeyPressFlag){
 					NowSpeed = Number(VSlider.value);
 					BackKeyPress();
 				}
@@ -958,7 +971,7 @@
 				HSlider.disabled = false;
 				VSlider.disabled = false;
 				RightKeyPressFlag = false;
-				if (LeftKeyPressFlag == false) {
+				if(LeftKeyPressFlag == false){
 					HSlider.value = 100;
 					Servo(100);
 				}
@@ -968,7 +981,7 @@
 				HSlider.disabled = false;
 				VSlider.disabled = false;
 				LeftKeyPressFlag = false;
-				if (RightKeyPressFlag == false) {
+				if(RightKeyPressFlag == false){
 					HSlider.value = 100;
 					Servo(100);
 				}
@@ -979,7 +992,7 @@
 				KeyBoard = false;
 				HSlider.disabled = false;
 				VSlider.disabled = false;
-				if (BackKeyPressFlag) {
+				if(BackKeyPressFlag){
 					NowSpeed = Number(VSlider.value);
 					BackKeyPress();
 				}
@@ -990,7 +1003,7 @@
 				KeyBoard = false;
 				HSlider.disabled = false;
 				VSlider.disabled = false;
-				if (FrontKeyPressFlag) {
+				if(FrontKeyPressFlag){
 					NowSpeed = Number(VSlider.value);
 					FrontKeyPress();
 				}
@@ -1470,7 +1483,7 @@
 		}
 	});
 
-	function KeySettingSet(SetKey) {
+	function KeySettingSet(SetKey){
 
 		var check1 = SetKey;
 		var check2 = check1;
@@ -1498,15 +1511,15 @@
 		if (check2) {
 			for (var i = 0; i < 5; i++) {
 				if (Key[i] == check1) {
-					KeySetDisplay[i].innerHTML = check3[i] + ' / ' + KeyValue[NowSelect - 1];
-					Key[i] = Key[NowSelect - 1];
-					KeyValue[i] = KeyValue[NowSelect - 1];
+					KeySetDisplay[i].innerHTML = check3[i] + ' / ' + KeyValue[NowSelect-1];
+					Key[i] = Key[NowSelect-1];
+					KeyValue[i] = KeyValue[NowSelect-1];
 					break
 				}
 			}
-			KeySetDisplay[NowSelect - 1].innerHTML = check3[NowSelect - 1] + ' / ' + check2;
-			Key[NowSelect - 1] = check1;
-			KeyValue[NowSelect - 1] = check2;
+			KeySetDisplay[NowSelect-1].innerHTML = check3[NowSelect-1] + ' / ' + check2;
+			Key[NowSelect-1] = check1;
+			KeyValue[NowSelect-1] = check2;
 			Save();
 		}
 
@@ -1597,7 +1610,7 @@
 		//キー設定の登録
 		for (var i = 1; i <= 5; i++) {
 			NowSelect = i;
-			KeySettingSet(SettingString[7 + i]);
+			KeySettingSet(SettingString[7+i]);
 		}
 	};
 
