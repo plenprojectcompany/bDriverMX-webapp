@@ -83,7 +83,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.alpha3.6 - Command Controle</div>
+			<div id='Varsion'>v.alpha3.7 - Command Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -587,16 +587,14 @@
 		//セーブデータの存在確認
 		if (localStorage.getItem('SaveData') == null) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true,0');
-			FirstTime = 'true';
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0');
 		}
 		Setting = localStorage.getItem('SaveData').split(',');
 
-		if (Setting.length != 15) {
+		if (Setting.length != 16) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true,0');
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0');
 			Setting = localStorage.getItem('SaveData').split(',');
-			FirstTime = 'true';
 		}
 
 
@@ -635,14 +633,14 @@
 		}
 
 		var DisplayGPSwarning = false;
-		if (Setting[13] == 'true') {
+		if (Setting[14] == 'true') {
 			DisplayGPSwarning = 'true';
 		}
 		if (Support == false || Device == 'ios') {
 			DisplayGPSwarning = false;
 		}
 
-		SSlider10.value = Setting[14];
+		SSlider10.value = Setting[15];
 		if (SSlider10.value == 0) {
 			SValue10.innerHTML = 'OFF';
 		} else {
@@ -767,10 +765,35 @@
 
 	//接続完了
 	ble.onConnectGATT = function(uuid) {
-		stage = 3;
-		setTimeout(function() {
-			OnConnectFinish();
-		}, 1000);
+		if(stage == 4){
+			if(BLEerrorFlag){
+				if(CommandNow){
+					Log('bCoreと接続しました');
+				}else{
+					Log('bCoreと接続しました<br><br>');
+				}
+			}
+			BLEerrorFlag = false;
+		}else{
+			stage = 3;
+			setTimeout(function() {
+				OnConnectFinish();
+			}, 1000);
+		}
+	}
+
+	//bCore切断時
+	ble.onDisconnect = function() {
+		if(stage == 4){
+			if(BLEerrorFlag == false){
+				Log('<red>bCoreから切断されました！</red><br>再接続中...');
+			}
+			BLEerrorFlag = true;
+		}else{
+			//接続する
+			stage = 2;
+			ble.connectGATT('UUID6');
+		}
 	}
 
 	function OnConnectFinish() {
@@ -1120,8 +1143,10 @@
 		'ValueList',
 		'StringList', 'FinishFlag', 'click1', 'click2', 'Traces', 'ConsoleLog', 'MoveFlag', 'NowBorder1', 'NowBorder2', 'NowBorder3', 'StartX1', 'StartX2', 'BeforeX', 'WaitId', 'CommandAction', 'ActionCommand', 'VariableString', 'LoopCount',
 		'LoopFunctionList', 'LoopWaitList', 'ForVariableList', 'StartCommand1', 'ErrorMessageStartCommand', 'ErrorTypeStartCommand', 'StacktraseCheckStartCommand', 'lineStartCommand', 'positionStartCommand', 'IfFlag', 'EndlessLoopCount', 'ErrorHappend',
-		'LoopBreakFlag', 'CommandNow', 'HttpServerValueColor', 'HttpServerValueX', 'HttpServerValueY'
+		'LoopBreakFlag', 'CommandNow', 'HttpServerValueColor', 'HttpServerValueX', 'HttpServerValueY', 'BLEerrorFlag'
 	];
+
+	var BLEerrorFlag = false;
 
 	var Traces = [];
 	var ScriptList = [];
@@ -1198,7 +1223,12 @@
 			var min = now.getMinutes();
 			var Sec = now.getSeconds();
 			var Time = '[' + min + '分' + Sec + '秒]';
-			Log(Time + ' - 処理中断<br><br>');
+
+			if(BLEerrorFlag){
+				Log(Time + ' - 処理中断 (<red>bCoreと未接続</red>)<br><br>');
+			}else{
+				Log(Time + ' - 処理中断<br><br>');
+			}
 
 			CommandAction = false;
 		}
@@ -1359,7 +1389,11 @@
 			var Sec = now.getSeconds();
 			var Time = '[' + min + '分' + Sec + '秒]';
 
-			Log(Time + ' - 処理開始');
+			if(BLEerrorFlag){
+				Log(Time + ' - 処理開始 (<red>bCoreと未接続</red>)');
+			}else{
+				Log(Time + ' - 処理開始');
+			}
 
 			CommandAction = true;
 
@@ -1467,7 +1501,12 @@
 		var Sec = now.getSeconds();
 		var Time = '[' + min + '分' + Sec + '秒]';
 
-		Log(Time + ' - 処理終了<br><br>');
+		if(BLEerrorFlag){
+			Log(Time + ' - 処理終了 (<red>bCoreと未接続</red>)<br><br>');
+		}else{
+			Log(Time + ' - 処理終了<br><br>');
+		}
+
 		CommandAction = false;
 		CommandFinish();
 	}

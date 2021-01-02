@@ -82,7 +82,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.2.3</div>
+			<div id='Varsion'>v.2.4</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -108,11 +108,11 @@
 			</div>
 			<div id='Controller'>
 				<div id='Slider'>
-					<div id='VerticalSlider'>
-						<input type="range" id='Vslider' min='0' max='200' value='100'></imput>
-					</div>
 					<div id='HorizontalSlider'>
 						<input type="range" id='Hslider' min='0' max='200' value='100'></imput>
+					</div>
+					<div id='VerticalSlider'>
+						<input type="range" id='Vslider' min='0' max='200' value='100'></imput>
 					</div>
 				</div>
 			</div>
@@ -166,6 +166,7 @@
 							<div class='keySet' id='keySet2'>後 / ↓</div>
 							<div class='keySet' id='keySet3'>左 / ←</div>
 							<div class='keySet' id='keySet4'>右 / →</div>
+							<div class='keySet' id='keySet5'>停止 / Space</div>
 						</td>
 					</tr>
 					<tr>
@@ -244,6 +245,7 @@
 	const SkeySet2 = document.getElementById('keySet2');
 	const SkeySet3 = document.getElementById('keySet3');
 	const SkeySet4 = document.getElementById('keySet4');
+	const SkeySet5 = document.getElementById('keySet5');
 	const GuideButton = document.getElementById('Guide1');
 	const SettingGuideButton = document.getElementById('Guide2');
 
@@ -287,6 +289,10 @@
 	var FrontKeyPressRepeat;
 	var BackKeyPressFlag = false;
 	var BackKeyPressRepeat;
+	var BrakeKeyPressFlag = false;
+	var NowSpeed = 100;
+	var RightKeyPressFlag = false;
+	var LeftKeyPressFlag = false;
 
 	//個人設定
 	var Setting = [];
@@ -337,7 +343,6 @@
 		if ('serviceWorker' in navigator) {
 			navigator.serviceWorker.register('sw.js').then(function(registration) {
 				// 登録成功
-				console.log('ServiceWorkerの登録に成功しました。スコープ: ', registration.scope);
 			}).catch(function(err) {
 				// 登録失敗
 				console.log('ServiceWorkerの登録に失敗しました。', err);
@@ -437,13 +442,13 @@
 		//セーブデータの存在確認
 		if (localStorage.getItem('SaveData') == null) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true,0');
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0');
 		}
 		Setting = localStorage.getItem('SaveData').split(',');
 
-		if (Setting.length != 15) {
+		if (Setting.length != 16) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData', '60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight,0,true,0');
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0');
 			Setting = localStorage.getItem('SaveData').split(',');
 		}
 
@@ -475,7 +480,7 @@
 			SValue8.innerHTML = 'ON';
 		}
 
-		for (var i = 0; i < 4; i++) {
+		for (var i = 0; i < 5; i++) {
 			Key[i] = Setting[8 + i];
 
 			if (Key[i] == 'ArrowUp') {
@@ -486,27 +491,35 @@
 				KeyValue[i] = '←';
 			} else if (Key[i] == 'ArrowRight') {
 				KeyValue[i] = '→';
-			} else {
+			} else if (Key[i] == 'Enter') {
+				KeyValue[i] = 'Enter';
+			} else if (Key[i] == ' ') {
+				KeyValue[i] = 'Spece';
+			} else if(Key[i].match(/^[a-z]$/)) {
 				KeyValue[i] = Key[i].toUpperCase();
+			}else{
+				Key = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '];
+				KeyValue = ['↑','↓','←','→','Space'];
+				break
 			}
 		}
 
-		SSlider9.value = Setting[12];
-		if (SSlider9.value == 0) {
-			SValue9.innerHTML = 'OFF';
+		SSlider9.value = Setting[13];
+		if (SSlider9.value > 0) {
+			SValue9.innerHTML = '+' + SSlider9.value;
 		} else {
-			SValue9.innerHTML = 'ON';
+			SValue9.innerHTML = SSlider9.value;
 		}
 
 		var DisplayGPSwarning = false;
-		if (Setting[13] == 'true') {
+		if (Setting[14] == 'true') {
 			DisplayGPSwarning = 'true';
 		}
 		if (Support == false || Device == 'ios') {
 			DisplayGPSwarning = false;
 		}
 
-		SSlider10.value = Setting[14];
+		SSlider10.value = Setting[15];
 		if (SSlider10.value == 0) {
 			SValue10.innerHTML = 'OFF';
 		} else {
@@ -641,16 +654,29 @@
 
 	//接続完了
 	ble.onConnectGATT = function(uuid) {
-		stage = 3;
-		setTimeout(function() {
-			OnConnectFinish();
-		}, 1000);
+		if(stage == 2){
+			stage = 3;
+			setTimeout(function() {
+				OnConnectFinish();
+			}, 1000);
+		}else if(stage == 5){
+			DestroyLoading(null);
+			stage = 4;
+		}
 	}
 
 	//bCore切断時
 	ble.onDisconnect = function() {
-		stage = 5;
-		DisplayLoading()
+		if(stage == 5){
+
+		}else if(stage == 4){
+			stage = 5;
+			DisplayLoading()
+		}else{
+			//接続する
+			stage = 2;
+			ble.connectGATT('UUID6');
+		}
 	}
 
 	function OnConnectFinish() {
@@ -677,6 +703,11 @@
 		SettingNow = true;
 		KeyBoard = false;
 		GyroActive = false;
+		BackKeyPressFlag = false;
+		FrontKeyPressFlag = false;
+		BrakeKeyPressFlag = false;
+		RightKeyPressFlag = false;
+		LeftKeyPressFlag = false;
 		HSlider.disabled = false;
 		HSlider.value = 100;
 		VSlider.disabled = false;
@@ -797,161 +828,185 @@
 	});
 
 	//キーボード操作
-
 	document.addEventListener('keydown', function(event) {
 		if (SettingNow == false) {
-			if (event.key === Key[0]) {
-				//アクセル
-				if (FrontKeyPressFlag == false) {
-					BackKeyPressFlag = false;
-					clearTimeout(BackKeyPressRepeat);
-
-					FrontKeyPressFlag = true;
-					FrontKeyPress();
+			if(stage == 4){
+				if (event.key === Key[4]) {
+					//ブレーキ
+					if (BrakeKeyPressFlag == false){
+						clearTimeout(FrontKeyPressRepeat);
+						clearTimeout(BackKeyPressRepeat);
+						BrakeKeyPressFlag = true;
+						NowSpeed = 200 - Number(VSlider.value);
+						BrakeKeyPress();
+					}
+				} else if (event.key === Key[0]) {
+					//アクセル
+					if (FrontKeyPressFlag == false) {
+						clearTimeout(BackKeyPressRepeat);
+						FrontKeyPressFlag = true;
+						NowSpeed = Number(VSlider.value);
+						FrontKeyPress();
+					}
+				} else if (event.key === Key[1]) {
+					//ブレーキ
+					if (BackKeyPressFlag == false) {
+						clearTimeout(FrontKeyPressRepeat);
+						BackKeyPressFlag = true;
+						NowSpeed = Number(VSlider.value);
+						BackKeyPress();
+					}
+				} else if (event.key === Key[3]) {
+					//右
+					KeyBoard = true;
+					HSlider.disabled = true;
+					VSlider.disabled = true;
+					RightKeyPressFlag = true;
+					HSlider.value = 200;
+					Servo(200);
+				} else if (event.key === Key[2]) {
+					//左
+					KeyBoard = true;
+					HSlider.disabled = true;
+					VSlider.disabled = true;
+					LeftKeyPressFlag = true;
+					HSlider.value = 0;
+					Servo(0);
 				}
-			} else if (event.key === Key[1]) {
-				//ブレーキ
-				if (BackKeyPressFlag == false) {
-					FrontKeyPressFlag = false;
-					clearTimeout(FrontKeyPressRepeat);
-
-					BackKeyPressFlag = true;
-					BackKeyPress();
-				}
-			} else if (event.key === Key[3]) {
-				//右
-				KeyBoard = true;
-				HSlider.disabled = true;
-				VSlider.disabled = true;
-				HSlider.value = 200;
-				Servo(200);
-			} else if (event.key === Key[2]) {
-				//左
-				KeyBoard = true;
-				HSlider.disabled = true;
-				VSlider.disabled = true;
-				HSlider.value = 0;
-				Servo(0);
 			}
 		}
 	});
 
 	function FrontKeyPress() {
-		if (VSlider.value > 100) {
-			if (StopFlag) {
-				KeyBoard = false;
-				HSlider.disabled = false;
-				VSlider.disabled = false;
-				VSlider.value = 100;
-				PWM(100);
-			} else {
-				KeyBoard = true;
-				HSlider.disabled = true;
-				VSlider.disabled = true;
-				VSlider.value++;
-				PWM(VSlider.value);
+		if(BrakeKeyPressFlag == false){
+			if(NowSpeed > 100){
+				NewSpeed = NowSpeed + ((200-NowSpeed)/100)**2;
+			}else{
+				NewSpeed = NowSpeed + (NowSpeed/50)**2;
 			}
-		} else if (VSlider.value == 100 && StopFlag == false) {
+			if(NewSpeed>200){
+				NewSpeed=200;
+			}
 			KeyBoard = true;
 			HSlider.disabled = true;
 			VSlider.disabled = true;
-			VSlider.value++;
-			PWM(VSlider.value);
-		} else {
-			StopFlag = true;
-			KeyBoard = true;
-			HSlider.disabled = true;
-			VSlider.disabled = true;
-			if (Number(VSlider.value) + 3 > 100) {
-				VSlider.value = 100;
-			} else {
-				VSlider.value = Number(VSlider.value) + 3;
+			NowSpeed = NewSpeed;
+			VSlider.value=NewSpeed;
+			PWM(NewSpeed);
+			if (FrontKeyPressFlag) {
+				FrontKeyPressRepeat = setTimeout(function() {
+					FrontKeyPress();
+				}, 10);
 			}
-			PWM(VSlider.value);
-		}
-		if (FrontKeyPressFlag) {
-			FrontKeyPressRepeat = setTimeout(function() {
-				FrontKeyPress();
-			}, 10);
 		}
 	}
 
 	function BackKeyPress() {
-		if (VSlider.value < 100) {
-			if (StopFlag) {
-				KeyBoard = false;
-				HSlider.disabled = false;
-				VSlider.disabled = false;
-				VSlider.value = 100;
-				PWM(100);
-			} else {
-				KeyBoard = true;
-				HSlider.disabled = true;
-				VSlider.disabled = true;
-				VSlider.value--;
-				PWM(VSlider.value);
+		if(BrakeKeyPressFlag == false){
+			if(NowSpeed > 100){
+				NewSpeed = NowSpeed - ((200-NowSpeed)/50)**2;
+			}else{
+				NewSpeed = NowSpeed - (NowSpeed/100)**2;
 			}
-		} else if (VSlider.value == 100 && StopFlag == false) {
+			if(NewSpeed<0){
+				NewSpeed=0;
+			}
 			KeyBoard = true;
 			HSlider.disabled = true;
 			VSlider.disabled = true;
-			VSlider.value--;
-			PWM(VSlider.value);
-		} else {
-			StopFlag = true;
-			KeyBoard = true;
-			HSlider.disabled = true;
-			VSlider.disabled = true;
-			if (Number(VSlider.value) - 3 < 100) {
-				VSlider.value = 100;
-			} else {
-				VSlider.value = Number(VSlider.value) - 3;
+			NowSpeed = NewSpeed;
+			VSlider.value=NewSpeed;
+			PWM(NewSpeed);
+			if (BackKeyPressFlag) {
+				BackKeyPressRepeat = setTimeout(function() {
+					BackKeyPress();
+				}, 10);
 			}
-			PWM(VSlider.value);
 		}
-		if (BackKeyPressFlag) {
-			BackKeyPressRepeat = setTimeout(function() {
-				BackKeyPress();
+	}
+
+	function BrakeKeyPress() {
+		if (BrakeKeyPressFlag) {
+			if(NowSpeed>100){
+				NewSpeed = NowSpeed - (NowSpeed/50)**2;
+				if(NewSpeed<100){
+					NewSpeed=100;
+				}
+			}else{
+				NewSpeed = NowSpeed + ((200 - NowSpeed)/50)**2;
+				if(NewSpeed>100){
+					NewSpeed=100;
+				}
+			}
+			NowSpeed = NewSpeed;
+			VSlider.value=NewSpeed;
+			PWM(NewSpeed);
+			BrakeKeyPressRepeat = setTimeout(function() {
+				BrakeKeyPress();
 			}, 10);
 		}
 	}
 
 	document.addEventListener('keyup', function(event) {
 		if (SettingNow == false) {
-			if (event.key === ' ' || event.key === '　' || event.key === 'Enter') {
+			if (event.key === Key[4]) {
+				//停止
+				BrakeKeyPressFlag = false;
+				clearTimeout(BrakeKeyPressRepeat);
 				KeyBoard = false;
 				HSlider.disabled = false;
 				VSlider.disabled = false;
 				VSlider.value = 100;
 				PWM(100);
+				if (FrontKeyPressFlag) {
+					NowSpeed = Number(VSlider.value);
+					FrontKeyPress();
+				}else if(BackKeyPressFlag){
+					NowSpeed = Number(VSlider.value);
+					BackKeyPress();
+				}
 			} else if (event.key === Key[3]) {
 				//右
 				KeyBoard = false;
 				HSlider.disabled = false;
 				VSlider.disabled = false;
-				HSlider.value = 100;
-				Servo(100);
+				RightKeyPressFlag = false;
+				if(LeftKeyPressFlag == false){
+					HSlider.value = 100;
+					Servo(100);
+				}
 			} else if (event.key === Key[2]) {
 				//左
 				KeyBoard = false;
 				HSlider.disabled = false;
 				VSlider.disabled = false;
-				HSlider.value = 100;
-				Servo(100);
+				LeftKeyPressFlag = false;
+				if(RightKeyPressFlag == false){
+					HSlider.value = 100;
+					Servo(100);
+				}
 			} else if (event.key === Key[0]) {
+				//前
 				FrontKeyPressFlag = false;
 				clearTimeout(FrontKeyPressRepeat);
-				StopFlag = false;
 				KeyBoard = false;
 				HSlider.disabled = false;
 				VSlider.disabled = false;
+				if(BackKeyPressFlag){
+					NowSpeed = Number(VSlider.value);
+					BackKeyPress();
+				}
 			} else if (event.key === Key[1]) {
+				//後
 				BackKeyPressFlag = false;
 				clearTimeout(BackKeyPressRepeat);
-				StopFlag = false;
 				KeyBoard = false;
 				HSlider.disabled = false;
 				VSlider.disabled = false;
+				if(FrontKeyPressFlag){
+					NowSpeed = Number(VSlider.value);
+					FrontKeyPress();
+				}
 			}
 		}
 	});
@@ -1402,89 +1457,85 @@
 		}
 	});
 
-	document.addEventListener('keydown', function(event) {
-		if (NowSelect != 0) {
-
-			var check1 = event.key;
-			var check2 = check1;
-			var check3 = ['前', '後', '左', '右'];
-			var KeySetDisplay = [keySet1, keySet2, keySet3, keySet4];
-
-			if (check1 == 'ArrowUp') {
-				check2 = '↑';
-			} else if (check1 == 'ArrowDown') {
-				check2 = '↓';
-			} else if (check1 == 'ArrowLeft') {
-				check2 = '←';
-			} else if (check1 == 'ArrowRight') {
-				check2 = '→';
-			} else if (check1.match(/^[a-z]$/)) {
-				check2 = check1.toUpperCase();
-			} else {
-				check2 = null;
-			}
-
-			if (check2 != null) {
-				if (NowSelect == 1) {
-					for (var i = 0; i < 4; i++) {
-						if (Key[i] == check1) {
-							KeySetDisplay[i].innerHTML = check3[i] + ' / ' + KeyValue[0];
-							Key[i] = Key[0];
-							KeyValue[i] = KeyValue[0];
-						}
-					}
-					KeySetDisplay[0].innerHTML = check3[0] + ' / ' + check2;
-					Key[0] = check1;
-					KeyValue[0] = check2;
-				} else if (NowSelect == 2) {
-					for (var i = 0; i < 4; i++) {
-						if (Key[i] == check1) {
-							KeySetDisplay[i].innerHTML = check3[i] + ' / ' + KeyValue[1];
-							Key[i] = Key[1];
-							KeyValue[i] = KeyValue[1];
-						}
-					}
-					KeySetDisplay[1].innerHTML = check3[1] + ' / ' + check2;
-					Key[1] = check1;
-					KeyValue[1] = check2;
-				} else if (NowSelect == 3) {
-					for (var i = 0; i < 4; i++) {
-						if (Key[i] == check1) {
-							KeySetDisplay[i].innerHTML = check3[i] + ' / ' + KeyValue[2];
-							Key[i] = Key[2];
-							KeyValue[i] = KeyValue[2];
-						}
-					}
-					KeySetDisplay[2].innerHTML = check3[2] + ' / ' + check2;
-					Key[2] = check1;
-					KeyValue[2] = check2;
-				} else if (NowSelect == 4) {
-					for (var i = 0; i < 4; i++) {
-						if (Key[i] == check1) {
-							KeySetDisplay[i].innerHTML = check3[i] + ' / ' + KeyValue[3];
-							Key[i] = Key[3];
-							KeyValue[i] = KeyValue[3];
-						}
-					}
-					KeySetDisplay[3].innerHTML = check3[3] + ' / ' + check2;
-					Key[3] = check1;
-					KeyValue[3] = check2;
-				}
-				Save();
-			}
-
-			SkeySet1.style.background = '';
-			SkeySet1.style.color = '';
-			SkeySet2.style.background = '';
-			SkeySet2.style.color = '';
-			SkeySet3.style.background = '';
-			SkeySet3.style.color = '';
-			SkeySet4.style.background = '';
-			SkeySet4.style.color = '';
-
-			NowSelect = 0;
+	SkeySet5.addEventListener('mouseover', function() {
+		if (NowSelect == 0) {
+			SkeySet5.style.background = HoverColor;
+			SkeySet5.style.color = HoverFontColor;
 		}
 	});
+	SkeySet5.addEventListener('click', function() {
+		if (NowSelect == 0) {
+			SkeySet5.style.background = SelectColor;
+			SkeySet5.style.color = SelectFontColor;
+			NowSelect = 5;
+		}
+	});
+	SkeySet5.addEventListener('mouseout', function() {
+		if (NowSelect == 0) {
+			SkeySet5.style.background = '';
+			SkeySet5.style.color = '';
+		}
+	});
+
+	document.addEventListener('keydown', function(event) {
+		if (NowSelect != 0) {
+			KeySettingSet(event.key);
+		}
+	});
+
+	function KeySettingSet(SetKey){
+
+		var check1 = SetKey;
+		var check2 = check1;
+		var check3 = ['前', '後', '左', '右', '停止'];
+		var KeySetDisplay = [keySet1, keySet2, keySet3, keySet4, keySet5];
+
+		if (check1 == 'ArrowUp') {
+			check2 = '↑';
+		} else if (check1 == 'ArrowDown') {
+			check2 = '↓';
+		} else if (check1 == 'ArrowLeft') {
+			check2 = '←';
+		} else if (check1 == 'ArrowRight') {
+			check2 = '→';
+		} else if (check1 == 'Enter') {
+			check2 = 'Enter';
+		} else if (check1 == ' ') {
+			check2 = 'Space';
+		} else if (check1.match(/^[a-z]$/)) {
+			check2 = check1.toUpperCase();
+		} else {
+			check2 = null;
+		}
+
+		if (check2) {
+			for (var i = 0; i < 5; i++) {
+				if (Key[i] == check1) {
+					KeySetDisplay[i].innerHTML = check3[i] + ' / ' + KeyValue[NowSelect-1];
+					Key[i] = Key[NowSelect-1];
+					KeyValue[i] = KeyValue[NowSelect-1];
+					break
+				}
+			}
+			KeySetDisplay[NowSelect-1].innerHTML = check3[NowSelect-1] + ' / ' + check2;
+			Key[NowSelect-1] = check1;
+			KeyValue[NowSelect-1] = check2;
+			Save();
+		}
+
+		SkeySet1.style.background = '';
+		SkeySet1.style.color = '';
+		SkeySet2.style.background = '';
+		SkeySet2.style.color = '';
+		SkeySet3.style.background = '';
+		SkeySet3.style.color = '';
+		SkeySet4.style.background = '';
+		SkeySet4.style.color = '';
+		SkeySet5.style.background = '';
+		SkeySet5.style.color = '';
+
+		NowSelect = 0;
+	}
 
 	//Enterボタン
 	SButton1.addEventListener('click', function() {
@@ -1503,7 +1554,7 @@
 
 	function Save() {
 		localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + SSlider5.value + ',' + SSlider6.value + ',' + SSlider7.value + ',' + SSlider8.value + ',' + Key[0] + ',' + Key[1] + ',' + Key[2] +
-			',' + Key[3] + ',' + SSlider9.value + ',' + FirstTime + ',' + SSlider10.value);
+			',' + Key[3] + ',' + Key[4] + ',' + SSlider9.value + ',' + FirstTime + ',' + SSlider10.value);
 	};
 
 	//設定データを反映させる
@@ -1540,7 +1591,7 @@
 
 		//レバー位置
 		Slider.style.top = 10 + Setting[6] + 'vh';
-		Slider.style.width = 79 + Setting[12] + 'vw';
+		Slider.style.width = 79 + Setting[13] + 'vw';
 
 
 		//左右反転
@@ -1557,29 +1608,9 @@
 		}
 
 		//キー設定の登録
-		for (var i = 8; i < 12; i++) {
-			var check1 = SettingString[i];
-			if (check1 == 'ArrowUp') {
-				check1 = '↑';
-			} else if (check1 == 'ArrowDown') {
-				check1 = '↓';
-			} else if (check1 == 'ArrowLeft') {
-				check1 = '←';
-			} else if (check1 == 'ArrowRight') {
-				check1 = '→';
-			} else {
-				check1 = check1.toUpperCase();
-			}
-
-			if (i == 8) {
-				keySet1.innerHTML = '前 / ' + check1;
-			} else if (i == 9) {
-				keySet2.innerHTML = '後 / ' + check1;
-			} else if (i == 10) {
-				keySet3.innerHTML = '左 / ' + check1;
-			} else if (i == 11) {
-				keySet4.innerHTML = '右 / ' + check1;
-			}
+		for (var i = 1; i <= 5; i++) {
+			NowSelect = i;
+			KeySettingSet(SettingString[7+i]);
 		}
 	};
 
