@@ -485,6 +485,19 @@
 
 		//オフラインで使用可能にする
 		if ('serviceWorker' in navigator) {
+			//古いバージョンの削除
+			if (navigator.onLine) {
+				//オンラインの場合ServiceWorker削除
+				navigator.serviceWorker.getRegistrations().then(function(registrations) {
+					for (let registration of registrations) {
+						registration.unregister();
+					}
+				}).catch(function(err) {
+					// 登録失敗
+					console.log('ServiceWorkerの削除に失敗しました。', err);
+				});
+			}
+
 			navigator.serviceWorker.register('sw.js').then(function(registration) {
 				// 登録成功
 				console.log('ServiceWorker の登録に成功しましたスコープ: ', registration.scope);
@@ -1143,7 +1156,7 @@
 		'ValueList',
 		'StringList', 'FinishFlag', 'click1', 'click2', 'Traces', 'ConsoleLog', 'MoveFlag', 'NowBorder1', 'NowBorder2', 'NowBorder3', 'StartX1', 'StartX2', 'BeforeX', 'WaitId', 'CommandAction', 'ActionCommand', 'VariableString', 'LoopCount',
 		'LoopFunctionList', 'LoopWaitList', 'ForVariableList', 'StartCommand1', 'ErrorMessageStartCommand', 'ErrorTypeStartCommand', 'StacktraseCheckStartCommand', 'lineStartCommand', 'positionStartCommand', 'IfFlag', 'EndlessLoopCount', 'ErrorHappend',
-		'LoopBreakFlag', 'CommandNow', 'HttpServerValueColor', 'HttpServerValueX', 'HttpServerValueY', 'BLEerrorFlag'
+		'LoopBreakFlag', 'CommandNow', 'HttpServerValueColor', 'HttpServerValueX', 'HttpServerValueY', 'BLEerrorFlag', 'TouchAdj'
 	];
 
 	var BLEerrorFlag = false;
@@ -1171,6 +1184,7 @@
 	var StartX1 = 0;
 	var StartX2 = 0;
 	var BeforeX = 0;
+	var TouchAdj = 0;
 
 	var CommandAction = false;
 	var WaitId;
@@ -1819,6 +1833,7 @@
 			MoveFlag = 0;
 			localStorage.setItem('SaveData2', NowBorder1 + ',' + NowBorder3);
 		}
+		TouchAdj = 0;
 	}
 	document.ontouchmove = function(e) {
 		OnMoveBoarder(e.changedTouches[0].pageX);
@@ -1850,7 +1865,9 @@
 		WidthRestrintion = 5;
 
 		if (MoveFlag == -1) {
+			TouchAdj = 0;
 			if (NowBorder1 <= 0) {
+				TouchAdj = 15;
 				NowBorder1 = 15;
 				NowBorder2 = 100 - NowBorder1 - NowBorder3;
 
@@ -1859,6 +1876,7 @@
 			}
 		} else if (MoveFlag == -2) {
 			if (NowBorder3 <= 0) {
+				TouchAdj = 15;
 				NowBorder3 = 15;
 				NowBorder2 = 100 - NowBorder1 - NowBorder3;
 
@@ -1866,7 +1884,7 @@
 				Area3.style.width = NowBorder3 + "%";
 			}
 		} else if (MoveFlag == 1) {
-			NowBorder1 = (X - StartX1) / window.innerWidth * 100;
+			NowBorder1 = (X - StartX1) / window.innerWidth * 100 + TouchAdj;
 			NowBorder2 = 100 - NowBorder1 - NowBorder3;
 
 			if (NowBorder1 < WidthRestrintion) {
@@ -1887,7 +1905,7 @@
 			Area2.style.width = NowBorder2 + "%";
 		} else if (MoveFlag == 2) {
 
-			NowBorder2 = (X - StartX2) / window.innerWidth * 100;
+			NowBorder2 = (X - StartX2) / window.innerWidth * 100  - TouchAdj;
 			NowBorder3 = 100 - NowBorder1 - NowBorder2;
 
 			if (NowBorder2 < ConnandWidthRestrintion) {
