@@ -329,7 +329,7 @@
 		//古いバージョンの削除
 		if (navigator.onLine) {
 			//オンラインの場合ServiceWorker削除
-			navigator.serviceWorker.getRegistrations().then(function(registrations) {
+			navigator.serviceWorker.getRegistration('sw.js').then(function(registration) {
 				for (let registration of registrations) {
 					registration.unregister();
 				}
