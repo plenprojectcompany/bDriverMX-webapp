@@ -82,7 +82,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.2.4</div>
+			<div id='Varsion'>v.1.1.0</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -340,7 +340,7 @@
 					console.log('ServiceWorkerの削除に失敗しました。', err);
 				});
 			}
-			
+
 			navigator.serviceWorker.register('sw.js').then(function(registration) {
 				// 登録成功
 			}).catch(function(err) {
