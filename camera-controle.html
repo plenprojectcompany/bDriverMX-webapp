@@ -108,7 +108,7 @@
 			</div>
 			<div id='Controller'>
 				<div id='CameraViewer'>
-					<img src="http://192.168.0.0:81/stream" alt="M5カメラと未接続">
+					<img src="http:// :81/stream" alt="M5カメラと未接続">
 				</div>
 				<div id='Slider'>
 					<div id='HorizontalSlider'>
@@ -451,13 +451,13 @@
 		//セーブデータの存在確認
 		if (localStorage.getItem('SaveData') == null) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,192.168.0.0');
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,');
 		}
 		Setting = localStorage.getItem('SaveData').split(',');
 
 		if (Setting.length != 17) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,192.168.0.0');
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,');
 			Setting = localStorage.getItem('SaveData').split(',');
 		}
 
@@ -578,10 +578,10 @@
 		}
 		if (Support) {
 			//ローディング画面の削除
-			//Lcontroller.style.display = 'none';
+			Lcontroller.style.display = 'none';
 			Lsetting.style.display = 'none';
 			LNoSupport.style.display = 'none';
-			LTitle.style.display = 'none';
+			LTitle.style.display = '';
 			Lloading.style.display = 'none';
 		} else {
 			//非対応ブラウザ
