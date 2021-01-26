@@ -82,7 +82,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.1.1.0</div>
+			<div id='Varsion'>β.1.1.0 - Camera Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -107,6 +107,9 @@
 				</div>
 			</div>
 			<div id='Controller'>
+				<div id='CameraViewer'>
+					<img src="http://192.168.0.0:81/stream" alt="M5カメラと未接続">
+				</div>
 				<div id='Slider'>
 					<div id='HorizontalSlider'>
 						<input type="range" id='Hslider' min='0' max='200' value='100'></imput>
@@ -153,6 +156,10 @@
 					</tr>
 					<tr class='row2'>
 						<td colspan="4">全体設定</td>
+					</tr>
+					<tr>
+						<td class='col1'>カメラIP</td>
+						<td class='col3' colspan="3"><input type="text" id='CameraIPinput' class='SettingText' value='192.168.0.0' placeholder="192.168.0.0"></td>
 					</tr>
 					<tr id='GyroSetting'>
 						<td class='col1'>ジャイロ感度</td>
@@ -216,6 +223,7 @@
 	const VSliderBox = document.getElementById('VerticalSlider');
 	const HSlider = document.getElementById('Hslider');
 	const VSlider = document.getElementById('Vslider');
+	const CameraViewer = document.getElementById('CameraViewer');
 	const CButton1 = document.getElementById('Cbutton1');
 	const CButton2 = document.getElementById('Cbutton2');
 	const CButton3 = document.getElementById('Cbutton3');
@@ -246,6 +254,7 @@
 	const SkeySet3 = document.getElementById('keySet3');
 	const SkeySet4 = document.getElementById('keySet4');
 	const SkeySet5 = document.getElementById('keySet5');
+	const CameraIPinput = document.getElementById('CameraIPinput');
 	const GuideButton = document.getElementById('Guide1');
 	const SettingGuideButton = document.getElementById('Guide2');
 
@@ -526,6 +535,9 @@
 			SValue10.innerHTML = 'ON';
 		}
 
+		CameraIPinput.value = Setting[16];
+		CameraViewer.innerHTML = '<img src="http://'+Setting[16]+':81/stream" alt="M5カメラと未接続">';
+
 		//設定を反映
 		SettingSet();
 
@@ -566,10 +578,10 @@
 		}
 		if (Support) {
 			//ローディング画面の削除
-			Lcontroller.style.display = 'none';
+			//Lcontroller.style.display = 'none';
 			Lsetting.style.display = 'none';
 			LNoSupport.style.display = 'none';
-			LTitle.style.display = '';
+			LTitle.style.display = 'none';
 			Lloading.style.display = 'none';
 		} else {
 			//非対応ブラウザ
@@ -1370,6 +1382,23 @@
 		Save();
 	});
 
+	function IPChecker(value){
+		IPv4 = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+		IPv6 = /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
+		return value.match(IPv4)||value.match(IPv6)
+	};
+
+	CameraIPinput.addEventListener('input', function(e) {
+		if (IPChecker(e.srcElement.value)){
+			CameraIPinput.style.color = "#000";
+		}else{
+			CameraIPinput.style.color = "#C2181F";
+		}
+	});
+	CameraIPinput.addEventListener('change', function() {
+		Save();
+	});
+
 	var HoverColor = '#868686';
 	var HoverFontColor = '#ffffff';
 	var SelectColor = '#d92222';
@@ -1553,8 +1582,13 @@
 	});
 
 	function Save() {
+		check1 = '192.168.0.0'
+		if(IPChecker(CameraIPinput.value)){
+			check1　= CameraIPinput.value
+		}
+
 		localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + SSlider5.value + ',' + SSlider6.value + ',' + SSlider7.value + ',' + SSlider8.value + ',' + Key[0] + ',' + Key[1] + ',' + Key[2] +
-			',' + Key[3] + ',' + Key[4] + ',' + SSlider9.value + ',' + FirstTime + ',' + SSlider10.value + ',192.168.0.0');
+			',' + Key[3] + ',' + Key[4] + ',' + SSlider9.value + ',' + FirstTime + ',' + SSlider10.value + ',' + check1);
 	};
 
 	//設定データを反映させる
@@ -1612,6 +1646,9 @@
 			NowSelect = i;
 			KeySettingSet(SettingString[7+i]);
 		}
+
+		//カメラIPの反映
+		CameraViewer.innerHTML = '<img src="http://'+SettingString[16]+':81/stream" alt="M5カメラと未接続">';
 	};
 
 	//エラー時
