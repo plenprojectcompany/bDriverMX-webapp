@@ -484,7 +484,11 @@
 	}
 
 	//初期動作
-	window.onpageshow = function() {
+	window.onpageshow = function(e) {
+		//safariの場合リロードする
+		if (e.persisted) {
+         window.location.reload();
+     }
 
 		//オフラインで使用可能にする
 		if ('serviceWorker' in navigator) {
