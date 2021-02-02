@@ -68,8 +68,14 @@ body::-webkit-scrollbar {
   background: #323232;
 }
 
-#loadingimage img {
+#loadingimage {
   width: 30vw;
+  height: 30vw;
+}
+
+#loadingimage img {
+  width: 100%;
+  height: auto;
   animation: 2s linear infinite rotation1;
 }
 
