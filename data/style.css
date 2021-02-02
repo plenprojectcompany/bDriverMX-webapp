@@ -185,10 +185,10 @@ body::-webkit-scrollbar {
 }
 
 #Varsion {
+  height: 7vw;
   font-size: 5vw;
   font-family: VarsionFont;
   font-weight: 900;
-  margin: 1vw 0;
 }
 
 #TitleButton {
