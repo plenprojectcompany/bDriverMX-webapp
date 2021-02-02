@@ -23,7 +23,7 @@
 	<div id='LoadingLayer'>
 		<div class='center'>
 			<div id='loadingimage'>
-				<img src="image/Loading.png" width="250px">
+				<img src="image/Loading.png" width="250px" id="LoadingImageSource">
 			</div>
 			<div id='loadingText'>
 				Loading
@@ -77,13 +77,13 @@
 		</div>
 	</div>
 	<div id='TitleLayer'>
-		<div id='Cbutton5'><a href="index.html"><img src="image/Controle.png" alt="コマンド操作"></a></div>
+		<div id='Cbutton5'><a href="index.html"><img src="image/Controle.png" alt="コントローラー操作" id="ModeChangeButton"></a></div>
 		<div class="Guide" id='Guide1'></div>
 		<div class='center'>
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>v.1.1.0 - Command Controle</div>
+			<div id='Varsion'>v.1.1.1 - Command Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -339,6 +339,8 @@
 	const ble = new BlueJelly();
 	const StartButton = document.getElementById('StartButton');
 	const Status = document.getElementById('status');
+	const LoadingImageSource = document.getElementById('LoadingImageSource');
+	const ModeChangeButton = document.getElementById('ModeChangeButton');
 	const CButton1 = document.getElementById('Cbutton1');
 	const CButton2 = document.getElementById('Cbutton2');
 	const CButton3 = document.getElementById('Cbutton3');
@@ -373,7 +375,8 @@
 	var Browser;
 	var stage = 0;
 	var ReconnectCount = 0;
-	var LoadingOpacity = -1;
+	var LoadingSpeed = 0.5;
+	var LoadingAction;
 	var Fullscreen = false;
 
 	var PWMRange = 80;
@@ -693,7 +696,6 @@
 			Lsetting.style.display = 'none';
 			LNoSupport.style.display = 'none';
 			LTitle.style.display = '';
-			Lloading.style.display = 'none';
 		} else {
 			//非対応ブラウザ
 			DisplayOut();
@@ -702,29 +704,29 @@
 			Lsetting.style.display = 'none';
 			LTitle.style.display = 'none';
 			LNoSupport.style.display = '';
-			Lloading.style.display = 'none';
 		}
+		Lloading.style.opacity = 1;
+		DestroyLoading();
 	}
 
 	//ローディング画面の表示
 	function DisplayLoading(FinishFunction) {
+		clearTimeout(LoadingAction);
 		Lloading.style.display = '';
-		if (LoadingOpacity == -1) {
+		if (Lloading.style.opacity < 0) {
 			Lloading.style.opacity = 0;
-			LoadingOpacity = 0;
-			setTimeout(function() {
+			Lloading.style.display = 'none';
+			LoadingAction = setTimeout(function() {
 				DisplayLoading(FinishFunction)
 			}, 10);
-		} else if (LoadingOpacity == 100) {
+		} else if (Lloading.style.opacity >= 1) {
 			Lloading.style.opacity = 1;
-			LoadingOpacity = -1;
 			if (FinishFunction != null) {
 				FinishFunction();
 			}
 		} else {
-			Lloading.style.opacity = LoadingOpacity / 100;
-			LoadingOpacity++;
-			setTimeout(function() {
+			Lloading.style.opacity = Number(Lloading.style.opacity) + 1/(LoadingSpeed*100);
+			LoadingAction = setTimeout(function() {
 				DisplayLoading(FinishFunction)
 			}, 10);
 		}
@@ -732,23 +734,22 @@
 
 	//ローディング画面の削除
 	function DestroyLoading(FinishFunction) {
+		clearTimeout(LoadingAction);
 		Lloading.style.display = '';
-		if (LoadingOpacity == -1) {
+		if (Lloading.style.opacity > 1) {
 			Lloading.style.opacity = 1;
-			LoadingOpacity = 100;
-			setTimeout(function() {
+			LoadingAction = setTimeout(function() {
 				DestroyLoading(FinishFunction)
 			}, 10);
-		} else if (LoadingOpacity == 0) {
+		} else if (Lloading.style.opacity <= 0) {
+			Lloading.style.opacity = 0;
 			Lloading.style.display = 'none';
-			LoadingOpacity = -1;
 			if (FinishFunction != null) {
 				FinishFunction();
 			}
 		} else {
-			Lloading.style.opacity = LoadingOpacity / 100;
-			LoadingOpacity--;
-			setTimeout(function() {
+			Lloading.style.opacity = Number(Lloading.style.opacity) - 1/(LoadingSpeed*100);
+			LoadingAction = setTimeout(function() {
 				DestroyLoading(FinishFunction)
 			}, 10);
 		}
@@ -981,7 +982,8 @@
 
 		var text2;
 		if (stage == 0) {
-			text2 = 'Loading';
+			text1 = '';
+			text2 = '';
 		} else if (stage == 1) {
 			text2 = 'Pairing';
 		} else if (stage == 2) {
@@ -1042,6 +1044,24 @@
 	SSlider10.addEventListener('change', function() {
 		Save();
 	});
+
+	//モード切り替えボタン
+	preventModeChangeButton = true;
+	ModeChangeButton.addEventListener('click', function(e) {
+		if(preventModeChangeButton){
+			//リンク遷移を無効にする
+			e.preventDefault();
+			//ローディング画面に移項する
+			LoadingImageSource.style.animation = 'initial';
+			stage = 0;
+			DisplayLoading(OnFinishModeChangeButton);
+		}
+	});
+	beforeLoadingLotation = 0;
+	function OnFinishModeChangeButton(){
+		preventModeChangeButton = false;
+		ModeChangeButton.click();
+	}
 
 	//Enterボタン
 	SButton1.addEventListener('click', function() {
@@ -1149,7 +1169,7 @@
 		'ErrorSleep', 'ReturnLocalServerValue', 'ErrorCheck', 'Finish'
 	];
 	const ExistOriginalFunctionList = ['Motor', 'Servo', 'Port', 'ReadLocalServer', 'Wait', 'Log', 'Random', 'ReadLocalServer', 'RequestLocalServer'];
-	const ExistVariableList = ['userAgent', 'Support', 'Device', 'Browser', 'stage', 'ReconnectCount', 'LoadingOpacity', 'Fullscreen', 'PWMRange', 'PWMMin', 'ServoMaxBase', 'ServoMax', 'ServoRange', 'ServoAdj', 'SSendTime', 'PWMValue', 'PortValue',
+	const ExistVariableList = ['userAgent', 'Support', 'Device', 'Browser', 'stage', 'ReconnectCount', 'LoadingSpeed', 'Fullscreen', 'PWMRange', 'PWMMin', 'ServoMaxBase', 'ServoMax', 'ServoRange', 'ServoAdj', 'SSendTime', 'PWMValue', 'PortValue',
 		'RotateMaxBase', 'RotateMin', 'Rotate', 'RotateSet', 'RoRotateBefore', 'LightActive', 'GyroActive', 'KeyBoard', 'Key', 'KeyValue', 'Setting', 'SettiSettingString', 'SettingNow', 'FirstTime', 'ScriptList', 'ScriptCheckList', 'VariableList',
 		'ValueList',
 		'StringList', 'FinishFlag', 'click1', 'click2', 'Traces', 'ConsoleLog', 'MoveFlag', 'NowBorder1', 'NowBorder2', 'NowBorder3', 'StartX1', 'StartX2', 'BeforeX', 'WaitId', 'CommandAction', 'ActionCommand', 'VariableString', 'LoopCount',

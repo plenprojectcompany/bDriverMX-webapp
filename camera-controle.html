@@ -22,7 +22,7 @@
 	<div id='LoadingLayer'>
 		<div class='center'>
 			<div id='loadingimage'>
-				<img src="image/Loading.png" width="250px">
+				<img src="image/Loading.png" width="250px" id="LoadingImageSource">
 			</div>
 			<div id='loadingText'>
 				Loading
@@ -76,7 +76,7 @@
 		</div>
 	</div>
 	<div id='TitleLayer'>
-		<div id='Cbutton5'><a href="command-standalone.html"><img src="image/Command.png" alt="コマンド操作"></a></div>
+		<div id='Cbutton5'><a href="command-standalone.html" id="ModeChangeButton"><img src="image/Command.png" alt="コマンド操作"></a></div>
 		<div class="Guide" id='Guide1'></div>
 		<div class='center'>
 			<div id='TitleLogo'>
@@ -244,6 +244,8 @@
 	const VSlider = document.getElementById('Vslider');
 	const CameraViewer = document.getElementById('CameraViewer');
 	const CameraViewerSource = document.getElementById('CameraViewerSource');
+	const LoadingImageSource = document.getElementById('LoadingImageSource');
+	const ModeChangeButton = document.getElementById('ModeChangeButton');
 	const CVButton1 = document.getElementById('CVbutton1');
 	const CButton1 = document.getElementById('Cbutton1');
 	const CButton2 = document.getElementById('Cbutton2');
@@ -291,7 +293,8 @@
 	var Browser;
 	var stage = 0;
 	var ReconnectCount = 0;
-	var LoadingOpacity = -1;
+	var LoadingSpeed = 0.5;
+	var LoadingAction;
 	var Fullscreen = false;
 
 	var PWMRange = 80;
@@ -569,6 +572,7 @@
 			CameraViewerSource.style.backgroundImage = 'url(http://'+Setting[16]+':81/stream?'+time+')';
 		}else{
 			CameraIPinput.value = '192.168.';
+			CameraIPinput.style.color = "#C2181F";
 			date = new Date();
 			time = Math.floor(date.getTime() / 1000);
 			CameraViewerSource.style.backgroundImage = 'url(http://:81/stream?'+time+')';
@@ -578,7 +582,7 @@
 		if (SSlider11.value >= 200) {
 			SValue11.innerHTML = '全画面';
 		} else {
-			Svalue11.value = SSlider11.value + '%';
+			Svalue11.innerHTML = SSlider11.value + '%';
 		}
 
 		SSlider12.value = Setting[18];
@@ -637,7 +641,6 @@
 			Lsetting.style.display = 'none';
 			LNoSupport.style.display = 'none';
 			LTitle.style.display = '';
-			Lloading.style.display = 'none';
 		} else {
 			//非対応ブラウザ
 			DisplayOut();
@@ -646,7 +649,6 @@
 			Lsetting.style.display = 'none';
 			LTitle.style.display = 'none';
 			LNoSupport.style.display = '';
-			Lloading.style.display = 'none';
 		}
 		if(false){
 			//デバッグ用
@@ -655,29 +657,29 @@
 			Lsetting.style.display = 'none';
 			LNoSupport.style.display = 'none';
 			LTitle.style.display = 'none';
-			Lloading.style.display = 'none';
 		}
+		Lloading.style.opacity = 1;
+		DestroyLoading();
 	}
 
 	//ローディング画面の表示
 	function DisplayLoading(FinishFunction) {
+		clearTimeout(LoadingAction);
 		Lloading.style.display = '';
-		if (LoadingOpacity == -1) {
+		if (Lloading.style.opacity < 0) {
 			Lloading.style.opacity = 0;
-			LoadingOpacity = 0;
-			setTimeout(function() {
+			Lloading.style.display = 'none';
+			LoadingAction = setTimeout(function() {
 				DisplayLoading(FinishFunction)
 			}, 10);
-		} else if (LoadingOpacity == 100) {
+		} else if (Lloading.style.opacity >= 1) {
 			Lloading.style.opacity = 1;
-			LoadingOpacity = -1;
 			if (FinishFunction != null) {
 				FinishFunction();
 			}
 		} else {
-			Lloading.style.opacity = LoadingOpacity / 100;
-			LoadingOpacity++;
-			setTimeout(function() {
+			Lloading.style.opacity = Number(Lloading.style.opacity) + 1/(LoadingSpeed*100);
+			LoadingAction = setTimeout(function() {
 				DisplayLoading(FinishFunction)
 			}, 10);
 		}
@@ -685,26 +687,43 @@
 
 	//ローディング画面の削除
 	function DestroyLoading(FinishFunction) {
+		clearTimeout(LoadingAction);
 		Lloading.style.display = '';
-		if (LoadingOpacity == -1) {
+		if (Lloading.style.opacity > 1) {
 			Lloading.style.opacity = 1;
-			LoadingOpacity = 100;
-			setTimeout(function() {
+			LoadingAction = setTimeout(function() {
 				DestroyLoading(FinishFunction)
 			}, 10);
-		} else if (LoadingOpacity == 0) {
+		} else if (Lloading.style.opacity <= 0) {
+			Lloading.style.opacity = 0;
 			Lloading.style.display = 'none';
-			LoadingOpacity = -1;
 			if (FinishFunction != null) {
 				FinishFunction();
 			}
 		} else {
-			Lloading.style.opacity = LoadingOpacity / 100;
-			LoadingOpacity--;
-			setTimeout(function() {
+			Lloading.style.opacity = Number(Lloading.style.opacity) - 1/(LoadingSpeed*100);
+			LoadingAction = setTimeout(function() {
 				DestroyLoading(FinishFunction)
 			}, 10);
 		}
+	}
+
+	//モード切り替えボタン
+	preventModeChangeButton = true;
+	ModeChangeButton.addEventListener('click', function(e) {
+		if(preventModeChangeButton){
+			//リンク遷移を無効にする
+			e.preventDefault();
+			//ローディング画面に移項する
+			LoadingImageSource.style.animation = 'initial';
+			stage = 0;
+			DisplayLoading(OnFinishModeChangeButton);
+		}
+	});
+	beforeLoadingLotation = 0;
+	function OnFinishModeChangeButton(){
+		preventModeChangeButton = false;
+		ModeChangeButton.click();
 	}
 
 	//スタートボタン
@@ -1305,7 +1324,8 @@
 
 		var text2;
 		if (stage == 0) {
-			text2 = 'Loading';
+			text1 = '';
+			text2 = '';
 		} else if (stage == 1) {
 			text2 = 'Pairing';
 		} else if (stage == 2) {
@@ -1318,6 +1338,7 @@
 		} else {
 			text2 = 'Loading';
 		}
+
 		LoadingStatus.innerHTML = text2 + text1;
 
 		setTimeout(function() {
@@ -1465,6 +1486,16 @@
 			CVbutton1.style.bottom = 'initial';
 			SValue11.innerHTML = '全画面';
 		}else{
+			if(SSlider12.value == 1){
+				CVbutton1.style.top = 'initial';
+				CVbutton1.style.bottom = '-2rem';
+			}else if(SSlider12.value == -1){
+				CVbutton1.style.top = '-2rem'
+				CVbutton1.style.bottom = 'initial';
+			}else{
+				CVbutton1.style.top = '-2rem'
+				CVbutton1.style.bottom = 'initial';
+			}
 			CameraViewer.style.width = 30 * Number(SSlider11.value) / 100 + 'vw';
 			CameraViewer.style.height = 30 * Number(SSlider11.value) / 100 / 320 * 240 + 'vw';
 			SValue11.innerHTML = SSlider11.value + '%';
@@ -1492,6 +1523,10 @@
 			}
 			SValue12.innerHTML = '下';
 		}else{
+			if(SSlider11.value < 200){
+				CVbutton1.style.top = '-2rem'
+				CVbutton1.style.bottom = 'initial';
+			}
 			CameraViewer.style.top = 'initial';
 			CameraViewer.style.bottom = 'initial';
 			SValue12.innerHTML = '中';
@@ -1804,6 +1839,8 @@
 			CVbutton1.style.top = '-2rem'
 			CVbutton1.style.bottom = 'initial';
 		}else{
+			CVbutton1.style.top = '-2rem'
+			CVbutton1.style.bottom = 'initial';
 			CameraViewer.style.top = 'initial';
 			CameraViewer.style.bottom = 'initial';
 		}
