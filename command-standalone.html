@@ -599,13 +599,13 @@
 		//セーブデータの存在確認
 		if (localStorage.getItem('SaveData') == null) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,192.168.0.0');
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,,100,0,1');
 		}
 		Setting = localStorage.getItem('SaveData').split(',');
 
-		if (Setting.length != 17) {
+		if (Setting.length != 20) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,192.168.0.0');
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,,100,0,1');
 			Setting = localStorage.getItem('SaveData').split(',');
 		}
 
@@ -1059,9 +1059,8 @@
 
 	function Save() {
 		Setting = localStorage.getItem('SaveData').split(',');
-
 		localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + Setting[4] + ',' + Setting[5] + ',' + Setting[6] + ',' + Setting[7] + ',' + Setting[8] + ',' + Setting[9] + ',' + Setting[10] + ',' +
-			Setting[11] + ',' + Setting[12] + ',' + 'false' + ',' + SSlider10.value + ',192.168.0.0');
+			Setting[11] + ',' + Setting[12] + ',' + 'false' + ',' + SSlider10.value + ',' + Setting[16] + ',' + Setting[17] + ',' + Setting[18] + ',' + Setting[19]);
 	};
 
 	//設定データを反映させる

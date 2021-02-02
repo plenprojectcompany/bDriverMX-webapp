@@ -82,7 +82,7 @@
 			<div id='TitleLogo'>
 				<img src='image/TitleLogo.png'>
 			</div>
-			<div id='Varsion'>β.1.1.0 - Camera Controle</div>
+			<div id='Varsion'>β.1.1.1 - Camera Controle</div>
 			<div id='TitleButton'>
 				<input type="image" id='StartButton' src='image/StartButton.png'>
 				<div id='status'></div>
@@ -108,7 +108,8 @@
 			</div>
 			<div id='Controller'>
 				<div id='CameraViewer'>
-					<img src="http:// :81/stream" alt="M5カメラと未接続">
+					<div id='CameraViewerSource'></div>
+					<button type="button" id='CVbutton1'>再接続</button>
 				</div>
 				<div id='Slider'>
 					<div id='HorizontalSlider'>
@@ -128,6 +129,28 @@
 						<td id='SettingTitle' colspan="4">設定</td>
 					</tr>
 					<tr class='row4'>
+						<td colspan="4">カメラ設定</td>
+					</tr>
+					<tr>
+						<td class='col1'>カメラIP</td>
+						<td class='col3' colspan="3"><input type="text" id='CameraIPinput' class='SettingText' value='192.168.0.0' placeholder="192.168.0.0"></td>
+					</tr>
+					<tr>
+						<td class='col1'>ビュワーサイズ</td>
+						<td class='col2' id='Svalue11'>100%</td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider11' class='SettingSlider' min='50' max='200' value='100'></td>
+					</tr>
+					<tr>
+						<td class='col1'>ビュワー位置</td>
+						<td class='col2' id='Svalue12'>0</td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider12' class='SettingSlider' min='-1' max='1' value='0'></td>
+					</tr>
+					<tr>
+						<td class='col1'>リフレクト</td>
+						<td class='col2' id='Svalue13'>1</td>
+						<td class='col3' colspan="2"><input type="range" id='Sslider13' class='SettingSlider' min='1' max='4' value='1'></td>
+					</tr>
+					<tr class='row2'>
 						<td colspan="4">前後レバー</td>
 					</tr>
 					<tr>
@@ -156,10 +179,6 @@
 					</tr>
 					<tr class='row2'>
 						<td colspan="4">全体設定</td>
-					</tr>
-					<tr>
-						<td class='col1'>カメラIP</td>
-						<td class='col3' colspan="3"><input type="text" id='CameraIPinput' class='SettingText' value='192.168.0.0' placeholder="192.168.0.0"></td>
 					</tr>
 					<tr id='GyroSetting'>
 						<td class='col1'>ジャイロ感度</td>
@@ -224,6 +243,8 @@
 	const HSlider = document.getElementById('Hslider');
 	const VSlider = document.getElementById('Vslider');
 	const CameraViewer = document.getElementById('CameraViewer');
+	const CameraViewerSource = document.getElementById('CameraViewerSource');
+	const CVButton1 = document.getElementById('CVbutton1');
 	const CButton1 = document.getElementById('Cbutton1');
 	const CButton2 = document.getElementById('Cbutton2');
 	const CButton3 = document.getElementById('Cbutton3');
@@ -238,6 +259,9 @@
 	const SSlider8 = document.getElementById('Sslider8');
 	const SSlider9 = document.getElementById('Sslider9');
 	const SSlider10 = document.getElementById('Sslider10');
+	const SSlider11 = document.getElementById('Sslider11');
+	const SSlider12 = document.getElementById('Sslider12');
+	const SSlider13 = document.getElementById('Sslider13');
 	const SButton1 = document.getElementById('Sbutton1');
 	const SValue1 = document.getElementById('Svalue1');
 	const SValue2 = document.getElementById('Svalue2');
@@ -249,6 +273,9 @@
 	const SValue8 = document.getElementById('Svalue8');
 	const SValue9 = document.getElementById('Svalue9');
 	const SValue10 = document.getElementById('Svalue10');
+	const SValue11 = document.getElementById('Svalue11');
+	const SValue12 = document.getElementById('Svalue12');
+	const SValue13 = document.getElementById('Svalue13');
 	const SkeySet1 = document.getElementById('keySet1');
 	const SkeySet2 = document.getElementById('keySet2');
 	const SkeySet3 = document.getElementById('keySet3');
@@ -451,13 +478,13 @@
 		//セーブデータの存在確認
 		if (localStorage.getItem('SaveData') == null) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,');
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,,100,0,1');
 		}
 		Setting = localStorage.getItem('SaveData').split(',');
 
-		if (Setting.length != 17) {
+		if (Setting.length != 20) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,');
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,,100,0,1');
 			Setting = localStorage.getItem('SaveData').split(',');
 		}
 
@@ -535,8 +562,37 @@
 			SValue10.innerHTML = 'ON';
 		}
 
-		CameraIPinput.value = Setting[16];
-		CameraViewer.innerHTML = '<img src="http://'+Setting[16]+':81/stream" alt="M5カメラと未接続">';
+		if(IPChecker(Setting[16])){
+			CameraIPinput.value = Setting[16];
+			date = new Date();
+			time = Math.floor(date.getTime() / 1000);
+			CameraViewerSource.style.backgroundImage = 'url(http://'+Setting[16]+':81/stream?'+time+')';
+		}else{
+			CameraIPinput.value = '192.168.';
+			date = new Date();
+			time = Math.floor(date.getTime() / 1000);
+			CameraViewerSource.style.backgroundImage = 'url(http://:81/stream?'+time+')';
+		}
+
+		SSlider11.value = Setting[17];
+		if (SSlider11.value >= 200) {
+			SValue11.innerHTML = '全画面';
+		} else {
+			Svalue11.value = SSlider11.value + '%';
+		}
+
+		SSlider12.value = Setting[18];
+		if (SSlider12.value == 1) {
+			SValue12.innerHTML = '上';
+		}else if (SSlider12.value == -1) {
+			SValue12.innerHTML = '下';
+		} else {
+			Svalue12.value = '中';
+		}
+
+		SSlider13.value = Setting[19];
+		console.log(SSlider13.value);
+		SValue13.innerHTML = SSlider13.value;
 
 		//設定を反映
 		SettingSet();
@@ -591,6 +647,15 @@
 			Lsetting.style.display = 'none';
 			LTitle.style.display = 'none';
 			LNoSupport.style.display = '';
+			Lloading.style.display = 'none';
+		}
+		if(false){
+			//デバッグ用
+			//操作画面の表示
+			Lcontroller.style.display = '';
+			Lsetting.style.display = 'none';
+			LNoSupport.style.display = 'none';
+			LTitle.style.display = 'none';
 			Lloading.style.display = 'none';
 		}
 	}
@@ -799,6 +864,16 @@
 				return;
 			}
 		}
+	});
+
+	//再接続ボタン
+	CVButton1.addEventListener('click', function() {
+		check1 = CameraViewerSource.style.backgroundImage;
+		check1 = check1.replace(/url\("http:\/\/|:81\/stream\?.*"\)/g,'');
+		CameraViewerSource.style.backgroundImage = 'url()';
+		date = new Date();
+		time = Math.floor(date.getTime() / 1000);
+		CameraViewerSource.style.backgroundImage = 'url(http://'+check1+':81/stream?'+time+')';
 	});
 
 	document.onfullscreenchange = document.onmozfullscreenchange = document.onwebkitfullscreenchange = document.onmsfullscreenchange = function(event) {
@@ -1322,7 +1397,7 @@
 	SSlider7.addEventListener('input', function() {
 		Lsetting.style.opacity = '0.8';
 
-		Slider.style.top = 10 + Number(SSlider7.value) + 'vh';
+		Slider.style.top = Number(SSlider7.value) + 'vh';
 
 		if (SSlider7.value > 0) {
 			SValue7.innerHTML = '+' + SSlider7.value;
@@ -1379,6 +1454,71 @@
 		}
 	});
 	SSlider10.addEventListener('change', function() {
+		Save();
+	});
+	SSlider11.addEventListener('input', function() {
+		Lsetting.style.opacity = '0.8';
+
+		if(SSlider11.value >= 200){
+			CameraViewer.style.width = '100%';
+			CameraViewer.style.height = '100%';
+			CVbutton1.style.top = '0'
+			CVbutton1.style.bottom = 'initial';
+			SValue11.innerHTML = '全画面';
+		}else{
+			CameraViewer.style.width = 30 * Number(SSlider11.value) / 100 + 'vw';
+			CameraViewer.style.height = 30 * Number(SSlider11.value) / 100 / 320 * 240 + 'vw';
+			SValue11.innerHTML = SSlider11.value + '%';
+		}
+	});
+	SSlider11.addEventListener('change', function() {
+		Lsetting.style.opacity = '1';
+		Save();
+	});
+	SSlider12.addEventListener('input', function() {
+		Lsetting.style.opacity = '0.8';
+
+		if(SSlider12.value == 1){
+			CameraViewer.style.top = '0';
+			if(SSlider11.value < 200){
+				CVbutton1.style.top = 'initial';
+				CVbutton1.style.bottom = '-2rem';
+			}
+			SValue12.innerHTML = '上';
+		}else if(SSlider12.value == -1){
+			CameraViewer.style.bottom = '0';
+			if(SSlider11.value < 200){
+				CVbutton1.style.top = '-2rem'
+				CVbutton1.style.bottom = 'initial';
+			}
+			SValue12.innerHTML = '下';
+		}else{
+			CameraViewer.style.top = 'initial';
+			CameraViewer.style.bottom = 'initial';
+			SValue12.innerHTML = '中';
+		}
+	});
+	SSlider12.addEventListener('change', function() {
+		Lsetting.style.opacity = '1';
+		Save();
+	});
+	SSlider13.addEventListener('input', function() {
+		Lsetting.style.opacity = '0.8';
+
+		if(SSlider13.value == 2){
+			CameraViewerSource.style.transform = 'scale(1, -1)';
+		}else if(SSlider13.value == 3){
+			CameraViewerSource.style.transform = 'scale(1, 1)';
+		}else if(SSlider13.value == 4){
+			CameraViewerSource.style.transform = 'scale(-1, 1)';
+		}else{
+			CameraViewerSource.style.transform = 'scale(-1, -1)';
+		}
+		SValue13.innerHTML = SSlider13.value;
+
+	});
+	SSlider13.addEventListener('change', function() {
+		Lsetting.style.opacity = '1';
 		Save();
 	});
 
@@ -1582,13 +1722,13 @@
 	});
 
 	function Save() {
-		check1 = '192.168.0.0'
+		check1 = ''
 		if(IPChecker(CameraIPinput.value)){
 			check1　= CameraIPinput.value
 		}
 
 		localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + SSlider5.value + ',' + SSlider6.value + ',' + SSlider7.value + ',' + SSlider8.value + ',' + Key[0] + ',' + Key[1] + ',' + Key[2] +
-			',' + Key[3] + ',' + Key[4] + ',' + SSlider9.value + ',' + FirstTime + ',' + SSlider10.value + ',' + check1);
+			',' + Key[3] + ',' + Key[4] + ',' + SSlider9.value + ',' + FirstTime + ',' + SSlider10.value + ',' + check1 + ',' + SSlider11.value + ',' + SSlider12.value + ',' + SSlider13.value);
 	};
 
 	//設定データを反映させる
@@ -1624,7 +1764,7 @@
 		SValue6.innerHTML = SSlider6.value + '%';
 
 		//レバー位置
-		Slider.style.top = 10 + Setting[6] + 'vh';
+		Slider.style.top = Setting[6] + 'vh';
 		Slider.style.width = 79 + Setting[13] + 'vw';
 
 
@@ -1648,8 +1788,49 @@
 		}
 
 		//カメラIPの反映
-		CameraViewer.innerHTML = '<img src="http://'+SettingString[16]+':81/stream" alt="M5カメラと未接続">';
+		check1 = CameraViewerSource.style.backgroundImage;
+		check1 = check1.replace(/url\("http:\/\/|:81\/stream\?.*"\)/g,'');
+		if(check1!=SettingString[16]){
+			date = new Date();
+			time = Math.floor(date.getTime() / 1000);
+			CameraViewerSource.style.backgroundImage = 'url(http://'+SettingString[16]+':81/stream?'+time+')';
+		}
+
+		//カメラビュワーの反映
+		if(SettingString[18] == 1){
+			CameraViewer.style.top = '0';
+			CVbutton1.style.top = 'initial';
+		}else if(SettingString[18] == -1){
+			CameraViewer.style.bottom = '0';
+			CVbutton1.style.top = '-2rem'
+			CVbutton1.style.bottom = 'initial';
+		}else{
+			CameraViewer.style.top = 'initial';
+			CameraViewer.style.bottom = 'initial';
+		}
+
+		if(SettingString[17] >= 200){
+			CameraViewer.style.width = '100%';
+			CameraViewer.style.height = '100%';
+			CVbutton1.style.top = '0'
+			CVbutton1.style.bottom = 'initial';
+		}else{
+			CameraViewer.style.width = 30 * Number(SSlider11.value) / 100 + 'vw';
+			CameraViewer.style.height = 30 * Number(SSlider11.value) / 100 / 320 * 240 + 'vw';
+		}
+
+		if(SettingString[19] == 2){
+				CameraViewerSource.style.transform = 'scale(1, -1)';
+		}else if(SettingString[19] == 3){
+				CameraViewerSource.style.transform = 'scale(1, 1)';
+		}else if(SettingString[19] == 4){
+				CameraViewerSource.style.transform = 'scale(-1, 1)';
+		}else{
+				CameraViewerSource.style.transform = 'scale(-1, -1)';
+		}
 	};
+
+	CameraViewerSource.onerror = function(){ console.log("a"); };
 
 	//エラー時
 	ble.onError = function(error) {

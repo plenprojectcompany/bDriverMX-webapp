@@ -442,13 +442,13 @@
 		//セーブデータの存在確認
 		if (localStorage.getItem('SaveData') == null) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,192.168.0.0');
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,,100,0,1');
 		}
 		Setting = localStorage.getItem('SaveData').split(',');
 
-		if (Setting.length != 17) {
+		if (Setting.length != 20) {
 			//プリセットを登録する
-			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,192.168.0.0');
+			localStorage.setItem('SaveData','60,80,0,0,50,100,0,0,ArrowUp,ArrowDown,ArrowLeft,ArrowRight, ,0,true,0,,100,0,1');
 			Setting = localStorage.getItem('SaveData').split(',');
 		}
 
@@ -1310,7 +1310,7 @@
 	SSlider7.addEventListener('input', function() {
 		Lsetting.style.opacity = '0.8';
 
-		Slider.style.top = 10 + Number(SSlider7.value) + 'vh';
+		Slider.style.top = Number(SSlider7.value) + 'vh';
 
 		if (SSlider7.value > 0) {
 			SValue7.innerHTML = '+' + SSlider7.value;
@@ -1553,8 +1553,9 @@
 	});
 
 	function Save() {
+		Setting = localStorage.getItem('SaveData').split(',');
 		localStorage.setItem('SaveData', SSlider1.value + ',' + SSlider2.value + ',' + SSlider3.value + ',' + '0' + ',' + SSlider5.value + ',' + SSlider6.value + ',' + SSlider7.value + ',' + SSlider8.value + ',' + Key[0] + ',' + Key[1] + ',' + Key[2] +
-			',' + Key[3] + ',' + Key[4] + ',' + SSlider9.value + ',' + FirstTime + ',' + SSlider10.value + ',192.168.0.0');
+			',' + Key[3] + ',' + Key[4] + ',' + SSlider9.value + ',' + FirstTime + ',' + SSlider10.value + ',' + Setting[16] + ',' + Setting[17] + ',' + Setting[18] + ',' + Setting[19]);
 	};
 
 	//設定データを反映させる
@@ -1590,7 +1591,7 @@
 		SValue6.innerHTML = SSlider6.value + '%';
 
 		//レバー位置
-		Slider.style.top = 10 + Setting[6] + 'vh';
+		Slider.style.top = Setting[6] + 'vh';
 		Slider.style.width = 79 + Setting[13] + 'vw';
 
 

@@ -305,7 +305,8 @@ body::-webkit-scrollbar {
 
 #Controller {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 10vw);
+  top: 10vw;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -314,6 +315,7 @@ body::-webkit-scrollbar {
 
 #Slider {
   position: relative;
+  pointer-events:none
 }
 
 #HorizontalSlider {
@@ -392,7 +394,34 @@ body::-webkit-scrollbar {
 /*カメラ*/
 #CameraViewer {
   position: absolute;
-  top:10vw;
+  width: 30vw;
+  height: calc(30vw / 320 * 240);
+  background-image: url(CameraLostConnecton.png);
+  background-size: cover;
+  background-position: center;
+}
+
+#CameraViewerSource {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+#CVbutton1 {
+  position: absolute;
+  width: 100%;
+  height: 2rem;
+  border: none;
+  background-color: #000;
+  font-family: MainFont;
+  font-size: 1rem;
+  color: #fff;
+}
+
+#CVbutton1:hover{
+  cursor: pointer;
+  background-color: #333;
 }
 
 /*設定*/
@@ -448,7 +477,6 @@ body::-webkit-scrollbar {
 }
 
 .col4 {
-  width: 3rem;
 }
 
 .col5 {
@@ -523,6 +551,10 @@ body::-webkit-scrollbar {
   border-radius: 10px;
   border: solid 2px #ffffff;
   pointer-events: none;
+}
+
+.col4 > .SettingSlider {
+  width: 4rem;
 }
 
 /* 設定スライダーのつまみ */

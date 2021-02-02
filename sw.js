@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const CACHE_NAME = `${registration.scope}!${CACHE_VERSION}`;
 
 // キャッシュするファイルをセットする
@@ -16,6 +16,7 @@ const urlsToCache = [
   'data/TitleFont.ttf',
   'data/VarsionFont.ttf',
   'data/bluejelly.js',
+  'data/CameraLostConnecton.png',
   'image/Command.png',
   'image/CommandStart.png',
   'image/CommandStop.png',
