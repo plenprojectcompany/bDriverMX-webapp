@@ -69,19 +69,19 @@ body::-webkit-scrollbar {
 }
 
 #loadingimage {
-  width: 30vw;
+  width: 100vw;
   height: 30vw;
 }
 
 #loadingimage img {
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 100%;
   animation: 2s linear infinite rotation1;
   animation-delay: .5s;
 }
 
 #loadingText {
-  width: 30vw;
+  width: 100vw;
   height: 7vw;
   color: #ffffff;
   font-size: 5vw;
