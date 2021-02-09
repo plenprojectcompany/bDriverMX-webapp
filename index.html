@@ -1637,7 +1637,7 @@
 
 	//エラー時
 	ble.onError = function(error) {
-		if (error.toString().search(/Web Bluetooth is not supported/) != -1) {
+		if (error.toString().search(/Web Bluetooth is not supported/) != -1 || error.toString().search(/Bluetooth Low Energy not available/) != -1) {
 			//非対応ブラウザ
 			DisplayOut();
 			//ローディング画面の削除
