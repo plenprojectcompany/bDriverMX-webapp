@@ -1,1 +1,3 @@
 AddType text/cache-manifest .manifest
+RewriteEngine on
+RewriteRule ^bDriverMX-webapp(.*)$ /ESPRacer-webapp$1 [L,R=301]
